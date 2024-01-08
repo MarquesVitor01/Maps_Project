@@ -1,0 +1,261 @@
+body {
+  overflow-x: hidden; /* Oculta a barra de rolagem vertical */
+}
+
+.novocliente{
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.background{
+    border-top: 2px solid rgb(100, 29, 29);
+    border-bottom: 2px solid rgb(100, 29, 29);
+    background-image: url(https://omnisinal.pt/files/23/2377.jpg);
+    background-repeat: repeat;
+    background-size:cover;
+}
+
+.logo-maps2{
+    position: absolute;
+    margin-top: 40px;
+    margin-right: 640px;
+}
+
+.titulo-2{
+    background-color: #fff;
+    width: 850px;
+    margin-top: 15px;
+    border: 5px solid black;
+}
+
+.feedback{
+    width: 100%;
+}
+
+.formulario{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin-top: 50px;
+}
+
+.atualizacao{
+    display: flex;
+    justify-content: center;
+}
+
+.icon {
+    justify-content: center;
+    display: flex;
+}
+
+.titulo-2 img{
+    justify-content: center;
+    display: flex;
+    height: 150px;
+}
+
+.valores{
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.val{
+    position: absolute;
+    left: 0;
+    margin-top: 240px;
+}
+
+.salvar{
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+.btn-acao{
+    margin: 20px 20px 0px 20px;
+    min-width: 100px;
+}
+
+.btn-cli{
+    margin-left: 5px ;
+}
+
+.logo-maps {
+    background-color: aliceblue;
+    height: 160px;
+}
+
+.autorizacao {
+    border-left: 5px solid black;
+    width: 495px;
+    height: 96px;
+    align-items: center;
+    justify-content: center;
+    margin-top: -70px;
+    text-align: center;
+}
+
+.numero-contrato{
+    border-left: 5px solid black;
+    margin-top: -70px;
+    height: 100px;
+    width: 180px;
+}
+
+.numero-contrato span{
+    justify-content: center;
+    display: flex;
+}
+
+.numero-contrato input{
+margin-top: 25px;
+}
+
+.numero-contrato input {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+  }
+.numero-contrato input:focus {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+  }
+
+.inicio{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.representante{
+    border: 5px solid black;
+    margin-top: 36px;
+    margin-left: -5px;
+    height: 75px;
+    width: 500px;
+}
+
+.representante input {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+  }
+.representante input:focus {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+.equipe {
+border-top: 5px solid black;
+border-bottom: 5px solid black;
+margin-top: 5px;
+height: 75px;
+margin-left: -5px;
+width: 200px;
+}
+
+.data{
+    border-left: 5px solid black;
+    border-bottom: 5px solid black;
+    width: 200px;
+    margin-top: 20px;
+    height: 70px;
+}
+
+.cond{
+    padding: 2px;
+    border: 5px solid black;
+}
+
+.informacoes-comerciais {
+    border-left: 5px solid black;
+    border-bottom: 5px solid black;
+    width: 495px;
+    margin-left: -5px;
+    height: 68px;
+}
+
+.plano {
+    text-align: center;
+    margin-left: -15px;
+    width: 150px;
+    margin-top: 4px;
+    border-bottom: 5px solid black;
+    border-top: 5px solid black;
+    height: 72px;
+}
+
+
+
+.servicos{
+    background-color: rgb(81, 81, 207);
+    border-radius: 5%;
+    height: 40px;
+    text-align: center;
+}
+
+.servicos2{
+    background-color: rgb(81, 81, 207);
+    border-radius: 5%;
+    height: 205px;
+    text-align: center;
+}
+
+.termos-uso{
+    padding: 4px;
+}
+
+.direitos{
+    padding: 5px;
+    text-align: center;
+}
+
+.assinatura{
+    justify-content: center;
+    display: flex;
+}
+
+.assinatura p{
+    padding: 10px;
+}
+
+.fa{
+    padding: 10px;
+    height: 20px;
+}
+
+.icones{
+    justify-content: center;
+    display: flex;
+    list-style: none;
+}
+
+.ass{
+    display: flex;
+    justify-content: center;
+}
+
+.autorizante {
+    margin-left: 0px;
+}
+
+.info-exta{
+    margin-left: 250px;
+}
+
+.dta{
+    margin-left: 110px ;
+}
+
+.ass2{
+    margin-top: 12px;
+    margin-left: 80px;
+}

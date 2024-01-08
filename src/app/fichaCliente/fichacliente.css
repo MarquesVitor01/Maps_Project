@@ -1,0 +1,84 @@
+.novocliente{
+    font-size: 30px;
+    align-items: center;
+    text-align: center;
+}
+
+.novocliente1{
+    font-size: 5px;
+    align-items: center;
+    text-align: center;
+}
+
+.salvar{
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+.background{
+    border-top: 2px solid rgb(100, 29, 29);
+    border-bottom: 2px solid rgb(100, 29, 29);
+    background-image: url(https://omnisinal.pt/files/23/2377.jpg);
+}
+
+.titulo-2{
+    width: 1250px;
+    margin-top: 15px;
+    border: 5px solid rgb(117, 19, 19);
+}
+
+.logo-maps2{
+    position: absolute;
+    margin-top: 40px;
+    margin-right: 640px;
+}
+
+.feedback{
+    width: 100%;
+}
+
+.formulario{
+    display: flex;
+    justify-content: center;
+    
+}
+
+.atualizacao{
+    display: flex;
+    justify-content: center;
+}
+
+.icon {
+    justify-content: center;
+    display: flex;
+}
+
+.titulo-2 img{
+    justify-content: center;
+    display: flex;
+    height: 150px;
+}
+
+.valores{
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.val{
+    padding: 12px;
+}
+
+.salvar{
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+.btn-acao{
+    margin: 20px 20px 0px 20px;
+    min-width: 100px;
+}
