@@ -13,11 +13,12 @@
 }
 
 .background8 {
-    background: linear-gradient(to right, #19532d, #35dd0b); /* Degrade de um lado para o outro */
+    background: linear-gradient(to right, #fbff00, #35dd0b); /* Degrade de um lado para o outro */
     padding: 20px; /* Adiciona espaço interno */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
     position: relative; /* Permite posicionar as bolas de tinta em relação a este elemento */
     overflow: hidden; /* Garante que as bolas de tinta não ultrapassem o contêiner */
+    font-size: small;
   }
   
   .background8::before {

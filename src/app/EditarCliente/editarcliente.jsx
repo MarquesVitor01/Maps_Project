@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from 'react-router-dom';
-import Navbar3 from "../Componentes/Navbar/navbar3";
+// import Navbar3 from "../Componentes/Navbar/navbar3";
 import '../EditarCliente/editarcliente.css'
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import 'firebase/firestore'
@@ -15,7 +15,7 @@ function EditarCliente(props) {
     const [bairro, setBairro] = useState('');
     const [obs, setObs] = useState('');
     const [funcionamento, setFuncionamento] = useState('');
-    const [venc, setVenc] = useState('');
+    // const [venc, setVenc] = useState('');
     const [valor, setValor] = useState('');
     const [cidade, setCidade] = useState('');
     const [cep, setCep] = useState('');
@@ -65,7 +65,7 @@ function EditarCliente(props) {
                     setBairro(dados.bairro);
                     setWhats(dados.whats);
                     setFuncionamento(dados.funcionamento);
-                    setVenc(dados.venc);
+                    // setVenc(dados.venc);
                     setValor(dados.valor);
                     setNome(dados.nome);
                     setEmail(dados.email);
@@ -113,7 +113,7 @@ function EditarCliente(props) {
                     whats: whats,
                     obs: obs,
                     funcionamento: funcionamento,
-                    venc: venc,
+                    // venc: venc,
                     valor: valor,
                     plano: plano,
                     renovNao: renovNao,
@@ -137,7 +137,7 @@ function EditarCliente(props) {
 
 
     return <div>
-        <Navbar3 />
+        {/* <Navbar3 /> */}
         <div className="background">
             <div className="container-fluid titulo-2">
                 <div className="row">
@@ -354,13 +354,13 @@ function EditarCliente(props) {
                             <div>
                                 <div className="row assinatura">
                                     <div className="mb-3">
-                                        <div className="input-group">
+                                        {/* <div className="input-group">
                                             <div className="input-group-prendend">
                                                 <span className="input-group-text">Data de vencimento:</span>
                                             </div>
                                             <input onChange={(e) => setVenc(e.target.value)} value={venc} id="date" type="date" />
                                             <div className="invalid-feedback feedback" >O numero do contrato é obrigatório</div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <p className="font-weight-bold">Ciente: _____________________________________________</p>
                                 </div>
@@ -372,22 +372,24 @@ function EditarCliente(props) {
 
                             <ul className="row icones">
                                 <li><a href="https://www.facebook.com/grupomapsempresas"><i className="fab fa-facebook-f fa"></i></a></li>
-                                <li><a href="https://api.whatsapp.com/send?phone=551139392301&text=Ol%C3%A1,%20gostaria%20de%20maiores%20informa%C3%A7%C3%B5es%20sobre%20o%20Google%20Meus%20Neg%C3%B3cios,%20podem%20me%20ajudar?"><i className=" fab fa-whatsapp"></i></a></li>
-                                <li><a href="https://www.instagram.com/grupomaps/"><i className="fab fa-instagram"></i></a></li>
-                                <li><a href="https://www.tiktok.com/@grupomaps?_t=8iXuXTextzR&_r=1"><i className="fab fa-tiktok"></i></a></li>
-                                <li><a href="https://www.youtube.com/watch?si=9p3Z6n29-Qb7xBEN&v=TdAkLQayZC8&feature=youtu.be"><i className="fab fa-youtube"></i></a></li>
+                                <li><a href="https://api.whatsapp.com/send?phone=551139392301&text=Ol%C3%A1,%20gostaria%20de%20maiores%20informa%C3%A7%C3%B5es%20sobre%20o%20Google%20Meus%20Neg%C3%B3cios,%20podem%20me%20ajudar?"><i className=" fab fa-whatsapp fa"></i></a></li>
+                                <li><a href="https://www.instagram.com/grupomaps/"><i className="fab fa-instagram fa"></i></a></li>
+                                <li><a href="https://www.tiktok.com/@grupomaps?_t=8iXuXTextzR&_r=1"><i className="fab fa-tiktok fa"></i></a></li>
+                                <li><a href="https://www.youtube.com/watch?si=9p3Z6n29-Qb7xBEN&v=TdAkLQayZC8&feature=youtu.be"><i className="fab fa-youtube fa"></i></a></li>
                             </ul>
 
                             <div className="servicos2 col-lg-12">
                                 <h4 className="font-weight-bold">
-                                    Como proponente estou de acordo que a empresa; G MAPS CONTACT CENTERE EIRELI CNPJ:40.407.753/0001-30 realize a administração de minha página dentro do site de busca da Google. A contratada declara aqui que não Possui nenhum vinculo junto a empresa Google Brasil.
-                                </h4>
+                                    Como proponente estou de acordo que a empresa; G MAPS CONTACT CENTERE EIRELI CNPJ:40.407.753/0001-30 realize a administração de minha página dentro do site de busca da Google.
+                                    A contratada declara aqui que não Possui nenhum vinculo junto a empresa Google Brasil.
+                                    Condições; numero de parcelas por vigência (12) Doze no valor de R$ 99,90  noventa e nove reais e noventa centavos no Boleto Bancarío                            </h4>
                             </div>
 
                             <div className="termos">
-                                <p className=""></p>
+                                <p className="termos-uso">
+                                    <b>TERMOS DE USO/ CONTRATO.</b> <br />
+                                    Cláusula 1 - O presente termo/contrato tem como objetivo a assessoria de serviços publicitários e marketing digital em favor do Contratante supracitado. Cláusula 2 - A prestação do serviço implica na atualização do Google Meu Negócio, mais especificamente na inserção, e ou, atualização dos seguintes itens, Atualização dos dados que constam na plataforma digital do Google Maps / Criação de Pagina dentro da plataforma Google Maps / contratante poderá encaminhar para a contratado dentro deste periodo 30 fotos e 10 vídeos mensalmente para atualização da página, poderá realizar a alteração do  horário de funcionamento a qualquer momento, inclusão de site/ páginas de redes sociais / telefones para contato e obter ajuda para criação de anúncios / Criação de Cartão Digital Interativo com links Direcionadores / Criação de LogoTipo / Animação de Logotipo. Fica acordado que a contratante deve entrar em contato com a contratada para solicitar o devido suporte quando necessário através do Whatsaap Comercial Número: 0800 580 2766 ou através do e-mail; Marketing@mapsempresas.com.br, Cada serviço requer seu prazo para execução devendo a contratante respeita-lá. Cabe a contratada orientar o prazo de execução  cada serviço  mediante sua solicitação). Cláusula 3 - Para a realização da prestação de serviço, o Contratante deverá enviar a Contratada, todas as informações solicitadas, inerentes a plataforma Google Meu Negócio. Cláusula 4 - O presente contrato tem validade de 48 (Meses), meses, sendo 04 (Quatro), edições, com duração de 12 meses cada. Cláusula 5 - O valor da assessoria está especificado no item condições de pagamento sendo; (Quatrocentos e setenta e oito reais dividido em 12 vezes de Trinta  e nove reais e noventa centavos) no Boleto Bancarío por Ano. O pagamento da adesão, foi subdividido em 12 vezes de igual valor, ficando o restante dos pagamentos para cada 30 dias corridos, a contar da data especificada proximo a assinatura do presente contrato, observando o disposto da cláusula 10ª do documento em questão. O prazo para cancelamento sem ônus são de 7 dias corridos conforme o Art.49 do CDC, a solicitação deverá ser feita por escrita  formalizada através do e-mail: Juridico@mapsempresas.com.br. Após este prazo dá-se 23 dias corridos em caso de desistência a parte que der ensejo a mesma, pagará a outra a título de multa e penalidade o importe correspondente a 40% do valor total do Contrato referente as 48 parcelas (4 edições). Cláusula 6 - A título de cortesia e bonificação, o Contratante será divulgado nas Redes Sociais da Contratada (FACEBOOK, INSTAGRAM, TIK TOK E YOUTUBE), pelo mesmo prazo e período determinado acima mendiante envio de conteudos para sua divulgação. Cláusula 7 - A bonificação supracitada, não tem vinculo com a prestação de serviço ora contratada, e tem validade de 01 (um), mês, sendo que, após este período fica estipulado o pagamento descriminado no item recibo do presente contrato. Cláusula 8 - Não havendo interesse na continuidade da assessoria nos serviços de Marketing, o Contratante deve se manifestar através de carta ou e-mail, endereçado a Contratada. Cláusula 9 – O Contratante é civelmente responsável pelos atos praticados por seus funcionários, prepostos e ou colaboradores, no exercício da função que lhes competir ou por razão dela, tudo a luz do Código de Processo Civil, Lei 10406/02, artigo 932, inciso III. Cláusula 10 - Havendo atraso de uma ou mais parcelas entabuladas no presente documento, considera-se constituída a mora, incidindo sobre o valor total da divida 20% de multa, podendo o Contratado, optar pela resolução administrativa do contrato, exigindo o pagamento integral das parcelas vencidas, bem como as vincendas, ou pela execução judicial do mesmo, desde já determinado o pagamento de multa e juros legais, bem como honorários advocatício em 10% do valor da causa. Cláusula 11 As partes elegem o Forum Central de São Paulo para dirimir eventuais questões do contrato, com exclusão de qualquer outro por mais privilegiado que se apresente.</p>
                             </div>
-
                             <hr className="mb-4" />
                             <div className="col-md-6 mb-3 font-weight-bold">
                                 <label htmlFor="nome">Autorizado por:</label>
@@ -421,6 +423,9 @@ function EditarCliente(props) {
                                         <p className="font-weight-bold">Assinatura do contratante:</p>
                                     </div>
                                 </div>
+                                <div className="logo-maps2">
+                                    <img src="../../../img/nova-logo.jpg" width="150" alt="" />
+                            </div>
                             </div>
                             <br /><br /><br />
 

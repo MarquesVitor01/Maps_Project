@@ -12,6 +12,8 @@ import NovoCliente from "./app/NovoCliente/novocliente.jsx";
 import EditarCliente from "./app/EditarCliente/editarcliente.jsx";
 import FichaCliente from "./app/fichaCliente/fichacliente.jsx";
 import Pagos from "./app/Pagos/pagos.jsx";
+import HomeMarketing from "./app/HomeMarketing/homemarketing.jsx"; 
+import Cobranca from "./app/Cobranca/cobranca.jsx";
 
 function App() {
   const { logado } = useContext(AuthContext);
@@ -37,7 +39,9 @@ function App() {
           <Route element={<NovoCliente />} path='/app/home/novocliente' exact />
           <Route element={<EditarCliente />} path='/app/home/editarcliente/:id' exact />
           <Route element={<FichaCliente />} path='/app/home/fichacliente/:id' exact />
-          <Route element={<Pagos/>} path='/app/home/pagos' exact />
+          <Route element={<Pagos/>} path='/app/financeiromapsempresas' exact />
+          <Route element={<HomeMarketing/>} path='/app/marketingmapsempresas' exact/>
+          <Route element={<Cobranca/>} path='/app/cobrancamapsempresas' exact/>
         </Route>
       </Routes>
     </BrowserRouter>

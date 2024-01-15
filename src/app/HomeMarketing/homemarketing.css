@@ -88,15 +88,15 @@
 }
 
 
-.background7 {
-  background: linear-gradient(to right, #7a0885, #0509f1); /* Degrade de um lado para o outro */
+.background6 {
+  background: linear-gradient(to right, #366894, #b44248); /* Degrade de um lado para o outro */
   padding: 20px; /* Adiciona espaço interno */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
   position: relative; /* Permite posicionar as bolas de tinta em relação a este elemento */
   overflow: hidden; /* Garante que as bolas de tinta não ultrapassem o contêiner */
 }
 
-.background7::before {
+.background6::before {
   content: '';
   position: absolute;
   width: 100%;

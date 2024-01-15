@@ -71,7 +71,7 @@ function Home() {
         const clienteDocRef = doc(db, 'clientes', id);
     
         // Verifica se o usuário atual tem permissão
-        if (user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2') {
+        if (user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
             deleteDoc(clienteDocRef)
                 .then(() => {
                     console.log('Documento excluído com sucesso:', id);
@@ -120,44 +120,50 @@ function Home() {
 
         const fetchData = async () => {
             try {
-                const db = getFirestore();
-                let q;
-
-                if (user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2') {
-                    q = query(collection(db, 'clientes'));
-                } else {
-                    q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
-                }
-
+              const db = getFirestore();
+              let q;
+        
+              if (user && user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || user && user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+                q = query(collection(db, 'clientes'));
+              } else if (user) {
+                q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
+              }
+        
+              if (q) {
                 const querySnapshot = await getDocs(q);
-
+        
                 const listaCli = [];
-
+        
                 querySnapshot.forEach((doc) => {
-                    if (doc.data().nome.indexOf(busca) >= 0 || doc.data().email.indexOf(busca) >= 0 || doc.data().cpf.indexOf(busca) >= 0) {
-                        listaCli.push({
-                            id: doc.id,
-                            cpf: doc.data().cpf,
-                            nome: doc.data().nome,
-                            email: doc.data().email,
-                            uf: doc.data().uf,
-                            fone: doc.data().fone,
-                            valor: doc.data().valor,
-                            data: doc.data().data
-                        });
-                    }
+                  if (
+                    doc.data().nome.indexOf(busca) >= 0 ||
+                    doc.data().email.indexOf(busca) >= 0 ||
+                    doc.data().cpf.indexOf(busca) >= 0
+                  ) {
+                    listaCli.push({
+                      id: doc.id,
+                      cpf: doc.data().cpf,
+                      nome: doc.data().nome,
+                      email: doc.data().email,
+                      uf: doc.data().uf,
+                      fone: doc.data().fone,
+                      valor: doc.data().valor,
+                      data: doc.data().data,
+                    });
+                  }
                 });
-
+        
                 setClientes(listaCli);
                 setQuantidadeClientes(listaCli.length);
                 setLoading(false);
-
+        
                 localStorage.setItem('clientes', JSON.stringify(listaCli));
+              }
             } catch (error) {
-                console.error('Erro ao obter dados:', error);
-                setError(error);
+              console.error('Erro ao obter dados:', error);
+              setError(error);
             }
-        };
+          };
 
         if (user) {
             fetchData();
@@ -188,7 +194,7 @@ function Home() {
     return (
         <div>
             <Navbar />
-            <div className="background8">
+            <div className="background7">
                 <div className="container-fluid titulo">
                     <h1>Lista de Clientes</h1>
                     <div className="row">

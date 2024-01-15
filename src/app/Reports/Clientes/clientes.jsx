@@ -18,7 +18,6 @@ function clientesPDF(clientes){
             {text: cliente.cpf, FontSize: 3, margin: [0, 2, 0, 2]},
             {text: cliente.nome, FontSize: 3,  margin: [0, 2, 0, 2]},
             {text: cliente.email, FontSize: 3,  margin: [0, 2, 0, 2]},
-            {text: cliente.uf, FontSize: 3,  margin: [0, 2, 0, 2]},
             {text: cliente.fone, FontSize: 3 ,  margin: [0, 2, 0, 2]},
             {text: cliente.valor, FontSize: 3,  margin: [0, 2, 0, 2]},
             {text: cliente.data, FontSize: 3,  margin: [0, 2, 0, 2]},
@@ -29,16 +28,15 @@ function clientesPDF(clientes){
         {
             table: {
                 headerRows: 1,
-                widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                 body: [
                     [
-                        {text: 'CNPJ/CPF', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'Nome', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'E-mail', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'Uf', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'Telefone', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'Valor', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'},
-                        {text: 'Data de venda', style: 'tableHeader', FontSize: 4, bold: true, color: 'red'}
+                        {text: 'CNPJ/CPF', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'},
+                        {text: 'Nome', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'},
+                        {text: 'E-mail', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'},
+                        {text: 'Telefone', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'},
+                        {text: 'Valor', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'},
+                        {text: 'Data de venda', style: 'tableHeader', FontSize: 3, bold: true, color: 'red'}
                     ],
                     ...dados 
                 ]
@@ -52,7 +50,7 @@ function clientesPDF(clientes){
             {
                 text: currentPage + '/' + pageCount,
                 alignment: 'right',
-                FontSize: 9,
+                FontSize: 8,
                 margin: [0, 10, 20, 0] 
             }
         ]

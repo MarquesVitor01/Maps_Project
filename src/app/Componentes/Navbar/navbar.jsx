@@ -1,59 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, query, getDocs, where } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  getDocs,
+  where,
+  query
+} from 'firebase/firestore';
 import { getStorage, ref, listAll } from 'firebase/storage';
 import '../Navbar/navbar.css';
 import { AuthContext } from '../../Context/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 function Navbar() {
-  const [clientes, setClientes] = useState([]);
   const [quantidadeClientes, setQuantidadeClientes] = useState(0);
   const [clientesComArquivosCount, setClientesComArquivosCount] = useState(0);
-  const [loading, setLoading] = useState(true);
   const { setLogado } = useContext(AuthContext);
   const auth = getAuth();
   const navigate = useNavigate();
+  const [isAdmUser, setIsAdmUser] = useState(false); // Novo estado para verificar se o usuário tem acesso ao marketing
 
-  /* eslint-disable no-unused-vars */
-  const handleVerificarPagos = async () => {
-    try {
-      const db = getFirestore();
-      const q = query(collection(db, 'clientes'), where('userId', '==', auth.currentUser.uid));
-      const querySnapshot = await getDocs(q);
 
-      const listaCli = [];
-
-      querySnapshot.forEach((doc) => {
-        listaCli.push({
-          id: doc.id,
-          cpf: doc.data().cpf,
-          nome: doc.data().nome,
-          email: doc.data().email,
-          uf: doc.data().uf,
-          fone: doc.data().fone,
-          valor: doc.data().valor,
-          data: doc.data().data
-        });
-      });
-
-      setClientes(listaCli);
-      setLoading(false);
-
-      // Allow access to "Verificar Pagos" for all users
-      console.log('Usuário autorizado para verificar pagos.');
-      navigate('/app/home/pagos');
-    } catch (error) {
-      console.error('Erro ao obter dados:', error);
-    }
-  };
-
-  const handleQuantidadeClientesComArquivos = async () => {
+  const handleQuantidadeClientesComArquivos = async (clientesList) => {
     try {
       const storage = getStorage();
       let clientesComArquivosCount = 0;
 
-      for (const cliente of clientes) {
+      for (const cliente of clientesList) {
         const clientePath = `arquivos/${cliente.id}`;
         const clienteRef = ref(storage, clientePath);
         const filesList = await listAll(clienteRef);
@@ -69,33 +44,60 @@ function Navbar() {
     }
   };
 
+  const handleVerificarPagos = async () => {
+    try {
+      const db = getFirestore();
+      const userId = auth.currentUser?.uid;
+
+      if (userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+        setIsAdmUser(true)
+      }
+
+      let q;
+
+      if (userId === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+        // Se o usuário for 'xVCyJZJSEGhd0tk7YZem4dLVI8E2', obtemos todos os clientes
+       
+        q = collection(db, 'clientes');
+      } else {
+        // Caso contrário, obtemos apenas os clientes do usuário logado
+        q = query(collection(db, 'clientes'), where('userId', '==', userId));
+      }
+
+      const querySnapshot = await getDocs(q);
+
+      const listaCli = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        cpf: doc.data().cpf,
+        nome: doc.data().nome,
+        email: doc.data().email,
+        uf: doc.data().uf,
+        fone: doc.data().fone,
+        valor: doc.data().valor,
+        data: doc.data().data,
+      }));
+
+      setQuantidadeClientes(listaCli.length);
+
+      await handleQuantidadeClientesComArquivos(listaCli);
+    } catch (error) {
+      console.error('Erro ao obter dados:', error);
+    }
+  };
+
   const Logout = () => {
     setLogado(false);
-    localStorage.removeItem("logado");
+    localStorage.removeItem('logado');
   };
-  
+
   useEffect(() => {
-    const storedClientes = localStorage.getItem('clientes');
-
-    if (storedClientes) {
-        setClientes(JSON.parse(storedClientes));
-        setQuantidadeClientes(JSON.parse(storedClientes).length);
-        setLoading(false);
-    }
-
-    handleQuantidadeClientesComArquivos();
-}, []);
-
-useEffect(() => {
-    handleQuantidadeClientesComArquivos();
-}, [clientes]); 
-
-
-useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log('ID do usuário:', user.uid);
         setLogado(true);
+
+        // Após o login, verificamos os clientes imediatamente
+        handleVerificarPagos();
       } else {
         console.log('Nenhum usuário autenticado.');
         setLogado(false);
@@ -103,26 +105,21 @@ useEffect(() => {
     });
 
     return () => unsubscribe();
-}, [auth, setLogado]);
+  }, [auth, setLogado]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light ">
       <div className="container-fluid">
         <a className="navbar-brand" href="/app/home">
-          <img
-            src="../../../img/mps.jpg"
-            width="85"
-            height="80"
-            alt=""
-          />
+          <img src="../../../img/mps.jpg" width="85" height="80" alt="" />
         </a>
-    <div className="row exibicao">
-        <h4 className="qtdClientes">
-          <i className="fa-solid fa-user user-icon"></i>Agenciados: {quantidadeClientes}
-        </h4>
-        <h4 className="qtdClientesAss">
-          <i className="fa-solid fa-file user-icon"></i>Assinados: {clientesComArquivosCount}
-        </h4>
+        <div className="row exibicao">
+          <h4 className="qtdClientes">
+            <i className="fa-solid fa-user user-icon"></i>Agenciados: {quantidadeClientes}
+          </h4>
+          <h4 className="qtdClientesAss">
+            <i className="fa-solid fa-file user-icon"></i>Assinados: {clientesComArquivosCount}
+          </h4>
         </div>
         <button
           className="navbar-toggler"
@@ -140,22 +137,36 @@ useEffect(() => {
           id="navbarNavDropdown"
         >
           <ul className="navbar-nav active">
-            <li className="nav-item ">
+          <li className="nav-item ">
               <Link to="https://app2.pontomais.com.br/login" className="nav-link text-success" aria-current="page">
                 <b><i className="fa-solid fa-clock icon-hora"></i> Ponto Mais</b>
               </Link>
             </li>
             <li className="nav-item bar"> | </li>
-            <li className="nav-item ">
-              <Link
-                onClick={handleVerificarPagos}
-                className="nav-link text-primary"
-                aria-current="page"
-              >
-                <b>Verificar Pagos</b>
-              </Link>
-            </li>
-            <li className="nav-item bar"> | </li>
+            {isAdmUser && (
+              <>
+                <li className="nav-item ">
+                  <Link to="/app/financeiromapsempresas" className="nav-link text-success" aria-current="page">
+                    <b><i className="fa-solid fa-dollar-sign"></i> Financeiro</b>
+                  </Link>
+                </li>
+                <li className="nav-item bar"> | </li>
+                <li className="nav-item ">
+                  <Link to="/app/marketingmapsempresas" className="nav-link text-primary" aria-current="page">
+                    <b><i className="fa-brands fa-google"></i> Marketing</b>
+                  </Link>
+                </li>
+                <li className="nav-item bar"> | </li>
+                <li className="nav-item ">
+                  <Link to="/app/cobrancamapsempresas" className="nav-link text" aria-current="page">
+                    <b><i className="fa-solid fa-tag"></i> Cobrança</b>
+                  </Link>
+                </li>
+                <li className="nav-item bar"> | </li>
+              </>
+            )}
+
+
             <li className="nav-item">
               <Link
                 to="/app"
@@ -163,7 +174,7 @@ useEffect(() => {
                 className="nav-link text-danger"
                 aria-current="page"
               >
-                <b>Sair</b>
+                <b><i class="fa-solid fa-right-from-bracket"></i> Sair</b>
               </Link>
             </li>
           </ul>

@@ -8,7 +8,6 @@ function Banner(){
                 <div className="col-lg-6">
                     <h1>Grupo Maps Marketing Digital.</h1>
                     <h4>Alavancando sua empresa dentro do Google Maps!</h4>
-                    <a href="/app/novaconta" className="btn btn-dark btn-lg btn-banner">Criar Conta</a>
                     <a href="/app" className="btn btn-dark btn-lg btn-banner">Entrar</a>
                 </div>
                 <div className="col-lg-6">

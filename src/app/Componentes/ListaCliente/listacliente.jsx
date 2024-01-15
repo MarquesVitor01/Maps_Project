@@ -68,7 +68,7 @@ function ListaCliente(props) {
   return (
     <table className="table table-hover table-bordered">
       <thead>
-        <tr className="table-info">
+        <tr className="table-secondary">
           <th scope="col">CNPJ/CPF</th>
           <th scope="col">Nome</th>
           <th scope="col">Email</th>
@@ -82,7 +82,7 @@ function ListaCliente(props) {
       <tbody>
         {props.arrayClientes.map((cliente) => {
           return (
-            <tr key={cliente.id}>
+            <tr key={cliente.id} className="table-light">
               <th scope="row " className="align-middle"><Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1 align-middle"></Link>{cliente.cpf}</th>
               <td className="align-middle">{cliente.nome}</td>
               <td className="align-middle">{cliente.email}</td>

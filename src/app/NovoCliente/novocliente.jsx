@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, Navigate } from 'react-router-dom';
-import Navbar3 from "../Componentes/Navbar/navbar3";
+// import Navbar3 from "../Componentes/Navbar/navbar3";
 import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import '../NovoCliente/novocliente.css'
 // import jsPDF from "jspdf";
 // import html2canvas from "html2canvas";
 import { getAuth } from 'firebase/auth';
-import axios from "axios";
+// import axios from "axios";
 import { useReactToPrint } from "react-to-print";
 import { isEmpty } from 'lodash';
 
@@ -47,52 +47,13 @@ function NovoCliente() {
         setFormState((prevState) => ({ ...prevState, [field]: value }));
     };
 
-
-    // const downloadPDF = (clienteRazao) => {
-    //     const capture = document.querySelector('.contrato');
-    //     setLoader(true);
-
-    //     html2canvas(capture, {
-    //         scale: 2,
-    //         useCORS: true, // Tente habilitar o uso de CORS
-    //         allowTaint: true, // Permitir tinta para garantir que todas as imagens sejam carregadas
-    //     }).then((canvas) => {
-    //         const imgData = canvas.toDataURL('image/png');
-
-    //         const doc = new jsPDF({
-    //             format: 'a4',
-    //             unit: 'mm',
-    //             marginLeft: 10,
-    //             marginRight: 10,
-    //             marginTop: 10,
-    //             marginBottom: 10,
-    //         });
-
-    //         const componentWidth = doc.internal.pageSize.getWidth();
-    //         const componentHeight = doc.internal.pageSize.getHeight();
-
-    //         // Redimensionando a imagem no PDF para manter a qualidade
-    //         doc.addImage(imgData, 'PNG', 10, 10, componentWidth - 20, componentHeight - 20);
-
-    //         setLoader(false);
-
-    //         // Aumentando o tamanho das informações para o dobro
-    //         const fontSize = 32; // Tamanho da fonte desejado (dobro de 16)
-    //         doc.setFontSize(fontSize);
-
-    //         // Usando o nome do cliente no nome do arquivo
-    //         const fileName = `${clienteRazao}`;
-    //         doc.save(fileName);
-    //     });
-    // };
-
     const [plano, setPlano] = useState('');
     const [data, setData] = useState('');
     const [numeroContrato, setNumeroContrato] = useState('');
     const [bairro, setBairro] = useState('');
     const [obs, setObs] = useState('');
     const [funcionamento, setFuncionamento] = useState('');
-    const [venc, setVenc] = useState('');
+    // const [venc, setVenc] = useState('');
     const [venc2, setVenc2] = useState('');
     const [valor, setValor] = useState('');
     const [cidade, setCidade] = useState('');
@@ -179,7 +140,7 @@ function NovoCliente() {
                 whats,
                 obs,
                 funcionamento,
-                venc,
+                // venc,
                 valor,
                 plano,
                 renovNao,
@@ -203,9 +164,6 @@ function NovoCliente() {
             }    
             // Adiciona o cliente ao Firestore
             const novoClienteRef = await addDoc(collection(db, 'clientes'), clienteData);
-
-            await encaminharParaGerencianet(clienteData);
-
             // Limpe os campos do formulário se o cliente for adicionado com sucesso
             setFormState({
                 nome: '',
@@ -223,7 +181,7 @@ function NovoCliente() {
                 whats: '',
                 obs: '',
                 funcionamento: '',
-                venc: '',
+                // venc: '',
                 valor: '',
                 plano: '',
                 renovNao: '',
@@ -249,32 +207,14 @@ function NovoCliente() {
         }
     }
 
-    async function encaminharParaGerencianet(clienteData) {
-        try {
-            // Substitua 'URL_GERENCIANET' pelo endpoint real do Gerencianet
-            const urlGerencianet = 'URL_GERENCIANET';
+        const contentDocument = useRef();
 
-            // Realize a chamada para criar o cliente no Gerencianet
-            const response = await axios.post(urlGerencianet, clienteData);
-
-            // Lide com a resposta do Gerencianet conforme necessário
-            console.log('Resposta do Gerencianet:', response.data);
-        } catch (error) {
-            console.error('Erro ao encaminhar para o Gerencianet:', error);
-            // Lide com o erro conforme necessário
-        }
-    }
-
-    const contentDocument = useRef();
-
-    const handlePrint = useReactToPrint({
-        content: () => contentDocument.current,
-    });
-    
-
+        const handlePrint = useReactToPrint({
+            content: () => contentDocument.current,
+        });
 
     return <div>
-        <Navbar3 />
+        {/* <Navbar3 /> */}
         <div className="background">
             <div ref={contentDocument} className="contrato container-fluid titulo-2" id="formId">
                 <div className="row">
@@ -491,13 +431,13 @@ function NovoCliente() {
                             <div>
                                 <div className="row assinatura">
                                     <div className="mb-3">
-                                        <div className="input-group">
+                                        {/* <div className="input-group">
                                             <div className="input-group-prendend">
                                                 <span className="input-group-text">Data de vencimento:</span>
                                             </div>
                                             <input onChange={(e) => setVenc(e.target.value)} id="date" type="date" />
                                             <div className="invalid-feedback feedback" >O numero do contrato é obrigatório</div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <p className="font-weight-bold">Ciente: _____________________________________________</p>
                                 </div>
