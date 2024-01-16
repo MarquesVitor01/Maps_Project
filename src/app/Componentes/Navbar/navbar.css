@@ -1,81 +1,61 @@
-.bar{
-    padding: 5px;
+.bar{  
+  padding: 5px;
 }
-
 .nav-1 b{
-    color: red;
+  color: red;
 }
-
 .qtdClientes{
-    margin-left: 50px;
+  margin-left: 50px;
 }
-
 .user-icon{
-    margin-right: 15px;
+  margin-right: 15px;
 }
-
 .icon-hora{
-    color: green;
+  color: green;
 }
-
 .qtdClientes{
-    margin-right: 20px;
+  margin-right: 20px;
 }
-
 .navbar {
-    background-color: #ffffff; /* Cor de fundo da barra de navegação */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra suave */
-  }
-  
-  .navbar-brand img {
-    max-width: 100%; /* Garante que o logotipo não ultrapasse o contêiner */
-  }
-  
-  .navbar-toggler-icon {
-    border: 2px solid #28a745; /* Cor do ícone do botão de alternância */
-  }
-  
-  .navbar-nav {
-    align-items: center; /* Alinha os itens verticalmente ao centro */
-  }
-  
-  .nav-link {
-    color: #333; /* Cor do texto do link */
-    font-weight: bold; /* Fonte em negrito */
-    margin-right: 10px; /* Adiciona espaço entre os links */
-  }
-  
-  .nav-link:hover {
-    color: #28a745; /* Cor do texto do link ao passar o mouse */
-  }
-  
-  /* Estilo para os ícones das categorias */
-  .icon-hora,
-  .fa-dollar-sign,
-  .fa-google,
-  .fa-tag,
-  .fa-right-from-bracket {
-    margin-right: 5px; /* Adiciona espaço entre o ícone e o texto */
-  }
-  
-  /* Estilo para a quantidade de clientes e clientes assinados */
-  .exibicao {
-    align-items: center; /* Alinha os itens verticalmente ao centro */
-  }
-  
-  .qtdClientes,
-  .qtdClientesAss {
-    font-weight: bold; /* Fonte em negrito */
-    margin-right: 20px; /* Adiciona espaço entre os itens */
-  }
-  
-  /* Estilo para a barra de separação entre os links */
-  .bar {
-    color: #ccc; /* Cor da barra de separação */
-    font-weight: bold; /* Fonte em negrito */
-  }
-  
-  /* Estilo para o link de logout */
-  .text-danger {
-    color: #dc3545; /* Cor do texto vermelho para o link de logout */
-  }
+  background-color: #ffffff; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.navbar-brand img {
+  max-width: 100%;
+}
+.navbar-toggler-icon {
+  border: 2px solid #28a745; 
+}
+.navbar-nav {
+  align-items: center; 
+}
+.nav-link {
+  color: #333; 
+  font-weight: bold; 
+  margin-right: 10px; 
+}
+.nav-link:hover {
+  color: #28a745; 
+}
+.icon-hora,
+.fa-dollar-sign,
+.fa-google,
+.fa-tag,
+.fa-right-from-bracket {
+  margin-right: 5px; 
+}
+.exibicao {
+  align-items: center; 
+}
+.qtdClientes,
+.qtdClientesAss {
+  font-weight: bold; 
+  margin-right: 20px; 
+}
+.bar {
+  color: #ccc; 
+  font-weight: bold; 
+}
+.text-danger {
+  color: #dc3545; 
+}

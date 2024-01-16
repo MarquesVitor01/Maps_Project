@@ -5,7 +5,6 @@ import { AuthContext } from './app/Context/auth.jsx';
 // Importar páginas
 import Site from "./Site/site1";
 import Login from "./app/Login/login1.jsx";
-import NovaConta from "./app/NovaConta/novaconta1.jsx";
 import ResetSenha from "./app/ResetSenha/resetsenha.jsx";
 import Home from "./app/Home/home.jsx";
 import NovoCliente from "./app/NovoCliente/novocliente.jsx";
@@ -32,7 +31,6 @@ function App() {
       <Routes>
         <Route path='/' element={<Site />} />
         <Route path='/app' element={<Login />} />
-        {/* <Route path='/app/novaconta' element={<NovaConta />} /> */}
         <Route path='/app/resetsenha' element={<ResetSenha />} />
         <Route element={<PrivateRoutes />}>
           <Route element={<Home />} path='/app/home' exact />

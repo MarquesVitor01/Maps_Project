@@ -1,71 +1,48 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  getDocs,
-  where,
-  query
-} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, where, query} from 'firebase/firestore';
 import { getStorage, ref, listAll } from 'firebase/storage';
 import '../Navbar/navbar.css';
 import { AuthContext } from '../../Context/auth';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
-
 function Navbar() {
   const [quantidadeClientes, setQuantidadeClientes] = useState(0);
   const [clientesComArquivosCount, setClientesComArquivosCount] = useState(0);
   const { setLogado } = useContext(AuthContext);
   const auth = getAuth();
   const navigate = useNavigate();
-  const [isAdmUser, setIsAdmUser] = useState(false); // Novo estado para verificar se o usuário tem acesso ao marketing
-
-
+  const [isAdmUser, setIsAdmUser] = useState(false);
   const handleQuantidadeClientesComArquivos = async (clientesList) => {
     try {
       const storage = getStorage();
       let clientesComArquivosCount = 0;
-
       for (const cliente of clientesList) {
         const clientePath = `arquivos/${cliente.id}`;
         const clienteRef = ref(storage, clientePath);
         const filesList = await listAll(clienteRef);
-
         if (filesList.items.length > 0) {
           clientesComArquivosCount++;
         }
       }
-
       setClientesComArquivosCount(clientesComArquivosCount);
     } catch (error) {
       console.error('Erro ao obter a quantidade de clientes com arquivos:', error);
     }
   };
-
   const handleVerificarPagos = async () => {
     try {
       const db = getFirestore();
       const userId = auth.currentUser?.uid;
-
       if (userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
         setIsAdmUser(true)
       }
-
       let q;
-
       if (userId === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
-        // Se o usuário for 'xVCyJZJSEGhd0tk7YZem4dLVI8E2', obtemos todos os clientes
-       
         q = collection(db, 'clientes');
       } else {
-        // Caso contrário, obtemos apenas os clientes do usuário logado
         q = query(collection(db, 'clientes'), where('userId', '==', userId));
       }
-
       const querySnapshot = await getDocs(q);
-
       const listaCli = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         cpf: doc.data().cpf,
@@ -76,37 +53,29 @@ function Navbar() {
         valor: doc.data().valor,
         data: doc.data().data,
       }));
-
       setQuantidadeClientes(listaCli.length);
-
       await handleQuantidadeClientesComArquivos(listaCli);
     } catch (error) {
       console.error('Erro ao obter dados:', error);
     }
   };
-
   const Logout = () => {
     setLogado(false);
     localStorage.removeItem('logado');
   };
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log('ID do usuário:', user.uid);
         setLogado(true);
-
-        // Após o login, verificamos os clientes imediatamente
         handleVerificarPagos();
       } else {
         console.log('Nenhum usuário autenticado.');
         setLogado(false);
       }
     });
-
     return () => unsubscribe();
   }, [auth, setLogado]);
-
   return (
     <nav className="navbar navbar-expand-lg navbar-light ">
       <div className="container-fluid">
@@ -165,8 +134,6 @@ function Navbar() {
                 <li className="nav-item bar"> | </li>
               </>
             )}
-
-
             <li className="nav-item">
               <Link
                 to="/app"
@@ -183,5 +150,4 @@ function Navbar() {
     </nav>
   );
 }
-
 export default Navbar;

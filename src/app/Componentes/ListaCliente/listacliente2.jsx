@@ -4,26 +4,21 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from 'sweetalert2';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
-
 function ListaCliente2(props) {
   const [pagoStatus, setPagoStatus] = useState(() => {
     const storedStatus = localStorage.getItem('pagoStatus');
     return storedStatus ? JSON.parse(storedStatus) : {};
   });
-
   const [paymentDates, setPaymentDates] = useState(() => {
     const storedDates = localStorage.getItem('paymentDates');
     return storedDates ? JSON.parse(storedDates) : {};
   });
-
   useEffect(() => {
     const fetchPagoStatus = async () => {
       const db = getFirestore();
-
       for (const cliente of props.arrayClientes) {
         const clienteRef = doc(db, 'clientes', cliente.id);
         const clienteDoc = await getDoc(clienteRef);
-
         if (clienteDoc.exists()) {
           const data = clienteDoc.data();
           setPagoStatus((prevStatus) => ({
@@ -33,14 +28,11 @@ function ListaCliente2(props) {
         }
       }
     };
-
     fetchPagoStatus();
   }, [props.arrayClientes]);
-
   const handlePagoChange = async (clienteId, newValue) => {
     const currentDate = new Date().toISOString();
     const newData = newValue ? { pago: true, dataPagamento: currentDate } : { pago: false, dataPagamento: null };
-
     Swal.fire({
       title: 'Confirmação',
       text: `O valor em aberto ${newValue ? 'está pago' : 'não está pago'}? Clique aqui para ${newValue ? 'marcar' : 'desmarcar'}!`,
@@ -52,25 +44,19 @@ function ListaCliente2(props) {
       if (result.isConfirmed) {
         setPagoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: newValue }));
         setPaymentDates((prevDates) => ({ ...prevDates, [clienteId]: currentDate }));
-
         const db = getFirestore();
         const clienteRef = doc(db, 'clientes', clienteId);
         await updateDoc(clienteRef, newData);
-
-        // Save the payment dates to localStorage
         localStorage.setItem('paymentDates', JSON.stringify({ ...paymentDates, [clienteId]: currentDate }));
-
         console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
       } else {
         setPagoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: false }));
         setPaymentDates((prevDates) => ({ ...prevDates, [clienteId]: null }));
         localStorage.setItem('paymentDates', JSON.stringify({ ...paymentDates, [clienteId]: null }));
-
         console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
       }
     });
   };
-
   return (
     <table className="table table-hover table-bordered">
       <thead>
@@ -90,12 +76,9 @@ function ListaCliente2(props) {
         {props.arrayClientes.map((cliente) => {
           const isPago = pagoStatus[cliente.id] || false;
           const paymentDate = paymentDates[cliente.id] || null;
-
-          // Se exibirPagos for verdadeiro e o cliente não estiver pago, pula para o próximo cliente
           if (props.exibirPagos && !isPago) {
             return null;
           }
-
           return (
             <tr key={cliente.id} className="table-light">
               <th scope="row">
@@ -121,7 +104,6 @@ function ListaCliente2(props) {
                     selected={paymentDate ? new Date(paymentDate) : null}
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => {
-                      // Handle the date change (if needed)
                     }}
                     readOnly
                   />
@@ -134,5 +116,4 @@ function ListaCliente2(props) {
     </table>
   );
 }
-
 export default ListaCliente2;

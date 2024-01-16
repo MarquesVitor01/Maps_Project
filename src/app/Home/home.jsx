@@ -8,7 +8,6 @@ import { collection, getFirestore, getDocs, doc, deleteDoc, query, where } from 
 import 'firebase/firestore';
 import SweetAlert from "react-bootstrap-sweetalert";
 import clientesPDF from "../Reports/Clientes/clientes";
-
 const ScriptModal = ({ onClose }) => {
     return (
         <div className="script-modal over">
@@ -47,9 +46,6 @@ const ScriptModal = ({ onClose }) => {
         </div>
     );
 };
-
-
-
 function Home() {
     const [clientes, setClientes] = useState([]);
     const [busca, setBusca] = useState('');
@@ -61,16 +57,11 @@ function Home() {
     const [error, setError] = useState(null);
     const [quantidadeClientes, setQuantidadeClientes] = useState(0);
     const [arquivosSelecionados, setArquivosSelecionados] = useState({})
-
     const auth = getAuth();
     const user = auth.currentUser;
-   
-    
     const deleteUser = (id) => {
         const db = getFirestore();
         const clienteDocRef = doc(db, 'clientes', id);
-    
-        // Verifica se o usuário atual tem permissão
         if (user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
             deleteDoc(clienteDocRef)
                 .then(() => {
@@ -83,57 +74,44 @@ function Home() {
                     setError(erro);
                 });
         } else {
-            // Lógica para lidar com a falta de permissão
             console.error('Usuário não tem permissão para excluir clientes.');
             setError('Você não tem permissão para excluir clientes.');
             alert('Você não tem permissão para excluir clientes.')
-            setConfirmacao(false); // Certifique-se de que o modal de confirmação também está fechado
+            setConfirmacao(false); 
         }
     };
-    
     useEffect(() => {
-        // Redirecionar para a página inicial após um curto intervalo
         if (error) {
             const timeout = setTimeout(() => {
-                setError(null); // Limpar a mensagem de erro
-                <Navigate to='/app/home'></Navigate> // Substitua 'history.push' pela forma que você está usando para navegar entre as páginas
-            }, 3000); // Tempo em milissegundos (por exemplo, 3000ms = 3 segundos)
-            
-            // Limpar o timeout se o componente for desmontado
+                setError(null); 
+                <Navigate to='/app/home'></Navigate> 
+            }, 3000); 
             return () => clearTimeout(timeout);
         }
     }, [error]);
-
     const confirmDeleteUser = (id) => {
         setConfirmacaoId(id);
         setConfirmacao(true);
     };
-
     useEffect(() => {
         const storedClientes = localStorage.getItem('clientes');
-
         if (storedClientes) {
             setClientes(JSON.parse(storedClientes));
             setQuantidadeClientes(JSON.parse(storedClientes).length);
             setLoading(false);
         }
-
         const fetchData = async () => {
             try {
               const db = getFirestore();
               let q;
-        
               if (user && user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || user && user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
                 q = query(collection(db, 'clientes'));
               } else if (user) {
                 q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
               }
-        
               if (q) {
-                const querySnapshot = await getDocs(q);
-        
-                const listaCli = [];
-        
+                const querySnapshot = await getDocs(q);      
+                const listaCli = [];     
                 querySnapshot.forEach((doc) => {
                   if (
                     doc.data().nome.indexOf(busca) >= 0 ||
@@ -152,11 +130,9 @@ function Home() {
                     });
                   }
                 });
-        
                 setClientes(listaCli);
                 setQuantidadeClientes(listaCli.length);
                 setLoading(false);
-        
                 localStorage.setItem('clientes', JSON.stringify(listaCli));
               }
             } catch (error) {
@@ -164,33 +140,25 @@ function Home() {
               setError(error);
             }
           };
-
         if (user) {
             fetchData();
         }
     }, [busca, excluido, user]);
-
     useEffect(() => {
         const storedClientes = localStorage.getItem('clientes');
-
         if (storedClientes) {
             setClientes(JSON.parse(storedClientes));
             setQuantidadeClientes(JSON.parse(storedClientes).length);
             setLoading(false);
         }
     }, []);
-
     const [isScriptModalVisible, setScriptModalVisible] = useState(false);
-
     const handleMostrarScript = () => {
         setScriptModalVisible(true);
     };
-
     const handleFecharScriptModal = () => {
         setScriptModalVisible(false);
     };
-
-
     return (
         <div>
             <Navbar />
@@ -208,7 +176,6 @@ function Home() {
                             <button onClick={handleMostrarScript} className="btn btn-cli" type="button" id="button-addon2">
                                 <i className="fa-solid fa-scroll"></i> Script
                             </button>
-
                             {isScriptModalVisible && (
                                 <ScriptModal onClose={handleFecharScriptModal} />
                             )}
@@ -221,7 +188,6 @@ function Home() {
                                 </button>
                             </div>
                         </div>
-
                     </div>
                     <ListaCliente arrayClientes={clientes} clickDelete={confirmDeleteUser} />
                     {confirmacao ?
@@ -245,5 +211,4 @@ function Home() {
         </div>
     );
 }
-
 export default Home;

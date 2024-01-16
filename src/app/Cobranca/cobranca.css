@@ -13,22 +13,19 @@
 }
 
 .background8 {
-    background: linear-gradient(to right, #fbff00, #35dd0b); /* Degrade de um lado para o outro */
-    padding: 20px; /* Adiciona espaço interno */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    position: relative; /* Permite posicionar as bolas de tinta em relação a este elemento */
-    overflow: hidden; /* Garante que as bolas de tinta não ultrapassem o contêiner */
-    font-size: small;
+    background: linear-gradient(to right, #fbff00, #35dd0b); 
+    padding: 20px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+    position: relative; 
+    overflow: hidden; 
   }
   
   .background8::before {
-    content: '';
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url(''); /* Substitua pelo caminho da sua imagem de bola de tinta */
-    background-repeat: repeat; /* Repete a imagem para cobrir todo o contêiner */
-    opacity: 0.1; /* Opacidade da bola de tinta */
-    z-index: -1; /* Coloca a bola de tinta atrás do conteúdo */
+    background-repeat: repeat; 
+    opacity: 0.1; 
+    z-index: -1;
   }
   

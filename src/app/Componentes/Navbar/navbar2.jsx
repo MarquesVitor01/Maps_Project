@@ -3,23 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../Navbar/navbar.css';
 import { AuthContext } from '../../Context/auth';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
-
+import { getFirestore} from 'firebase/firestore';
 function Navbar2() {
   const { setLogado } = useContext(AuthContext);
   const [isAdmUser, setIsAdmUser] = useState(false);
   const auth = getAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const db = getFirestore();
           const userId = user.uid;
-
           let q;
-
           if (userId === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
             setIsAdmUser(true);
           } else {
@@ -30,15 +26,12 @@ function Navbar2() {
         }
       }
     });
-
     return () => unsubscribe();
   }, [auth]);
-
   function Logout() {
     setLogado(false);
     localStorage.removeItem('logado');
   }
-
   return (
     <nav className="navbar navbar-expand-lg navbar-light">
       <div className="container-fluid">
@@ -76,5 +69,4 @@ function Navbar2() {
     </nav>
   );
 }
-
 export default Navbar2;

@@ -9,29 +9,24 @@
     padding: 10px;
     margin: auto;
 }
-
 .formulario1{
  padding-top: 5px;
 }
-
 .form-signin input[type="email"]{
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-
 .form-signin input[type="password"]{
     margin-bottom: 10px;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
 }
-
 .login-links a{
     text-decoration: none;
     font-size: 10pt;
     
 }
-
 .icon{
     margin: 0 auto;
     padding: 0;

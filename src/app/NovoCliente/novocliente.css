@@ -1,46 +1,54 @@
 body {
-  overflow-x: hidden; /* Oculta a barra de rolagem vertical */
+    overflow-x: hidden;
+    /* Oculta a barra de rolagem vertical */
 }
 
-.novocliente{
+.novocliente {
     font-size: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     text-align: center;
 }
 
-.background{
+.renovacao {
+    margin-top: 20px;
+}
+
+.background {
     border-top: 2px solid rgb(100, 29, 29);
     border-bottom: 2px solid rgb(100, 29, 29);
     background-image: url(https://omnisinal.pt/files/23/2377.jpg);
 }
 
-.logo-maps2{
+.logo-maps2 {
     position: absolute;
     margin-top: 40px;
     margin-right: 640px;
 }
 
-.titulo-2{
+.titulo-2 {
     background-color: #fff;
     width: 850px;
     margin-top: 15px;
     border: 5px solid black;
 }
 
-.feedback{
+.feedback {
     width: 100%;
 }
 
-.formulario{
+.formulario {
     display: flex;
     justify-content: center;
     padding: 10px;
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
-.atualizacao{
+.import {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.atualizacao {
     display: flex;
     justify-content: center;
 }
@@ -50,47 +58,59 @@ body {
     display: flex;
 }
 
-.titulo-2 img{
+.titulo-2 img {
     justify-content: center;
     display: flex;
     height: 150px;
 }
 
-.valores{
+.valores {
     display: flex;
     justify-content: center;
     padding: 5px;
 }
 
-.val{
+.val {
     position: absolute;
     left: 0;
     margin-top: 240px;
 }
 
-.salvar{
+.salvar {
     display: flex;
     justify-content: center;
     padding: 12px;
     margin-bottom: 5px;
 }
 
-.btn-acao{
+.btn-acao {
     margin: 20px 20px 0px 20px;
     min-width: 100px;
 }
 
-.btn-cli{
-    margin-left: 5px ;
+.btn-cli {
+    margin-left: 5px;
 }
 
 .logo-maps {
-    background-color: aliceblue;
+    margin-top: 10px;
+    font-size: 30px;
     height: 160px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: inline-block;
+}
+
+.logo-maps img {
+    border-radius: 50%;
+    position: absolute;
+    margin-left: 380px;
+    height: 80px;
+    width: 80px;
 }
 
 .autorizacao {
-    border-left: 5px solid black;
     width: 495px;
     height: 96px;
     align-items: center;
@@ -99,78 +119,69 @@ body {
     text-align: center;
 }
 
-.numero-contrato{
-    border-left: 5px solid black;
-    margin-top: -70px;
-    height: 100px;
+.numero-contrato {
     width: 180px;
 }
 
-.numero-contrato span{
-    justify-content: center;
-    display: flex;
-}
-
+/* 
 .numero-contrato input{
 margin-top: 25px;
-}
-
-.numero-contrato input {
+} */
+/* .numero-contrato input {
     box-shadow: 0 0 0 0;
     border: 0 none;
-    outline: 0;
-  }
+    outline: 0; 
+}
 .numero-contrato input:focus {
     box-shadow: 0 0 0 0;
     border: 0 none;
     outline: 0;
-  }
-
-.inicio{
+} */
+/* .inicio{
     display: flex;
     justify-content: center;
     align-items: center;
-
-}
-
-.representante{
-    border: 5px solid black;
-    margin-top: 36px;
-    margin-left: -5px;
-    height: 75px;
-    width: 500px;
-}
-
-.representante input {
+} */
+/* .representante input {
     box-shadow: 0 0 0 0;
     border: 0 none;
     outline: 0;
-  }
+}
 .representante input:focus {
     box-shadow: 0 0 0 0;
     border: 0 none;
     outline: 0;
+} */
+.termo {
+    display: inline-block;
+    text-align: center;
+    margin-left: 220px;
 }
+
 .equipe {
-border-top: 5px solid black;
-border-bottom: 5px solid black;
-margin-top: 5px;
-height: 75px;
-margin-left: -5px;
-width: 200px;
-}
-
-.data{
-    border-left: 5px solid black;
+    border-top: 5px solid black;
     border-bottom: 5px solid black;
+    margin-top: 5px;
+    height: 75px;
+    margin-left: -5px;
     width: 200px;
-    margin-top: 20px;
-    height: 70px;
 }
 
-.cond{
-    padding: 2px;
+.acessoria {
+    justify-content: space-around;
+
+}
+
+.frase {
+    padding: 5px;
+}
+
+.cond {
+    margin-top: 10px;
+    padding: 10px;
     border: 5px solid black;
+    text-align: center;
+
 }
 
 .informacoes-comerciais {
@@ -181,61 +192,51 @@ width: 200px;
     height: 68px;
 }
 
-.plano {
-    text-align: center;
-    margin-left: -15px;
-    width: 150px;
-    margin-top: 4px;
-    border-bottom: 5px solid black;
-    border-top: 5px solid black;
-    height: 72px;
-}
-
-
-.servicos{
+.servicos {
+    margin-top: 5px;
     background-color: rgb(81, 81, 207);
     border-radius: 5%;
     height: 40px;
     text-align: center;
 }
 
-.servicos2{
+.servicos2 {
     background-color: rgb(81, 81, 207);
     border-radius: 5%;
-    height: 205px;
+    height: 30px;
     text-align: center;
 }
 
-.termos-uso{
+.termos-uso {
     padding: 4px;
 }
 
-.direitos{
+.direitos {
     padding: 5px;
     text-align: center;
 }
 
-.assinatura{
+.assinatura {
     justify-content: center;
     display: flex;
 }
 
-.assinatura p{
+.assinatura p {
     padding: 10px;
 }
 
-.fa{
+.fa {
     padding: 10px;
     height: 20px;
 }
 
-.icones{
+.icones {
     justify-content: center;
     display: flex;
     list-style: none;
 }
 
-.ass{
+.ass {
     display: flex;
     justify-content: center;
 }
@@ -244,15 +245,15 @@ width: 200px;
     margin-left: 0px;
 }
 
-.info-exta{
+.info-exta {
     margin-left: 250px;
 }
 
-.dta{
-    margin-left: 110px ;    
+.dta {
+    margin-left: 110px;
 }
 
-.ass2{
+.ass2 {
     margin-top: 12px;
     margin-left: 80px;
 }

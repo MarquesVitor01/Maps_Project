@@ -1,42 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate } from 'react-router-dom';
 import Navbar4 from "../Componentes/Navbar/navbar4";
 import ListaClienteMarketing from "../Componentes/ListaCliente/listaclientemarketing";
 import '../HomeMarketing/homemarketing.css'
 import { getAuth } from 'firebase/auth';
-import { collection, getFirestore, getDocs, doc, deleteDoc, query, where } from 'firebase/firestore';
+import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
 import 'firebase/firestore';
-
 function HomeMarketing() {
     const [clientes, setClientes] = useState([]);
     const [busca, setBusca] = useState('');
     const [texto, setTexto] = useState('');
-    const [confirmacao, setConfirmacao] = useState(false);
-    const [confirmacaoId, setConfirmacaoId] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [quantidadeClientes, setQuantidadeClientes] = useState(0);
     const [showConcluidos, setShowConcluidos] = useState(false);
-  
     const auth = getAuth();
     const user = auth.currentUser;
-  
     useEffect(() => {
       const fetchData = async () => {
         try {
           const db = getFirestore();
           let q;
-  
           if (showConcluidos) {
             q = query(collection(db, 'clientes'), where('concluido', '==', true));
           } else {
             q = query(collection(db, 'clientes'));
           }
-  
           const querySnapshot = await getDocs(q);
-  
           const listaCli = [];
-  
           querySnapshot.forEach((doc) => {
             if (doc.data().nome.indexOf(busca) >= 0 || doc.data().email.indexOf(busca) >= 0 || doc.data().cpf.indexOf(busca) >= 0) {
               listaCli.push({
@@ -51,23 +41,19 @@ function HomeMarketing() {
               });
             }
           });
-  
           setClientes(listaCli);
           setQuantidadeClientes(listaCli.length);
           setLoading(false);
-  
           localStorage.setItem('clientes', JSON.stringify(listaCli));
         } catch (error) {
           console.error('Erro ao obter dados:', error);
           setError(error);
         }
       };
-  
       if (user) {
         fetchData();
       }
     }, [busca, showConcluidos, user]);
-
     useEffect(() => {
         const storedClientes = localStorage.getItem('clientes');
 
@@ -77,11 +63,9 @@ function HomeMarketing() {
             setLoading(false);
         }
     }, []);
-
     const handleShowConcluidos = () => {
         setShowConcluidos(!showConcluidos);
     };
-
     return (
         <div>
             <Navbar4 />
@@ -124,5 +108,4 @@ function HomeMarketing() {
         </div>
     );
 }
-
 export default HomeMarketing;

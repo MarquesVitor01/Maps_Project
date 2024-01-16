@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { Link } from "react-router-dom";
 import "./listaclientemarketing.css";
-
 function ListaClienteMarketing(props) {
   const ScriptModal = ({ onClose, clientId, onCheckAll }) => {
     const [checkboxes, setCheckboxes] = useState(() => {
@@ -18,7 +17,6 @@ function ListaClienteMarketing(props) {
             checkbox4: false,
           };
     });
-  
     const handleCheckboxChange = (checkboxName) => {
       setCheckboxes((prevCheckboxes) => {
         const newCheckboxes = {
@@ -32,29 +30,21 @@ function ListaClienteMarketing(props) {
         return newCheckboxes;
       });
     };
-
     const updateFirestoreDocument = (clientId, data) => {
       const db = getFirestore();
       const docRef = doc(db, 'clientes', clientId);
-    
       return updateDoc(docRef, data);
     };
-  
     const handleSalvar = () => {
       localStorage.setItem(
         `savedCheckboxes_${clientId}`,
         JSON.stringify(checkboxes)
       );
-  
       const concluido = areAllCheckboxesChecked();
-      // Save "concluido" value to Firestore document
-      // Assuming you have a function to update the Firestore document
-      updateFirestoreDocument(clientId, { concluido });
-  
+      updateFirestoreDocument(clientId, { concluido }); 
       onCheckAll(clientId, concluido);
       onClose();
     };
-  
     const areAllCheckboxesChecked = () =>
       Object.values(checkboxes).every(Boolean);
     return (
@@ -110,28 +100,23 @@ function ListaClienteMarketing(props) {
       </div>
     );
   };
-
   const [isScriptModalVisible, setScriptModalVisible] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [allCheckboxesChecked, setAllCheckboxesChecked] = useState(() => {
     const savedStates = localStorage.getItem("allCheckboxesChecked");
     return savedStates ? JSON.parse(savedStates) : {};
   });
-
   const handleMostrarScript = (clientId) => {
     setSelectedClientId(clientId);
     setScriptModalVisible(true);
   };
-
   const handleFecharScriptModal = () => {
     setSelectedClientId(null);
     setScriptModalVisible(false);
   };
-
   const handleCheckAll = (clientId, checked) => {
     setAllCheckboxesChecked((prev) => ({ ...prev, [clientId]: checked }));
   };
-
   useEffect(() => {
     localStorage.setItem("allCheckboxesChecked", JSON.stringify(allCheckboxesChecked));
   }, [allCheckboxesChecked]);
@@ -189,5 +174,4 @@ function ListaClienteMarketing(props) {
     </table>
   );
 }
-
 export default ListaClienteMarketing;

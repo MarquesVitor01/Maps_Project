@@ -1,9 +1,7 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
-
 function clientesPDF2(clientes){
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
     const reportTitle =[
         {
             text: 'Situação dos clientes',
@@ -24,7 +22,6 @@ function clientesPDF2(clientes){
             {text: 'Sim', FontSize: 3,  margin: [0, 2, 0, 2]},
         ]
     })
-
     const details =[
         {
             table: {
@@ -46,7 +43,6 @@ function clientesPDF2(clientes){
             layout: 'ligthHorizontalLines'
         }
     ];
-
     function Rodape(currentPage, pageCount){
         return [
             {
@@ -57,7 +53,6 @@ function clientesPDF2(clientes){
             }
         ]
     }
-
     const docDefinitions = {
         pagesSize: 'A4',
         pagesMargins: [15, 50, 15, 40],
@@ -66,8 +61,6 @@ function clientesPDF2(clientes){
         content: [details],
         footer: Rodape
     }
-
     pdfMake.createPdf(docDefinitions).download();
 }
-
 export default clientesPDF2;

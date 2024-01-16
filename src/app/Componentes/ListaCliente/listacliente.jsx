@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './listacliente.css';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-
 function ListaCliente(props) {
   const [selectedFiles, setSelectedFiles] = useState({});
   const [filesInfo, setFilesInfo] = useState({});
-
   const handleFileSelect = (clientId, event) => {
     console.log('Arquivo selecionado para cliente', clientId, ':', event.target.files);
     const files = event.target.files;
@@ -15,7 +13,6 @@ function ListaCliente(props) {
       [clientId]: files,
     }));
   };
-
   const renderFileIndicator = (clientId) => {
     const fileInfo = filesInfo[clientId];
     if (fileInfo && fileInfo.length > 0) {
@@ -28,30 +25,23 @@ function ListaCliente(props) {
       return <span className="text-muted">Sem Arquivos Armazenados</span>;
     }
   };
-
   useEffect(() => {
     const storedFilesInfo = localStorage.getItem('filesInfo');
     if (storedFilesInfo) {
       setFilesInfo(JSON.parse(storedFilesInfo));
     }
   }, []);
-
   const handleArmazenarArquivos = async (clientId) => {
     try {
       const storage = getStorage();
       const files = selectedFiles[clientId];
-
       if (files && files.length > 0) {
         const storageRef = ref(storage, `arquivos/${clientId}/${files[0].name}`);
         await uploadBytes(storageRef, files[0]);
-
         const downloadURL = await getDownloadURL(storageRef);
-
         const newFilesInfo = { ...filesInfo, [clientId]: [{ name: files[0].name, url: downloadURL }] };
         setFilesInfo(newFilesInfo);
-
         localStorage.setItem('filesInfo', JSON.stringify(newFilesInfo));
-
         setSelectedFiles({});
       } else {
         console.error('Nenhum arquivo selecionado para upload.');
@@ -60,11 +50,9 @@ function ListaCliente(props) {
       console.error('Erro ao armazenar o arquivo:', error);
     }
   };
-
   const handleClick = (clientId) => {
-    handleArmazenarArquivos(clientId); // Chamada correta da função
+    handleArmazenarArquivos(clientId); 
   };
-
   return (
     <table className="table table-hover table-bordered">
       <thead>
@@ -114,5 +102,4 @@ function ListaCliente(props) {
     </table>
   );
 }
-
 export default ListaCliente;

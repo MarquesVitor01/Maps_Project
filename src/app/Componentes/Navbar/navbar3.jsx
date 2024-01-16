@@ -4,7 +4,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, query, getDocs, where } from 'firebase/firestore';
 import '../Navbar/navbar.css';
 import { AuthContext } from '../../Context/auth';
-
 function Navbar3() {
     const [clientes, setClientes] = useState([]);
     const [quantidadeClientes, setQuantidadeClientes] = useState(0);
@@ -12,15 +11,12 @@ function Navbar3() {
     const { setLogado } = useContext(AuthContext);
     const auth = getAuth();
     const navigate = useNavigate();
-
     const handleVerificarPagos = async () => {
         try {
             const db = getFirestore();
             const q = query(collection(db, 'clientes'), where('userId', '==', auth.currentUser.uid));
             const querySnapshot = await getDocs(q);
-    
             const listaCli = [];
-    
             querySnapshot.forEach((doc) => {
                 listaCli.push({
                     id: doc.id,
@@ -33,12 +29,9 @@ function Navbar3() {
                     data: doc.data().data
                 });
             });
-    
             setClientes(listaCli);
             setQuantidadeClientes(listaCli.length);
             setLoading(false);
-    
-            // Allow access to "Verificar Pagos" for all users
             console.log('Usuário autorizado para verificar pagos.');
             navigate('/app/home/pagos');
         } catch (error) {
@@ -49,7 +42,6 @@ function Navbar3() {
         setLogado(false);
         localStorage.removeItem("logado");
     };
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -60,21 +52,16 @@ function Navbar3() {
                 setLogado(false);
             }
         });
-
         return () => unsubscribe();
     }, [auth, setLogado]);
-
     useEffect(() => {
-        // Recuperar os clientes do localStorage ao carregar a página
         const storedClientes = localStorage.getItem('clientes');
-
         if (storedClientes) {
             setClientes(JSON.parse(storedClientes));
             setQuantidadeClientes(JSON.parse(storedClientes).length);
             setLoading(false);
         }
     }, []);
-
     return <nav className="navbar navbar-expand-lg navbar-light navbar-3">
         <div className="container-fluid">
             <a className="navbar-brand" href="/app/home">
@@ -97,6 +84,5 @@ function Navbar3() {
             </div>
         </div>
     </nav>
-
 }
 export default Navbar3;

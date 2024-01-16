@@ -3,15 +3,11 @@
   import ListaCliente2 from "../Componentes/ListaCliente/listacliente2";
   import '../Pagos/pagos.css';
   import Dashboard from "../Graficos/graficos";
-  import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
+  import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
   import 'firebase/firestore';
   import { getAuth } from 'firebase/auth';
-  import { Doughnut } from 'react-chartjs-2'; // Importa o componente de gráfico de pizza
-  import 'chart.js/auto'; // Import the Chart.js CSS
-
-  // import GraficoPagos from "../Graficos/graficos";
-
-  function Pagos() {
+  import 'chart.js/auto'; 
+function Pagos() {
     const [clientes, setClientes] = useState([]);
     const [busca, setBusca] = useState('');
     const [texto, setTexto] = useState('');
@@ -19,22 +15,17 @@
     const [exibirPagos, setExibirPagos] = useState(false);
     const [totalValor, setTotalValor] = useState(0);
     const [error, setError] = useState(null);
-
     const auth = getAuth();
     const user = auth.currentUser;
-
     useEffect(() => {
       const fetchData = async () => {
         try {
           const auth = getAuth();
           const user = auth.currentUser;
-
             const db = getFirestore();
             const clientesRef = collection(db, 'clientes');
             const q = query(clientesRef);
-
             const snapshot = await getDocs(q);
-
             const listaCli = snapshot.docs.map(doc => ({
               id: doc.id,
               cpf: doc.data().cpf,
@@ -46,70 +37,48 @@
               venc2: doc.data().venc2,
               pago: doc.data().pago || false,
             }));
-
             setClientes(listaCli);
             setLoading(false);
-
             const totalValor = listaCli.reduce((total, cliente) => total + cliente.valor, 0);
             setTotalValor(totalValor);
-            // Armazenar os clientes localmente
             localStorage.setItem('clientes', JSON.stringify(listaCli));
         } catch (error) {
           console.error('Erro ao obter dados:', error);
-          // Lide com o erro de alguma forma apropriada
         }
       };
-
       fetchData();
     }, [busca]);
-
     useEffect(() => {
-      // Recuperar os clientes do localStorage ao carregar a página
       const storedClientes = localStorage.getItem('clientes');
-
       if (storedClientes) {
         setClientes(JSON.parse(storedClientes));
         setLoading(false);
       }
-    }, []); // Executar apenas uma vez ao carregar a página
-
-    
+    }, []); 
     useEffect(() => {
       setShowDashboard(false);
     }, []);
-
     const handleExibirPagos = () => {
       setExibirPagos(!exibirPagos);
     };
-
-
     const [showDashboard, setShowDashboard] = useState(false);
-
     const handleShowDashboard = () => {
       setShowDashboard(!showDashboard);
     };
-
-
     useEffect(() => {
       const storedClientes = localStorage.getItem('clientes');
-
       if (storedClientes) {
           setClientes(JSON.parse(storedClientes));
           setLoading(false);
       }
-
       const fetchData = async () => {
           try {
             const db = getFirestore();
             let q;
               q = query(collection(db, 'clientes'));
-
-    
             if (q) {
               const querySnapshot = await getDocs(q);
-      
               const listaCli = [];
-      
               querySnapshot.forEach((doc) => {
                 if (
                   doc.data().nome.indexOf(busca) >= 0 ||
@@ -124,15 +93,12 @@
                     uf: doc.data().uf,
                     fone: doc.data().fone,
                     valor: doc.data().valor,
-                    data: doc.data().data,
-                    
+                    data: doc.data().data,   
                   });
                 }
               });
-      
               setClientes(listaCli);
               setLoading(false);
-      
               localStorage.setItem('clientes', JSON.stringify(listaCli));
             }
           } catch (error) {
@@ -140,12 +106,10 @@
             setError(error);
           }
         };
-
       if (user) {
           fetchData();
       }
   }, [busca]);
- 
     return (
       <div>
         <Navbar2 />
@@ -170,7 +134,6 @@
               </div>
             </div>
           </div>
-
           <div>
         </div>
         {showDashboard ? (
@@ -185,6 +148,4 @@
     </div>
   );
 }
-  
-  
   export default Pagos;

@@ -1,28 +1,21 @@
 .icone-acao1{
-    margin-right: 15px;
+  margin-right: 15px;
 }
-
 .icone-acao{
-    margin-left: 5px;
-    margin-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
-
 .red{
-    color: rgb(151, 10, 10);
+  color: rgb(151, 10, 10);
 }
-
 .col-acao{
-    width: 80px;
+  width: 80px;
 }
-
-
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
-
-/* Estilize o cabeçalho da tabela */
 .table th {
   text-align: left;
   padding: 10px;

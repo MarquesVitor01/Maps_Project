@@ -4,7 +4,6 @@ import ListaCliente3 from "../Componentes/ListaCliente/listacliente3";
 import '../Cobranca/cobranca.css';
 import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-
 function Cobranca() {
   const [clientes, setClientes] = useState([]);
   const [busca, setBusca] = useState('');
@@ -12,19 +11,15 @@ function Cobranca() {
   const [exibirPagos, setExibirPagos] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const auth = getAuth();
   const user = auth.currentUser;
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const db = getFirestore();
         const clientesRef = collection(db, 'clientes');
         const q = query(clientesRef);
-
         const snapshot = await getDocs(q);
-
         const listaCli = snapshot.docs.map(doc => ({
           id: doc.id,
           cpf: doc.data().cpf,
@@ -36,31 +31,23 @@ function Cobranca() {
           venc2: doc.data().venc2,
           pago: doc.data().pago || false,
         }));
-
-        // Filter clients based on the pago property
         const filteredClientes = listaCli.filter(cliente => !cliente.pago);
-
         setClientes(filteredClientes);
         setLoading(false);
-
         localStorage.setItem('clientes', JSON.stringify(filteredClientes));
       } catch (error) {
         console.error('Erro ao obter dados:', error);
         setError(error);
       }
     };
-
     fetchData();
-  }, []); // Run once on component mount
-
+  }, []);
   const handleExibirPagos = () => {
     setExibirPagos(!exibirPagos);
   };
-
   const handleSearch = () => {
     setBusca(texto);
   };
-
   return (
     <div>
       <Navbar2 />
@@ -77,12 +64,10 @@ function Cobranca() {
             </div>
           </div>
         </div>
-
         <ListaCliente3 arrayClientes={clientes} exibirPagos={exibirPagos} />
       </div>
     </div>
     </div>
   );
 }
-
 export default Cobranca;
