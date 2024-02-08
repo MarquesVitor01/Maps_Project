@@ -16,7 +16,7 @@ function Navbar2() {
           const db = getFirestore();
           const userId = user.uid;
           let q;
-          if (userId === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+          if ((userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') ||  (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') ) {
             setIsAdmUser(true);
           } else {
             setIsAdmUser(false);

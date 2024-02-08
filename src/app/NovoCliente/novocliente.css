@@ -1,81 +1,41 @@
-body {
-    overflow-x: hidden;
-    /* Oculta a barra de rolagem vertical */
-}
-
-.novocliente {
-    font-size: 15px;
-    text-align: center;
-}
-
-.renovacao {
-    margin-top: 20px;
-}
-
 .background {
     border-top: 2px solid rgb(100, 29, 29);
     border-bottom: 2px solid rgb(100, 29, 29);
-    background-image: url(https://omnisinal.pt/files/23/2377.jpg);
+    background: linear-gradient(to right, #366894, #b44248);
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
 }
 
-.logo-maps2 {
-    position: absolute;
-    margin-top: 40px;
-    margin-right: 640px;
+body {
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .titulo-2 {
-    background-color: #fff;
-    width: 850px;
+    background-color: white;
+    width: 1050px;
     margin-top: 15px;
     border: 5px solid black;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.feedback {
-    width: 100%;
-}
 
-.formulario {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    margin-top: 10px;
-}
 
-.import {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
+.texto-cima h1 {
+    text-align: center;
+    display: inline-block;
+    font-size: x-large;
 }
-
-.atualizacao {
-    display: flex;
-    justify-content: center;
+.escolha-select{
+    margin-top: -4px;
+    padding: 2px;
 }
-
-.icon {
-    justify-content: center;
-    display: flex;
-}
-
-.titulo-2 img {
-    justify-content: center;
-    display: flex;
-    height: 150px;
-}
-
-.valores {
-    display: flex;
-    justify-content: center;
+.frase{
     padding: 5px;
 }
-
-.val {
-    position: absolute;
-    left: 0;
-    margin-top: 240px;
-}
-
 .salvar {
     display: flex;
     justify-content: center;
@@ -92,79 +52,225 @@ body {
     margin-left: 5px;
 }
 
-.logo-maps {
-    margin-top: 10px;
-    font-size: 30px;
-    height: 160px;
-    width: 100%;
+.contrato {
+    background-color: white;
+}
+
+.logo-street {
     justify-content: center;
-    align-items: center;
-    display: inline-block;
-}
-
-.logo-maps img {
-    border-radius: 50%;
-    position: absolute;
-    margin-left: 380px;
-    height: 80px;
-    width: 80px;
-}
-
-.autorizacao {
-    width: 495px;
-    height: 96px;
-    align-items: center;
-    justify-content: center;
-    margin-top: -70px;
-    text-align: center;
-}
-
-.numero-contrato {
-    width: 180px;
-}
-
-/* 
-.numero-contrato input{
-margin-top: 25px;
-} */
-/* .numero-contrato input {
-    box-shadow: 0 0 0 0;
-    border: 0 none;
-    outline: 0; 
-}
-.numero-contrato input:focus {
-    box-shadow: 0 0 0 0;
-    border: 0 none;
-    outline: 0;
-} */
-/* .inicio{
     display: flex;
-    justify-content: center;
-    align-items: center;
-} */
-/* .representante input {
-    box-shadow: 0 0 0 0;
-    border: 0 none;
-    outline: 0;
-}
-.representante input:focus {
-    box-shadow: 0 0 0 0;
-    border: 0 none;
-    outline: 0;
-} */
-.termo {
-    display: inline-block;
-    text-align: center;
-    margin-left: 220px;
+    padding: 10px;
+
+
 }
 
-.equipe {
-    border-top: 5px solid black;
-    border-bottom: 5px solid black;
+.logo-street img {
+    height: 100px !important;
+    border-radius: 100px;
+}
+
+/* .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    justify-content: center;
+    display: flex;
+} */
+
+.cima,
+.baixo {
+    font-size: large;
+    padding: 8px;
+    text-align: left;
+}
+
+.th {
+    font-size: medium;
+
+    background-color: #f2f2f2;
+}
+
+.caixa {
+    font-size: small;
+}
+
+.linha1 {
+    color: #ffffffff;
+    height: 23px;
+    background-color: rgb(87, 87, 207);
+    font-size: 14px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.linha1 h3 {
+    font-size: 14px;
+}
+
+.assinante {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.assinante h3 {
+    font-size: 15px;
+}
+
+.escrever {
+    width: 100%;
+}
+
+.escrever hr {
+    color: black;
+    height: 1px;
+}
+
+.linha2 {
+    color: #ffffff;
+    height: 24px;
+    background-color: rgb(87, 87, 207);
+    font-size: 14px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.linha2 h3 {
+    font-size: 14px;
+}
+
+.siga-redes {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+}
+
+.siga-redes ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+  }
+  
+  .siga-redes li {
+    margin-right: 10px; /* ou qualquer valor que desejar */
+  }
+
+.so{
+    font-size: xx-large;
+}
+.caixa2 {
+    font-size: small;
+    padding: 5px;
+    border: 1px solid black;
+
+}
+
+.entorno {
+    border: 1px solid black;
+    margin-bottom: 5px;
+}
+
+.caixa2 input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+.atualizacao {
+    padding-top: 7px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.condicoes {
+    border: 1px solid black;
+    height: 19px;
+}
+
+.condicoes h3 {
+    font-size: 13px !important;
+    text-align: center;
+}
+
+.regras {
+    color: #ffffff;
+    background-color: rgb(87, 87, 207);
+    height: 18px;
+}
+
+.regras h2 {
+    font-size: 15px;
+    text-align: center;
+}
+
+.texto {
     margin-top: 5px;
-    height: 75px;
-    margin-left: -5px;
-    width: 200px;
+    border: 1px solid black;
+}
+
+.texto p {
+    font-size: 14px !important;
+}
+
+
+.escrever2 {
+    padding: 20px;
+    justify-content: center;
+}
+
+.escrever2 hr {
+    color: black;
+    height: 1px;
+}
+
+.escrever2 h3 {
+    text-align: center;
+    font-size: 15px;
+}
+
+.linha3 {
+    color: #ffffff;
+    height: 35px;
+    background-color: rgb(87, 87, 207);
+    margin-top: 1px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-top: 5px;
+
+}
+.linha3 h3{
+    font-size: medium;
+
+}
+
+.linha-verde {
+    color: #ffffff;
+    height: 30px;
+    background-color:rgb(11, 68, 11);
+    margin-top: 1px;
+    width: 50%;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-top: 5px;
+    margin-left: 240px;
+    margin-bottom: 5px;
+}
+.linha-verde h3{
+    font-size: medium;
+}
+
+.cond {
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid black;
+    text-align: center;
+    font-size: medium;
 }
 
 .acessoria {
@@ -172,88 +278,22 @@ margin-top: 25px;
 
 }
 
-.frase {
-    padding: 5px;
-}
-
-.cond {
-    margin-top: 10px;
-    padding: 10px;
-    border: 5px solid black;
-    text-align: center;
-
-}
-
-.informacoes-comerciais {
-    border-left: 5px solid black;
-    border-bottom: 5px solid black;
-    width: 495px;
-    margin-left: -5px;
-    height: 68px;
-}
-
-.servicos {
-    margin-top: 5px;
-    background-color: rgb(81, 81, 207);
-    border-radius: 5%;
-    height: 40px;
-    text-align: center;
-}
-
-.servicos2 {
-    background-color: rgb(81, 81, 207);
-    border-radius: 5%;
-    height: 30px;
-    text-align: center;
-}
-
-.termos-uso {
-    padding: 4px;
+.renovacao {
+    margin-top: 20px;
 }
 
 .direitos {
     padding: 5px;
     text-align: center;
+    font-size: medium;
 }
 
-.assinatura {
-    justify-content: center;
-    display: flex;
+
+.linha3 h3 {
+    font-size: 20px;
 }
 
-.assinatura p {
-    padding: 10px;
-}
-
-.fa {
-    padding: 10px;
-    height: 20px;
-}
-
-.icones {
-    justify-content: center;
-    display: flex;
-    list-style: none;
-}
-
-.ass {
-    display: flex;
-    justify-content: center;
-}
-
-.autorizante {
-    margin-left: 0px;
-}
-
-.info-exta {
-    margin-left: 250px;
-}
-
-.dta {
-    margin-left: 110px;
-}
-
-.ass2 {
-    margin-top: 12px;
-    margin-left: 80px;
+.inf h3 {
+    font-size: small;
+    text-align: center;
 }

@@ -5,8 +5,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 function ListaCliente(props) {
   const [selectedFiles, setSelectedFiles] = useState({});
   const [filesInfo, setFilesInfo] = useState({});
+  const [filtroDataVenda, setFiltroDataVenda] = useState("");
   const handleFileSelect = (clientId, event) => {
-    console.log('Arquivo selecionado para cliente', clientId, ':', event.target.files);
     const files = event.target.files;
     setSelectedFiles((prevFiles) => ({
       ...prevFiles,
@@ -16,11 +16,7 @@ function ListaCliente(props) {
   const renderFileIndicator = (clientId) => {
     const fileInfo = filesInfo[clientId];
     if (fileInfo && fileInfo.length > 0) {
-      return (
-        <span className="text-success">
-          Arquivos Armazenados: {fileInfo.length}
-        </span>
-      );
+      return <span className="text-success">Arquivos Armazenados: {fileInfo.length}</span>;
     } else {
       return <span className="text-muted">Sem Arquivos Armazenados</span>;
     }
@@ -51,33 +47,41 @@ function ListaCliente(props) {
     }
   };
   const handleClick = (clientId) => {
-    handleArmazenarArquivos(clientId); 
+    handleArmazenarArquivos(clientId);
   };
   return (
-    <table className="table table-hover table-bordered">
-      <thead>
-        <tr className="table-secondary">
-          <th scope="col">CNPJ/CPF</th>
-          <th scope="col">Nome</th>
-          <th scope="col">Email</th>
-          <th scope="col">UF</th>
-          <th scope="col">Telefone</th>
-          <th scope="col">Valor</th>
-          <th scope="col">Data de venda</th>
-          <th scope="col" className="col-acao"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.arrayClientes.map((cliente) => {
-          return (
+    <div>
+      <input
+        type="date"
+        value={filtroDataVenda}
+        onChange={(e) => setFiltroDataVenda(e.target.value)}
+        className="form-control date"
+      />
+      <table className="table table-hover table-bordered">
+        <thead>
+          <tr className="table-secondary">
+            <th scope="col" className="col-acao text-center">CNPJ/CPF</th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-signature icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-envelope icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-earth-americas icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-phone icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-user icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-calendar-days icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-circle-info icon-u"></i></th>
+            <th scope="col" className="col-acao text-center"><i className="fa-solid fa-clipboard icon-u"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.arrayClientes.filter((cliente) => !filtroDataVenda || cliente.data >= filtroDataVenda).map((cliente) => (
             <tr key={cliente.id} className="table-light">
-              <th scope="row " className="align-middle"><Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1 align-middle"></Link>{cliente.cpf}</th>
-              <td className="align-middle">{cliente.nome}</td>
-              <td className="align-middle">{cliente.email}</td>
-              <td className="align-middle">{cliente.uf}</td>
-              <td className="align-middle">{cliente.fone}</td>
-              <td className="align-middle">{cliente.valor}</td>
-              <td className="align-middle">{cliente.data}</td>
+              <th scope="row" className="align-middle"><Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1 align-middle"></Link>{cliente.cpf}</th>
+              <td className="align-middle">{cliente.nome || 'N/A'}</td>
+              <td className="align-middle">{cliente.email || 'N/A'}</td>
+              <td className="align-middle">{cliente.uf || 'N/A'}</td>
+              <td className="align-middle">{cliente.fone || 'N/A'}</td>
+              <td className="align-middle">{cliente.operador || 'N/A'}</td>
+              <td className="align-middle">{cliente.valor || 'N/A'}</td>
+              <td className="align-middle">{cliente.data || 'N/A'}</td>
               <td>
                 <Link to={`/app/home/editarcliente/${cliente.id}`}><i className="fa-solid fa-pen-to-square icone-acao"></i></Link>
                 <Link to="#" onClick={() => props.clickDelete(cliente.id)}><i className="fa-solid fa-trash icone-acao red"></i></Link>
@@ -96,10 +100,10 @@ function ListaCliente(props) {
                 </button>
               </td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 export default ListaCliente;

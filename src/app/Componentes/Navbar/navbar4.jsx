@@ -18,7 +18,7 @@ function Navbar4() {
             if (user) {
                 console.log('ID do usuário:', user.uid);
                 setLogado(true);
-                setIsAdmUser(user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1');
+                setIsAdmUser((user.uid === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'));
             } else {
                 console.log('Nenhum usuário autenticado.');
                 setLogado(false);

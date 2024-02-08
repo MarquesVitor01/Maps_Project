@@ -1,9 +1,7 @@
 import React from "react";
-
 function Precos() {
     return <section id="precos">
         <div className="container">
-
             <div className="row test-center center ">
                 <div className="titulo">
                     <h1>Planos e Preços</h1>
@@ -48,5 +46,4 @@ function Precos() {
         </div>
     </section>
 }
-
 export default Precos;

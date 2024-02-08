@@ -32,3 +32,13 @@
     padding: 0;
     border-radius: 100%;
 }
+.formulari {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.2); /* Cor de fundo do formulário */
+    border-radius: 10px; /* Borda arredondada */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8); /* Sombra suave */
+  }
+  

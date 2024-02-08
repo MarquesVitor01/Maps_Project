@@ -20,11 +20,9 @@ function Login() {
                 setLogado(true);
                 setSucesso('S');
                 let redirectPath = '/app/home';
-                if (email === 'marketing01@grupomaps.com.br') {
+                if (email === 'karoline.alves@grupomapscartaodigital.com.br' || email === 'eryck.vinicius@grupomapscartaodigital.com.br' || email === 'gabriel.pinheiro@grupomapscartaodigital.com.br' || email === 'andressa.anastacia@grupomapscartaodigital.com.br' ) {
                     redirectPath = '/app/marketingmapsempresas';
-                } else if (email === 'financeiro01@grupomaps.com.br') {
-                    redirectPath = '/app/financeiromapsempresas';
-                } else if (email === 'cobranca01@grupomaps.com.br') {
+                } else if (email === 'andrieli@grupomapscartaodigital.com.br' || email === 'yasmin@grupomapscartaodigital.com.br' || email === 'andressa@grupomapscartaodigital.com.br' || email === 'isabela@grupomapscartaodigital.com.br' || email === 'edson@grupomapscartaodigital.com.br' || email === 'giovana@grupomapscartaodigital.com.br' ) {
                     redirectPath = '/app/cobrancamapsempresas';
                 } 
                 setRedirectToHome(true); 

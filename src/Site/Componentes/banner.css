@@ -1,0 +1,34 @@
+.street {
+    height: 400px;
+    background-color: #f2f2f2; /* Add a background color for better visibility */
+}
+
+
+.banner{
+    background-image: url(https://blog.mundomidia.com/wp-content/uploads/2018/06/uso-redes-sociais-ambiente-trabalho.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff; /* Set text color to white for better contrast */
+}
+
+.goo{
+    margin-top: 90px;
+    align-items: center;
+    justify-content: center;
+}
+
+.goo h1{
+    text-align: center;
+}
+
+.goo a{
+    margin-left: 35px;
+    justify-content: center;
+    align-items: center;
+}
+

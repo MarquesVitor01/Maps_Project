@@ -13,19 +13,16 @@ import FichaCliente from "./app/fichaCliente/fichacliente.jsx";
 import Pagos from "./app/Pagos/pagos.jsx";
 import HomeMarketing from "./app/HomeMarketing/homemarketing.jsx"; 
 import Cobranca from "./app/Cobranca/cobranca.jsx";
-
+import FichaCobranca from "./app/fichaCobranca/fichaCobranca.jsx";
 function App() {
   const { logado } = useContext(AuthContext);
   console.log(logado);
-
   const PrivateRoutes = () => {
     return (
       logado ? <Outlet /> : <Navigate to="/app" />
     );
   }
   console.log(logado)
-
-  
   return (
     <BrowserRouter>
       <Routes>
@@ -40,6 +37,7 @@ function App() {
           <Route element={<Pagos/>} path='/app/financeiromapsempresas' exact />
           <Route element={<HomeMarketing/>} path='/app/marketingmapsempresas' exact/>
           <Route element={<Cobranca/>} path='/app/cobrancamapsempresas' exact/>
+          <Route element={<FichaCobranca/>} path='/app/home/fichacobrancamapsempresas/:id' exact/>
         </Route>
       </Routes>
     </BrowserRouter>

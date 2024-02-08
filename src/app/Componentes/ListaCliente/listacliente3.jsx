@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from 'sweetalert2';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
-import { createRoot } from 'react-dom/client';
 function ListaCliente3(props) {
     const [pagoStatus, setPagoStatus] = useState(() => {
         const storedStatus = localStorage.getItem('pagoStatus');
@@ -83,31 +82,72 @@ function ListaCliente3(props) {
             }
         });
     };
-    const [selectedDate, setSelectedDate] = useState(null);
-    const chooseDateManually = async () => {
-        return new Promise((resolve) => {
-            Swal.fire({
-                title: 'Escolha uma data para acordo',
-                html: '<div id="datepicker-container"></div>',
-                showCancelButton: false,
-                confirmButtonText: 'Confirm',
-                preConfirm: () => {
-                    const selectedDate = document.getElementById('datepicker-container').value;
-                    resolve(selectedDate);
-                },
-                didOpen: () => {
-                    const container = document.getElementById('datepicker-container');
-                    const root = createRoot(container);
-                    root.render(
-                        <DatePicker
-                            selected={selectedDate}
-                            onChange={(date) => setSelectedDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                        />
-                    );
-                },
-            });
+    const [additionalInfo, setAdditionalInfo] = useState(() => {
+        const storedInfo = localStorage.getItem('additionalInfo');
+        return storedInfo ? JSON.parse(storedInfo) : {};
+    });
+    const deleteInfo = (clienteId) => {
+        Swal.fire({
+            title: 'Tem certeza que deseja excluir informações?',
+            html: `
+                <input type="password" id="senha-exclusao" class="swal2-input" placeholder="Senha de Exclusão">
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const senhaDigitada = document.getElementById('senha-exclusao').value;
+
+                // Adicione aqui a lógica de verificação da senha
+                const senhaCorreta = '@1V?$9En9o#1qa'; // Substitua com a sua senha real
+
+                if (senhaDigitada === senhaCorreta) {
+                    // Se a senha estiver correta, proceda com a exclusão
+                    setAdditionalInfo((prevInfo) => {
+                        const updatedInfo = { ...prevInfo };
+                        delete updatedInfo[clienteId];
+                        return updatedInfo;
+                    });
+                    localStorage.setItem('additionalInfo', JSON.stringify({ ...additionalInfo, [clienteId]: null }));
+                    Swal.fire('Informações excluídas!', '', 'success');
+                } else {
+                    // Senha incorreta
+                    Swal.fire('Senha incorreta!', 'Você não tem permissão para excluir informações.', 'error');
+                }
+            }
         });
+    };
+    const addInfoManually = async (clienteId) => {
+        const result = await Swal.fire({
+            title: 'Adicionar Informações',
+            html: `
+                <input type="text" id="info-input" class="swal2-input" placeholder="Informações">
+                <input type="text" id="name-input" class="swal2-input" placeholder="Seu Nome">
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Adicionar',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const infoInput = document.getElementById('info-input').value;
+                const nameInput = document.getElementById('name-input').value;
+                return { info: infoInput, name: nameInput };
+            },
+        });
+        if (result.isConfirmed) {
+            const { info, name } = result.value;
+            if (!info || !name) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Preencha todas as informações',
+                    text: 'Você precisa fornecer tanto as informações quanto o seu nome.',
+                });
+                return;
+            }
+            setAdditionalInfo((prevInfo) => ({ ...prevInfo, [clienteId]: { info, name } }));
+            // Update local storage after adding information
+            localStorage.setItem('additionalInfo', JSON.stringify({ ...additionalInfo, [clienteId]: { info, name } }));
+        }
     };
     useEffect(() => {
         const fetchAcordoStatus = async () => {
@@ -147,13 +187,9 @@ function ListaCliente3(props) {
             if (result.isConfirmed) {
                 setAcordoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: newValue }));
                 if (newValue) {
-                    const selectedDate = await chooseDateManually();
-                    setAcordoDates((prevDates) => ({ ...prevDates, [clienteId]: selectedDate || currentDate }));
-                    newData.dataAcordo = selectedDate || currentDate;
                     localStorage.setItem(`acordoDates_${clienteId}`, JSON.stringify(newData.dataAcordo));
                     console.log(`Saved acordo date for cliente ID ${clienteId}: ${newData.dataAcordo}`);
                 } else {
-                    setAcordoDates((prevDates) => ({ ...prevDates, [clienteId]: null }));
                     localStorage.removeItem(`acordoDates_${clienteId}`);
                 }
                 const db = getFirestore();
@@ -181,9 +217,9 @@ function ListaCliente3(props) {
                     <th scope="col">Valor</th>
                     <th scope="col">Vencimento</th>
                     <th scope="col">Acordo</th>
-                    <th scope="col">Data do acordo</th>
-                    <th scope="col">Pago</th>
-                    <th scope="col">Data de Pagamento</th>
+                    <th scope="col">Informações do acordo</th>
+                    {/* <th scope="col">Pago</th>
+                    <th scope="col">Data de Pagamento</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -192,22 +228,26 @@ function ListaCliente3(props) {
                     const paymentDate = paymentDates[cliente.id] || null;
                     const isAcordo = acordoStatus[cliente.id] || false;
                     const acordoDate = acordoDates[cliente.id] || null;
+                    const additionalInfoData = additionalInfo[cliente.id] || {};
+                    const vencimento = new Date(cliente.venc2);
+                    const hoje = new Date();
                     if (props.exibirPagos && !isPago) {
                         return null;
                     }
+                    if (vencimento < hoje) {
                     return (
-                        <tr key={cliente.id} className="table-light">
-                            <th scope="row">
-                                <Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1"></Link>
+                        <tr key={cliente.id} className="table-light" >
+                            <th scope="row" className="align-middle">
+                                <Link to={`/app/home/fichacliente/${cliente.id}`}><i className="fa-solid fa-list icone-acao1"></i></Link>
                                 {cliente.cpf}
                             </th>
-                            <td>{cliente.nome}</td>
-                            <td>{cliente.email}</td>
-                            <td>{cliente.uf}</td>
-                            <td>{cliente.fone}</td>
-                            <td>{cliente.valor}</td>
-                            <td>{cliente.venc2}</td>
-                            <td>
+                            <td className="align-middle">{cliente.nome || 'N/A'}</td>
+                            <td className="align-middle">{cliente.email || 'N/A'}</td>
+                            <td className="align-middle">{cliente.uf || 'N/A'}</td>
+                            <td className="align-middle">{cliente.fone || 'N/A'}</td>
+                            <td className="align-middle">{cliente.valor || 'N/A'}</td>
+                            <td className="align-middle">{cliente.venc2 || 'N/A'}</td>
+                            <td className="align-middle">
                                 <input
                                     type="checkbox"
                                     checked={isAcordo}
@@ -215,29 +255,27 @@ function ListaCliente3(props) {
                                 />
                             </td>
                             <td>
-                                <button onClick={chooseDateManually}  >Selecione do Acordo</button>
-                            </td>
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    checked={isPago}
-                                    onChange={(e) => handlePagoChange(cliente.id, e.target.checked)}
-                                />
-                            </td>
-                            <td>
-                                {isPago ? (
-                                    <DatePicker
-                                        selected={paymentDate ? new Date(paymentDate) : null}
-                                        dateFormat="dd/MM/yyyy"
-                                        onChange={(date) => {
-                                            // Handle the date change (if needed)
-                                        }}
-                                        readOnly
-                                    />
-                                ) : null}
+                            <Link to={`/app/home/fichacobrancamapsempresas/${cliente.id}`}><i className="fa-solid fa-money-check-dollar green"></i></Link>
+                                <button onClick={() => addInfoManually(cliente.id)}>
+                                    Adicionar Informações
+                                </button>
+                                {additionalInfoData.info && (
+                                    <div>
+                                        <strong>Informações:</strong> {additionalInfoData.info}
+                                        <br />
+                                        <strong>Adicionado por:</strong> {additionalInfoData.name}
+                                        <br />
+                                        <button onClick={() => deleteInfo(cliente.id)}>
+                                            Excluir Informações
+                                        </button>
+                                    </div>
+                                )}
                             </td>
                         </tr>
                     );
+                } else {
+                    return null; 
+                }
                 })}
             </tbody>
         </table>

@@ -9,7 +9,6 @@ function clientesPDF2(clientes){
             bold: true,
             margin: [50, 20, 20, 50]
         }
-
     ];
     const dados = clientes.map((cliente) => {
         return [

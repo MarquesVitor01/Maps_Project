@@ -1,119 +1,182 @@
-  import React, { useState, useEffect } from "react";
-  import Navbar2 from "../Componentes/Navbar/navbar2";
-  import ListaCliente2 from "../Componentes/ListaCliente/listacliente2";
-  import '../Pagos/pagos.css';
-  import Dashboard from "../Graficos/graficos";
-  import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
-  import 'firebase/firestore';
-  import { getAuth } from 'firebase/auth';
-  import 'chart.js/auto'; 
+import React, { useState, useEffect, useRef } from "react";
+import Navbar2 from "../Componentes/Navbar/navbar2";
+import ListaCliente2 from "../Componentes/ListaCliente/listacliente2";
+import '../Pagos/pagos.css';
+import Dashboard from "../Graficos/graficos";
+import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
+import 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { useReactToPrint } from "react-to-print";
+import 'chart.js/auto';
+import { Collapse, Card } from 'react-bootstrap';
+
 function Pagos() {
-    const [clientes, setClientes] = useState([]);
-    const [busca, setBusca] = useState('');
-    const [texto, setTexto] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [exibirPagos, setExibirPagos] = useState(false);
-    const [totalValor, setTotalValor] = useState(0);
-    const [error, setError] = useState(null);
-    const auth = getAuth();
-    const user = auth.currentUser;
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const auth = getAuth();
-          const user = auth.currentUser;
-            const db = getFirestore();
-            const clientesRef = collection(db, 'clientes');
-            const q = query(clientesRef);
-            const snapshot = await getDocs(q);
-            const listaCli = snapshot.docs.map(doc => ({
-              id: doc.id,
-              cpf: doc.data().cpf,
-              nome: doc.data().nome,
-              email: doc.data().email,
-              uf: doc.data().uf,
-              fone: doc.data().fone,
-              valor: doc.data().valor,
-              venc2: doc.data().venc2,
-              pago: doc.data().pago || false,
-            }));
-            setClientes(listaCli);
-            setLoading(false);
-            const totalValor = listaCli.reduce((total, cliente) => total + cliente.valor, 0);
-            setTotalValor(totalValor);
-            localStorage.setItem('clientes', JSON.stringify(listaCli));
-        } catch (error) {
-          console.error('Erro ao obter dados:', error);
-        }
-      };
-      fetchData();
-    }, [busca]);
-    useEffect(() => {
-      const storedClientes = localStorage.getItem('clientes');
-      if (storedClientes) {
-        setClientes(JSON.parse(storedClientes));
-        setLoading(false);
-      }
-    }, []); 
-    useEffect(() => {
-      setShowDashboard(false);
-    }, []);
-    const handleExibirPagos = () => {
-      setExibirPagos(!exibirPagos);
-    };
-    const [showDashboard, setShowDashboard] = useState(false);
-    const handleShowDashboard = () => {
-      setShowDashboard(!showDashboard);
-    };
-    useEffect(() => {
-      const storedClientes = localStorage.getItem('clientes');
-      if (storedClientes) {
-          setClientes(JSON.parse(storedClientes));
-          setLoading(false);
-      }
-      const fetchData = async () => {
-          try {
-            const db = getFirestore();
-            let q;
-              q = query(collection(db, 'clientes'));
-            if (q) {
-              const querySnapshot = await getDocs(q);
-              const listaCli = [];
-              querySnapshot.forEach((doc) => {
-                if (
-                  doc.data().nome.indexOf(busca) >= 0 ||
-                  doc.data().email.indexOf(busca) >= 0 ||
-                  doc.data().cpf.indexOf(busca) >= 0
-                ) {
-                  listaCli.push({
-                    id: doc.id,
-                    cpf: doc.data().cpf,
-                    nome: doc.data().nome,
-                    email: doc.data().email,
-                    uf: doc.data().uf,
-                    fone: doc.data().fone,
-                    valor: doc.data().valor,
-                    data: doc.data().data,   
-                  });
-                }
-              });
-              setClientes(listaCli);
-              setLoading(false);
-              localStorage.setItem('clientes', JSON.stringify(listaCli));
-            }
-          } catch (error) {
-            console.error('Erro ao obter dados:', error);
-            setError(error);
+  const [loader, setLoader] = useState(false);
+  const [clientes, setClientes] = useState([]);
+  const [busca, setBusca] = useState('');
+  const [texto, setTexto] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [exibirPagos, setExibirPagos] = useState(false);
+  const [totalValor, setTotalValor] = useState(0);
+  const [error, setError] = useState(null);
+  const [cobradoresInfo, setCobradoresInfo] = useState({});
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const db = getFirestore();
+        const clientesRef = collection(db, 'clientes');
+        const q = query(clientesRef);
+        const snapshot = await getDocs(q);
+        const listaCli = snapshot.docs.map(doc => ({
+          id: doc.id,
+          cpf: doc.data().cpf,
+          nome: doc.data().nome,
+          email: doc.data().email,
+          uf: doc.data().uf,
+          fone: doc.data().fone,
+          valor: doc.data().valor,
+          venc2: doc.data().venc2,
+          pago: doc.data().pago || false,
+          cobrador: doc.data().cobrador || 'Sem cobrança'
+        }));
+  
+        // Filtrar apenas os clientes marcados como pagos
+        const clientesPagos = listaCli.filter(cliente => cliente.pago);
+  
+        // Contar a frequência e calcular o valor total para cada cobrador dos clientes pagos
+        const info = {};
+        clientesPagos.forEach(cliente => {
+          if (!info[cliente.cobrador]) {
+            info[cliente.cobrador] = {
+              quantidade: 0,
+              valorTotal: 0
+            };
           }
-        };
-      if (user) {
-          fetchData();
+          info[cliente.cobrador].quantidade++;
+          info[cliente.cobrador].valorTotal += parseFloat(cliente.valor); // Converter para número e somar
+        });
+        setCobradoresInfo(info);
+  
+        // Calcular o valor total apenas para os clientes marcados como pagos
+        const totalValor = clientesPagos.reduce((total, cliente) => total + parseFloat(cliente.valor), 0); // Converter para número e somar
+        setTotalValor(totalValor);
+  
+        // Definir a lista de clientes
+        setClientes(listaCli);
+  
+        // Armazenar os clientes no localStorage
+        localStorage.setItem('clientes', JSON.stringify(listaCli));
+      } catch (error) {
+        console.error('Erro ao obter dados:', error);
       }
+    };
+  
+    fetchData();
   }, [busca]);
-    return (
-      <div>
-        <Navbar2 />
-        <div className="background8">
+
+  useEffect(() => {
+    const storedClientes = localStorage.getItem('clientes');
+    if (storedClientes) {
+      setClientes(JSON.parse(storedClientes));
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    setShowDashboard(false);
+  }, []);
+
+  const handleExibirPagos = () => {
+    setExibirPagos(!exibirPagos);
+  };
+
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  const handleShowDashboard = () => {
+    setShowDashboard(!showDashboard);
+  };
+
+  useEffect(() => {
+    const storedClientes = localStorage.getItem('clientes');
+    if (storedClientes) {
+      setClientes(JSON.parse(storedClientes));
+      setLoading(false);
+    }
+
+    const fetchData = async () => {
+      try {
+        const db = getFirestore();
+        let q;
+        q = query(collection(db, 'clientes'));
+        if (q) {
+          const querySnapshot = await getDocs(q);
+          const listaCli = [];
+          querySnapshot.forEach((doc) => {
+            if (
+              doc.data().nome.indexOf(busca) >= 0 ||
+              doc.data().email.indexOf(busca) >= 0 ||
+              doc.data().cpf.indexOf(busca) >= 0
+            ) {
+              listaCli.push({
+                id: doc.id,
+                cpf: doc.data().cpf,
+                nome: doc.data().nome,
+                email: doc.data().email,
+                uf: doc.data().uf,
+                fone: doc.data().fone,
+                valor: doc.data().valor,
+                data: doc.data().data,
+                venc2: doc.data().venc2,
+                cobrador: doc.data().cobrador
+              });
+            }
+          });
+
+          // Contar a frequência e calcular o valor total para cada cobrador
+          const info = {};
+          listaCli.forEach(cliente => {
+            if (!info[cliente.cobrador]) {
+              info[cliente.cobrador] = {
+                quantidade: 0,
+                valorTotal: 0
+              };
+            }
+            info[cliente.cobrador].quantidade++;
+            info[cliente.cobrador].valorTotal += parseFloat(cliente.valor); // Converter para número e somar
+          });
+          setCobradoresInfo(info);
+
+          // Definir a lista de clientes
+          setClientes(listaCli);
+
+          // Armazenar os clientes no localStorage
+          localStorage.setItem('clientes', JSON.stringify(listaCli));
+        }
+      } catch (error) {
+        console.error('Erro ao obter dados:', error);
+        setError(error);
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
+  }, [busca]);
+  const [open, setOpen] = useState(false);
+  const contentDocument = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => contentDocument.current,
+  });
+
+  return (
+    <div>
+      <Navbar2 />
+      <div className="background8">
         <div className="container-fluid titulo">
           <h1>Situação Financeira</h1>
           <div className="row">
@@ -121,9 +184,17 @@ function Pagos() {
               <button onClick={handleExibirPagos} className="btn btn-success btn-cli" type="button" id="button-addon2">
                 <i className="fa-solid fa-dollar-sign"></i> {exibirPagos ? 'Ocultar Pagos' : 'Visualizar Pagos'}
               </button>
-              <button onClick={handleShowDashboard} className="btn btn-primary btn-cli" type="button" id="button-addon2">
+              <button onClick={handleShowDashboard} className="btn btn-warning btn-cli" type="button" id="button-addon2">
                 {showDashboard ? 'Ocultar Dashboard' : 'Exibir Dashboard'}
               </button>
+              <button
+              onClick={() => setOpen(!open)}
+              aria-controls="cobradores-info"
+              aria-expanded={open}
+              className="btn btn-primary btn-cli"
+            >
+              {open ? 'Esconder Informações' : 'Mostrar Informações'}
+            </button>
             </div>
             <div className="col-8">
               <div className="input-group mb-3">
@@ -134,18 +205,40 @@ function Pagos() {
               </div>
             </div>
           </div>
-          <div>
+          <div >
+            
+            <Collapse in={open}>
+              <div ref={contentDocument}>
+              <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
+                  {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
+                </button>
+                {Object.entries(cobradoresInfo).map(([cobrador, info]) => (
+                  <Card key={cobrador} style={{ margin: '10px', padding: '10px' }}>
+                    <Card.Body >
+                      <Card.Title>{cobrador}</Card.Title>
+                      <Card.Text>
+                        Vendas pagas: {info.quantidade}
+                        <br />
+                        Valor total: {info.valorTotal !== undefined ? parseFloat(info.valorTotal).toFixed(2) : 'Sem cobrança'}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </div>
+            </Collapse>
+          </div>
+
+          {showDashboard ? (
+            <>
+              <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
+            </>
+          ) : (
+            <ListaCliente2 arrayClientes={clientes} exibirPagos={exibirPagos} />
+          )}
         </div>
-        {showDashboard ? (
-        <>
-          <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
-        </>
-      ) : (
-        <ListaCliente2 arrayClientes={clientes} exibirPagos={exibirPagos} />
-      )}
-</div>
-    </div>
+      </div>
     </div>
   );
 }
-  export default Pagos;
+
+export default Pagos;

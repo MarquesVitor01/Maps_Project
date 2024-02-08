@@ -12,32 +12,32 @@ function Navbar() {
   const auth = getAuth();
   const navigate = useNavigate();
   const [isAdmUser, setIsAdmUser] = useState(false);
-  const handleQuantidadeClientesComArquivos = async (clientesList) => {
-    try {
-      const storage = getStorage();
-      let clientesComArquivosCount = 0;
-      for (const cliente of clientesList) {
-        const clientePath = `arquivos/${cliente.id}`;
-        const clienteRef = ref(storage, clientePath);
-        const filesList = await listAll(clienteRef);
-        if (filesList.items.length > 0) {
-          clientesComArquivosCount++;
-        }
-      }
-      setClientesComArquivosCount(clientesComArquivosCount);
-    } catch (error) {
-      console.error('Erro ao obter a quantidade de clientes com arquivos:', error);
-    }
-  };
+  // const handleQuantidadeClientesComArquivos = async (clientesList) => {
+  //   try {
+  //     const storage = getStorage();
+  //     let clientesComArquivosCount = 0;
+  //     for (const cliente of clientesList) {
+  //       const clientePath = `arquivos/${cliente.id}`;
+  //       const clienteRef = ref(storage, clientePath);
+  //       const filesList = await listAll(clienteRef);
+  //       if (filesList.items.length > 0) {
+  //         clientesComArquivosCount++;
+  //       }
+  //     }
+  //     setClientesComArquivosCount(clientesComArquivosCount);
+  //   } catch (error) {
+  //     console.error('Erro ao obter a quantidade de clientes com arquivos:', error);
+  //   }
+  // };
   const handleVerificarPagos = async () => {
     try {
       const db = getFirestore();
       const userId = auth.currentUser?.uid;
-      if (userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+      if ((userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62')) {
         setIsAdmUser(true)
       }
       let q;
-      if (userId === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || userId === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+      if (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1' || userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2' || (userId === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62')) {
         q = collection(db, 'clientes');
       } else {
         q = query(collection(db, 'clientes'), where('userId', '==', userId));
@@ -54,7 +54,7 @@ function Navbar() {
         data: doc.data().data,
       }));
       setQuantidadeClientes(listaCli.length);
-      await handleQuantidadeClientesComArquivos(listaCli);
+      // await handleQuantidadeClientesComArquivos(listaCli);
     } catch (error) {
       console.error('Erro ao obter dados:', error);
     }
@@ -84,11 +84,11 @@ function Navbar() {
         </a>
         <div className="row exibicao">
           <h4 className="qtdClientes">
-            <i className="fa-solid fa-user user-icon"></i>Agenciados: {quantidadeClientes}
+            <i className="fa-solid fa-user user-icon"></i>Vendas: {quantidadeClientes}
           </h4>
-          <h4 className="qtdClientesAss">
+          {/* <h4 className="qtdClientesAss">
             <i className="fa-solid fa-file user-icon"></i>Assinados: {clientesComArquivosCount}
-          </h4>
+          </h4> */}
         </div>
         <button
           className="navbar-toggler"

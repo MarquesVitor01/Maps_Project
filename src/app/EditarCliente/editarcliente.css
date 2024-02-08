@@ -1,15 +1,299 @@
+.background {
+  border-top: 2px solid rgb(100, 29, 29);
+  border-bottom: 2px solid rgb(100, 29, 29);
+  background: linear-gradient(to right, #366894, #b44248);
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 
-.background{
-    border-top: 2px solid rgb(100, 29, 29);
-    border-bottom: 2px solid rgb(100, 29, 29);
-    background-image: url(https://omnisinal.pt/files/23/2377.jpg);
 }
 
-.servicos2{
-    background-color: rgb(81, 81, 207);
-    border-radius: 5%;
-    height: 30px;
-    text-align: center;
+body {
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.titulo-2 {
+  background-color: white;
+  width: 1050px;
+  margin-top: 15px;
+  border: 5px solid black;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 
+
+.texto-cima h1 {
+  text-align: center;
+  display: inline-block;
+  font-size: x-large;
+}
+.escolha-select{
+  margin-top: -4px;
+  padding: 2px;
+}
+.frase{
+  padding: 5px;
+}
+.salvar {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  margin-bottom: 5px;
+}
+
+.btn-acao {
+  margin: 20px 20px 0px 20px;
+  min-width: 100px;
+}
+
+.btn-cli {
+  margin-left: 5px;
+}
+
+.contrato {
+  background-color: white;
+}
+
+.logo-street {
+  justify-content: center;
+  display: flex;
+  padding: 10px;
+
+
+}
+
+.logo-street img {
+  height: 100px !important;
+  border-radius: 100px;
+}
+
+/* .table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  justify-content: center;
+  display: flex;
+} */
+
+.cima,
+.baixo {
+  font-size: large;
+  padding: 8px;
+  text-align: left;
+}
+
+.th {
+  font-size: medium;
+
+  background-color: #f2f2f2;
+}
+
+.caixa {
+  font-size: small;
+}
+
+.linha1 {
+  color: #ffffffff;
+  height: 23px;
+  background-color: rgb(87, 87, 207);
+  font-size: 14px;
+  padding-top: 5px;
+  text-align: center;
+}
+
+.linha1 h3 {
+  font-size: 14px;
+}
+
+.assinante {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.assinante h3 {
+  font-size: 15px;
+}
+
+.escrever {
+  width: 100%;
+}
+
+.escrever hr {
+  color: black;
+  height: 1px;
+}
+
+.linha2 {
+  color: #ffffff;
+  height: 24px;
+  background-color: rgb(87, 87, 207);
+  font-size: 14px;
+  padding-top: 5px;
+  text-align: center;
+}
+
+.linha2 h3 {
+  font-size: 14px;
+}
+
+.siga-redes {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.siga-redes ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.siga-redes li {
+  margin-right: 10px; /* ou qualquer valor que desejar */
+}
+
+.so{
+  font-size: xx-large;
+}
+.caixa2 {
+  font-size: small;
+  padding: 5px;
+  border: 1px solid black;
+
+}
+
+.entorno {
+  border: 1px solid black;
+  margin-bottom: 5px;
+}
+
+.caixa2 input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+.atualizacao {
+  padding-top: 7px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.condicoes {
+  border: 1px solid black;
+  height: 19px;
+}
+
+.condicoes h3 {
+  font-size: 13px !important;
+  text-align: center;
+}
+
+.regras {
+  color: #ffffff;
+  background-color: rgb(87, 87, 207);
+  height: 18px;
+}
+
+.regras h2 {
+  font-size: 15px;
+  text-align: center;
+}
+
+.texto {
+  margin-top: 5px;
+  border: 1px solid black;
+}
+
+.texto p {
+  font-size: 14px !important;
+}
+
+
+.escrever2 {
+  padding: 20px;
+  justify-content: center;
+}
+
+.escrever2 hr {
+  color: black;
+  height: 1px;
+}
+
+.escrever2 h3 {
+  text-align: center;
+  font-size: 15px;
+}
+
+.linha3 {
+  color: #ffffff;
+  height: 35px;
+  background-color: rgb(87, 87, 207);
+  margin-top: 1px;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding-top: 5px;
+
+}
+.linha3 h3{
+  font-size: medium;
+
+}
+
+.linha-verde {
+  color: #ffffff;
+  height: 30px;
+  background-color:rgb(11, 68, 11);
+  margin-top: 1px;
+  width: 50%;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding-top: 5px;
+  margin-left: 240px;
+  margin-bottom: 5px;
+}
+.linha-verde h3{
+  font-size: medium;
+}
+
+.cond {
+  margin-top: 10px;
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center;
+  font-size: medium;
+}
+
+.acessoria {
+  justify-content: space-around;
+
+}
+
+.renovacao {
+  margin-top: 20px;
+}
+
+.direitos {
+  padding: 5px;
+  text-align: center;
+  font-size: medium;
+}
+
+
+.linha3 h3 {
+  font-size: 20px;
+}
+
+.inf h3 {
+  font-size: small;
+  text-align: center;
+}

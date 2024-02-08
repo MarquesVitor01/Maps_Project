@@ -62,7 +62,7 @@ function Home() {
     const deleteUser = (id) => {
         const db = getFirestore();
         const clienteDocRef = doc(db, 'clientes', id);
-        if (user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+        if (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') {
             deleteDoc(clienteDocRef)
                 .then(() => {
                     console.log('Documento excluído com sucesso:', id);
@@ -104,7 +104,7 @@ function Home() {
             try {
               const db = getFirestore();
               let q;
-              if (user && user.uid === 'xVCyJZJSEGhd0tk7YZem4dLVI8E2' || user && user.uid === '3UbiYQZwJShtQl86KXNu0xyWPnx1') {
+              if ((user && user.uid === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (user && user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (user && user.uid === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (user && user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user && user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62')) {
                 q = query(collection(db, 'clientes'));
               } else if (user) {
                 q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
@@ -125,6 +125,7 @@ function Home() {
                       email: doc.data().email,
                       uf: doc.data().uf,
                       fone: doc.data().fone,
+                      operador: doc.data().operador,
                       valor: doc.data().valor,
                       data: doc.data().data,
                     });
@@ -182,7 +183,7 @@ function Home() {
                         </div>
                         <div className="col-8 pesquisa">
                             <div className="input-group mb-3 ">
-                                <input onChange={(e) => setTexto(e.target.value)} type="text" className="form-control" placeholder="Perquisar por nome" aria-describedby="button-addon2" />
+                                <input onChange={(e) => setTexto(e.target.value)} type="text" className="form-control" placeholder="Pesquisar por descrição" aria-describedby="button-addon2" />
                                 <button onClick={(e) => setBusca(texto)} className="btn btn-primary" type="button" id="button-addon2">
                                     <i className="fa-solid fa-magnifying-glass"></i> Pesquisar
                                 </button>

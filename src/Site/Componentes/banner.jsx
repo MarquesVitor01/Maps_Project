@@ -1,22 +1,14 @@
 import React from "react";
-
+import './banner.css'
 function Banner(){
-    return <section id="banner">
+    return <section className="banner" id="banner">
         <div className="container">
-            <div className="row">
-
-                <div className="col-lg-6">
-                    <h1>Grupo Maps Marketing Digital.</h1>
-                    <h4>Alavancando sua empresa dentro do Google Maps!</h4>
-                    <a href="/app" className="btn btn-dark btn-lg btn-banner">Entrar</a>
+            <div className="row justify-content-center">
+                <div className="goo">
+                    <a href="/app" className="btn btn-light btn-lg btn-banner entrar"><b>Entrar</b></a>
                 </div>
-                <div className="col-lg-6">
-                    <img src="https://www.techscrolling.com/wp-content/uploads/2018/02/Optimizing-Website-for-Google-Maps-Marketing.jpeg" alt="Gmaps" />
-                </div>
-
             </div>
         </div>
     </section>
 }
-
 export default Banner;
