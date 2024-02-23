@@ -39,19 +39,19 @@ function FichaCobranca() {
 
     const AlterarCliente = async () => {
         try {
-                // Solicitar senha
-                const senhaDigitada = prompt("Digite sua senha:");
-                if (senhaDigitada === 'Financeiro150717Fc@' ) { // Verifica se a senha está correta
-                    await updateDoc(doc(db, 'clientes', id), {
-                        cobrador: cobrador,
-                        vencimentoCobranca: vencimentoCobranca,
-                        dataCobranca: dataCobranca
-                    });
-                    setMensagem('');
-                    setSucesso('S');
-                } else {
-                    setMensagem('Senha incorreta');
-                }
+            // Solicitar senha
+            const senhaDigitada = prompt("Digite sua senha:");
+            if (senhaDigitada === 'Financeiro150717Fc@') { // Verifica se a senha está correta
+                await updateDoc(doc(db, 'clientes', id), {
+                    cobrador: cobrador,
+                    vencimentoCobranca: vencimentoCobranca,
+                    dataCobranca: dataCobranca
+                });
+                setMensagem('');
+                setSucesso('S');
+            } else {
+                setMensagem('Senha incorreta');
+            }
         } catch (erro) {
             setMensagem('Erro ao atualizar cliente');
             setSucesso('N');
@@ -71,30 +71,30 @@ function FichaCobranca() {
 
                     <div>
                         <div className="caixa-cobrador">
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Nome do cobrador:</span>
-                        </div>
-                        <select className="custom-select d-block" onChange={(e) => setCobrador(e.target.value)} value={cobrador} id="estado" required>
-                            <option value="">Escolha</option>
-                            <option>Isabela Eugenio</option>
-                            <option>Edson Miguel</option>
-                            <option>Giovana Blandino</option>
-                            <option>Andressa Oliveira</option>
-                            <option>Andrieli Marques</option>
-                            <option>Yasmin Gomes</option>
-                        </select>
-                        </div>
-                        <div className="caixa-cobrador">
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Data da cobrança:</span>
-                        </div>
-                        <input onChange={(e) => setDataCobranca(e.target.value)} value={dataCobranca} id="date" type="date" className="form-control" />
+                            <div className="input-group-prendend">
+                                <span className="input-group-text">Nome do cobrador:</span>
+                            </div>
+                            <select className="custom-select d-block" onChange={(e) => setCobrador(e.target.value)} value={cobrador} id="estado" required>
+                                <option value="">Escolha</option>
+                                <option value="Isabela Eugenio">Isabela Eugenio</option>
+                                <option value="Edson Miguel">Edson Miguel</option>
+                                <option value="Giovana Blandino">Giovana Blandino</option>
+                                <option value="Andressa Oliveira">Andressa Oliveira</option>
+                                <option value="Andrieli Marques">Andrieli Marques</option>
+                                <option value="Yasmin Gomes">Yasmin Gomes</option>
+                            </select>
                         </div>
                         <div className="caixa-cobrador">
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Data de Vencimento:</span>
+                            <div className="input-group-prendend">
+                                <span className="input-group-text">Data da cobrança:</span>
+                            </div>
+                            <input onChange={(e) => setDataCobranca(e.target.value)} value={dataCobranca} id="date" type="date" className="form-control" />
                         </div>
-                        <input onChange={(e) => setVencimentoCobranca(e.target.value)} value={vencimentoCobranca} id="date" type="date" className="form-control" />
+                        <div className="caixa-cobrador">
+                            <div className="input-group-prendend">
+                                <span className="input-group-text">Data de Vencimento:</span>
+                            </div>
+                            <input onChange={(e) => setVencimentoCobranca(e.target.value)} value={vencimentoCobranca} id="date" type="date" className="form-control" />
                         </div>
                     </div>
                     {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
@@ -102,11 +102,11 @@ function FichaCobranca() {
                 </form>
 
             </div>
-            
+
             <div className="voltar row">
-                    <Link to="/app/cobrancamapsempresas" className="btn btn-warning btn-acao">Voltar</Link>
-                    <button onClick={AlterarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
-                </div>  
+                <Link to="/app/cobrancamapsempresas" className="btn btn-warning btn-acao">Voltar</Link>
+                <button onClick={AlterarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
+            </div>
         </div>
     );
 }

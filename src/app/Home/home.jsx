@@ -128,6 +128,7 @@ function Home() {
                       operador: doc.data().operador,
                       valor: doc.data().valor,
                       data: doc.data().data,
+                      cobrador: doc.data().cobrador,
                     });
                   }
                 });

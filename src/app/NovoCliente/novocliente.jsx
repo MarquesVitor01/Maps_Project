@@ -1,258 +1,291 @@
-    import React, { useState, useEffect, useRef } from "react";
-    import { Link, Navigate, useNavigate } from 'react-router-dom';
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
-    import '../NovoCliente/novocliente.css'
-    import { getAuth } from 'firebase/auth';
-    import { useReactToPrint } from "react-to-print";
-    import { isEmpty } from 'lodash';
-    function NovoCliente() {
-        const [clientes, setClientes] = useState([]);
-        const [loader, setLoader] = useState(false);
-        const [formState, setFormState] = useState({
-            nome: '',
-            email: '',
-            fone: '',
-            numeroContrato: '',
-            razao: '',
-            cpf: '',
-            fantasia: '',
-            endereco: '',
-            bairro: '',
-            uf: '',
-            cidade: '',
-            cep: '',
-            whats: '',
-            obs: '',
-            funcionamento: '',
-            valor: '',
-            plano: '',
-            renovNao: '',
-            renovSim: '',
-            validade: '',
-            data: '',
-            cargo: '',
-            venc2: '',
-            representante: '',
-            operador: '',
-            site: '',
-            link: '',
-            sociais: '',
-            cobrador: '',
-            vencimentoCobranca: '',
-            dataCobranca: ''
+import React, { useState, useEffect, useRef } from "react";
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
+import '../NovoCliente/novocliente.css'
+import { getAuth } from 'firebase/auth';
+import { isEmpty } from 'lodash';
+import html2pdf from "html2pdf.js";
+function NovoCliente() {
+    const [clientes, setClientes] = useState([]);
+    const [loader, setLoader] = useState(false);
+    const [formState, setFormState] = useState({
+        nome: '',
+        email: '',
+        fone: '',
+        numeroContrato: '',
+        razao: '',
+        cpf: '',
+        fantasia: '',
+        endereco: '',
+        bairro: '',
+        uf: '',
+        cidade: '',
+        cep: '',
+        whats: '',
+        obs: '',
+        funcionamento: '',
+        valor: '',
+        plano: '',
+        renovNao: '',
+        renovSim: '',
+        validade: '',
+        data: '',
+        cargo: '',
+        venc2: '',
+        representante: '',
+        operador: '',
+        site: '',
+        link: '',
+        sociais: '',
+        cobrador: '',
+        vencimentoCobranca: '',
+        dataCobranca: ''
+    });
+    const handleInputChange = (field, value) => {
+        setFormState((prevState) => ({ ...prevState, [field]: value }));
+    };
+    const [plano, setPlano] = useState('Escolha');
+    const [data, setData] = useState('');
+    const [numeroContrato, setNumeroContrato] = useState('');
+    const [bairro, setBairro] = useState('');
+    const [obs, setObs] = useState('');
+    const [funcionamento, setFuncionamento] = useState('');
+    const [venc2, setVenc2] = useState('');
+    const [valor, setValor] = useState('');
+    const [cidade, setCidade] = useState('');
+    const [cep, setCep] = useState('');
+    const [operador, setOperador] = useState('');
+    const [uf, setUf] = useState('');
+    const [site, setSite] = useState('');
+    const [whats, setWhats] = useState('');
+    const [endereco, setEndereco] = useState('');
+    const [razao, setRazao] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [link, setLink] = useState('');
+    const [nome, setNome] = useState('');
+    const [sociais, setSociais] = useState('');
+    const [fantasia, setFantasia] = useState('');
+    const [parcelas, setParcelas] = useState('1');
+    const [cobrador, setCobrador] = useState('');
+    const [vencimentoCobranca, setVencimentoCobranca] = useState('');
+    const [dataCobranca, setDataCobranca] = useState('');
+    const [email, setEmail] = useState('');
+    const [fone, setFone] = useState('');
+    const [representante, setRepresentante] = useState('');
+    const [renovSim, setRenovSim] = useState(true);
+    const [renovNao, setRenovNao] = useState(false);
+    const [validade, setValidade] = useState('');
+    const [mensagem, setMensagem] = useState('');
+    const [cargo, setCargo] = useState('');
+    const [sucesso, setSucesso] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+            navigate('/app/home/novocliente');
+            return;
+        }
+        const db = getFirestore();
+        const q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const clientesData = [];
+            snapshot.forEach((doc) => {
+                clientesData.push({ id: doc.id, ...doc.data() });
+            });
+            setClientes(clientesData);
         });
-        const handleInputChange = (field, value) => {
-            setFormState((prevState) => ({ ...prevState, [field]: value }));
+        return () => {
+            unsubscribe();
         };
-        const [plano, setPlano] = useState('');
-        const [data, setData] = useState('');
-        const [numeroContrato, setNumeroContrato] = useState('');
-        const [bairro, setBairro] = useState('');
-        const [obs, setObs] = useState('');
-        const [funcionamento, setFuncionamento] = useState('');
-        const [venc2, setVenc2] = useState('');
-        const [valor, setValor] = useState('');
-        const [cidade, setCidade] = useState('');
-        const [cep, setCep] = useState('');
-        const [operador, setOperador] = useState('');
-        const [uf, setUf] = useState('');
-        const [site, setSite] = useState('');
-        const [whats, setWhats] = useState('');
-        const [endereco, setEndereco] = useState('');
-        const [razao, setRazao] = useState('');
-        const [cpf, setCpf] = useState('');                                             
-        const [link, setLink] = useState('');
-        const [nome, setNome] = useState('');
-        const [sociais, setSociais] = useState('');
-        const [fantasia, setFantasia] = useState('');
-        const[parcelas , setParcelas] = useState('');
-        const [cobrador, setCobrador] = useState('');
-        const [vencimentoCobranca, setVencimentoCobranca] = useState('');
-        const [dataCobranca, setDataCobranca] = useState('');
-        const [email, setEmail] = useState('');
-        const [fone, setFone] = useState('');
-        const [representante, setRepresentante] = useState('');
-        const [renovSim, setRenovSim] = useState(true);
-        const [renovNao, setRenovNao] = useState(false);
-        const [validade, setValidade] = useState('');
-        const [mensagem, setMensagem] = useState('');
-        const [cargo, setCargo] = useState('');
-        const [sucesso, setSucesso] = useState('');
-        const navigate = useNavigate();
-        useEffect(() => {
-            const auth = getAuth();
-            const user = auth.currentUser;
-            if (!user) {
-                navigate('/app/home/novocliente');
+    }, [navigate]);
+    const db = getFirestore();
+    const clienteJaExiste = async (cpf) => {
+        const querySnapshot = await getDocs(query(collection(db, 'clientes'), where('cpf', '==', cpf)));
+        return !isEmpty(querySnapshot.docs);
+    };
+    async function cadastrarCliente() {
+        try {
+            if (nome.length === 0) {
+                setMensagem('Informe o seu nome');
+                return;
+            } else if (email.length === 0) {
+                setMensagem('Informe o email');
                 return;
             }
-            const db = getFirestore();
-            const q = query(collection(db, 'clientes'), where('userId', '==', user.uid));
-            const unsubscribe = onSnapshot(q, (snapshot) => {
-                const clientesData = [];
-                snapshot.forEach((doc) => {
-                    clientesData.push({ id: doc.id, ...doc.data() });
-                });
-                setClientes(clientesData);
-            });
-            return () => {
-                unsubscribe();
+            const clienteData = {
+                nome,
+                email,
+                fone,
+                numeroContrato,
+                razao,
+                cpf,
+                fantasia,
+                endereco,
+                bairro,
+                uf,
+                cidade,
+                cep,
+                whats,
+                obs,
+                funcionamento,
+                valor,
+                plano,
+                renovNao,
+                renovSim,
+                validade,
+                data,
+                representante,
+                venc2,
+                cargo,
+                operador,
+                site,
+                link,
+                sociais,
+                dataCobranca,
+                vencimentoCobranca,
+                cobrador,
+                parcelas
             };
-        }, [navigate]);
-        const db = getFirestore();
-        const clienteJaExiste = async (cpf) => {
-            const querySnapshot = await getDocs(query(collection(db, 'clientes'), where('cpf', '==', cpf)));
-            return !isEmpty(querySnapshot.docs);
-        };
-        async function cadastrarCliente() {
-            try {
-                if (nome.length === 0) {
-                    setMensagem('Informe o seu nome');
-                    return;
-                } else if (email.length === 0) {
-                    setMensagem('Informe o email');
-                    return;
-                }
-                const clienteData = {
-                    nome,
-                    email,
-                    fone,
-                    numeroContrato,
-                    razao,
-                    cpf,
-                    fantasia,
-                    endereco,
-                    bairro,
-                    uf,
-                    cidade,
-                    cep,
-                    whats,
-                    obs,
-                    funcionamento,
-                    valor,
-                    plano,
-                    renovNao,
-                    renovSim,
-                    validade,
-                    data,
-                    representante,
-                    venc2,
-                    cargo,
-                    operador,
-                    site,
-                    link,
-                    sociais,
-                    dataCobranca,
-                    vencimentoCobranca,
-                    cobrador,
-                    parcelas
-                };
-                const auth = getAuth();
-                const userId = auth.currentUser.uid;
-                clienteData.userId = userId;
-                const clienteExistente = await clienteJaExiste(cpf);
-                if (clienteExistente) {
-                    setMensagem('Cliente já cadastrado.');
-                    return;
-                }
-                const novoClienteRef = await addDoc(collection(db, 'clientes'), clienteData);
-                setFormState({
-                    nome: '',
-                    email: '',
-                    fone: '',
-                    numeroContrato: '',
-                    razao: '',
-                    cpf: '',
-                    fantasia: '',
-                    endereco: '',
-                    bairro: '',
-                    uf: '',
-                    cidade: '',
-                    cep: '',
-                    whats: '',
-                    obs: '',
-                    funcionamento: '',
-                    valor: '',
-                    plano: '',
-                    renovNao: '',
-                    renovSim: '',
-                    validade: '',
-                    data: '',
-                    representante: '',
-                    venc2: '',
-                    cargo: '',
-                    operador: '',
-                    site: '',
-                    link: '',
-                    sociais: '',
-                    cobrador: '',
-                    vencimentoCobranca: '',
-                    dataCobranca: '',
-                    parcelas: ''
-                });
-                setMensagem('');
-                setSucesso('S');
-                console.log('Novo cliente criado com ID:', novoClienteRef.id);
-            } catch (error) {
-                console.error('Erro ao cadastrar cliente:', error);
-                setMensagem('Ocorreu um erro ao cadastrar o cliente. Por favor, tente novamente.');
-                setSucesso('N');
+            const auth = getAuth();
+            const userId = auth.currentUser.uid;
+            clienteData.userId = userId;
+            const clienteExistente = await clienteJaExiste(cpf);
+            if (clienteExistente) {
+                setMensagem('Cliente já cadastrado.');
+                return;
             }
+            const novoClienteRef = await addDoc(collection(db, 'clientes'), clienteData);
+            setFormState({
+                nome: '',
+                email: '',
+                fone: '',
+                numeroContrato: '',
+                razao: '',
+                cpf: '',
+                fantasia: '',
+                endereco: '',
+                bairro: '',
+                uf: '',
+                cidade: '',
+                cep: '',
+                whats: '',
+                obs: '',
+                funcionamento: '',
+                valor: '',
+                plano: '',
+                renovNao: '',
+                renovSim: '',
+                validade: '',
+                data: '',
+                representante: '',
+                venc2: '',
+                cargo: '',
+                operador: '',
+                site: '',
+                link: '',
+                sociais: '',
+                cobrador: '',
+                vencimentoCobranca: '',
+                dataCobranca: '',
+                parcelas: ''
+            });
+            setMensagem('');
+            setSucesso('S');
+            console.log('Novo cliente criado com ID:', novoClienteRef.id);
+        } catch (error) {
+            console.error('Erro ao cadastrar cliente:', error);
+            setMensagem('Ocorreu um erro ao cadastrar o cliente. Por favor, tente novamente.');
+            setSucesso('N');
         }
-        const contentDocument = useRef();
-        const handlePrint = useReactToPrint({
-            content: () => contentDocument.current,
+    }
+    // const contentDocument = useRef();
+    // const handlePrint = useReactToPrint({
+    //     content: () => contentDocument.current,
+    // });
+
+    const [checkboxes, setCheckboxes] = useState({
+        atualizacao: true,
+        criacao: false,
+        anuncio: false,
+        cartaoDigital: true,
+        logotipo: true,
+    });
+
+    const handleCheckboxChange = (checkboxId) => {
+        setCheckboxes((prevCheckboxes) => ({
+            ...prevCheckboxes,
+            [checkboxId]: !prevCheckboxes[checkboxId],
+        }));
+    };
+    const handleDownloadPDF = () => {
+        // Seleciona os elementos que você deseja incluir no PDF
+        const elementos = document.querySelectorAll(".element");
+
+        // Cria um novo documento HTML para armazenar o conteúdo
+        const docHTML = document.createElement("div");
+
+        // Adiciona cada elemento selecionado ao documento HTML
+        elementos.forEach((elemento) => {
+            docHTML.appendChild(elemento.cloneNode(true));
         });
 
-        const [checkboxes, setCheckboxes] = useState({
-            atualizacao: true,
-            criacao: false,
-            anuncio: false,
-            cartaoDigital: true,
-            logotipo: true,
+
+        const elementosClonados = docHTML.querySelectorAll(".element");
+        elementosClonados.forEach((elementoClonado) => {
+            elementoClonado.style.textAlign = "center"; // Centraliza o conteúdo
+            elementoClonado.style.fontSize = "10px"; // Define um tamanho de fonte menor (alterado para 10px)
+            elementoClonado.style.lineHeight = "1.2"; // Define a altura da linha para evitar o texto sobreposto
+            // Adicione outras propriedades de estilo conforme necessário para reduzir o tamanho das informações
         });
 
-        const handleCheckboxChange = (checkboxId) => {
-            setCheckboxes((prevCheckboxes) => ({
-                ...prevCheckboxes,
-                [checkboxId]: !prevCheckboxes[checkboxId],
-            }));
+        const options = {
+            filename: `${razao}.pdf`,
+            image: { type: 'jpeg', quality: 1 }, // Melhora a qualidade da imagem
+            html2canvas: { scale: 2 }, // Aumenta a escala para melhorar a qualidade da imagem
+            jsPDF: {
+                format: 'a4',
+                margin: { top: 40, right: 40, bottom: 40, left: 40 } // Define margens em todos os lados
+            }
         };
 
-
-        return <div>
-            <div className="background">
-                <div ref={contentDocument} className="contrato container-fluid titulo-2" id="formId">
+        // Usa o html2pdf para converter o documento HTML em PDF e fazer o download
+        html2pdf().set(options).from(docHTML).save();
+    };
+    return <div>
+        <div className="background">
+            <div className="element contrato container-fluid titulo-2 " id="formId">
+                <div>
                     <div>
-                        <div className="texto-cima">
+                        <div className="texto-cima ">
                             <h1>
                                 <b>AUTORIZAÇÃO PARA ASSESSORIA COM A DIVULGAÇÃO DOS DADOS
                                     COMERCIAIS NA PLATAFORMA DO GOOGLE MAPS</b>
                             </h1>
                         </div>
-                        <div className="logo-street">
-                            <img src="https://media-gru2-2.cdn.whatsapp.net/v/t61.24694-24/322994036_1408740073183042_3992297649926957677_n.jpg?ccb=11-4&oh=01_AdTVAJAZQajXQmQ7Kukg4zOgoHgvHDqPTRN5vVKvshP2fQ&oe=65C4EF59&_nc_sid=e6ed6c&_nc_cat=107" alt="" />
+                        <div className="logo-street ">
+                            <img src="../../../img/maps--1-.webp" alt="" />
                         </div>
                     </div>
                     <table>
                         <tbody>
                             <tr>
-                                <td className="baixo">
+                                <td className="baixo ">
                                     <p>CONTRATO:</p>
                                     <input onChange={(e) => setNumeroContrato(e.target.value)} type="text" id="contrato" className="form-control" placeholder="Nº" required />
                                 </td>
-                                <td className="baixo">
+                                <td className="baixo ">
                                     <p>DATA:</p>
                                     <input onChange={(e) => setData(e.target.value)} id="date" type="date" className="form-control" />
                                 </td>
-                                <td className="baixo">
+                                <td className="baixo ">
                                     <p>OPERADOR:</p>
-                                    <input onChange={(e) => setOperador(e.target.value)} id="text" type="text" className="form-control" placeholder="Operador"/>
+                                    <input onChange={(e) => setOperador(e.target.value)} id="text" type="text" className="form-control" placeholder="Operador" />
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <form className="caixa2">
+                    <form className="caixa2 ">
                         <div className="row">
                             <div className="col-md-6">
                                 <label htmlFor="razaoSocial">Razão Social:</label>
@@ -549,52 +582,60 @@
                                 </label>
                             </div>
                         </div>
-                        <div className="input-group">
-                            <div className="input-group-prendend">
+                        <div className="input-group planos">
+                            <div className="input-group-prendend ">
                                 <span className="input-group-text">Plano</span>
                             </div>
-                            <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)}  id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>Mensal</option>
-                                <option>Trimestral</option>
-                                <option>Semestral</option>
-                                <option>Anual</option>
+                            <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)} id="estado" required>
+                                <option value="">{plano}</option>
+                                <option value="Cancelamento">Cancelamento</option>
+                                <option value="Mensal">Mensal</option>
+                                <option value="Trimestral">Trimestral</option>
+                                <option value="Semestral">Semestral</option>
+                                <option value="Anual">Anual</option>
                             </select>
                             <div className="invalid-feedback">
                                 Por favor, insira um estado válido.
                             </div>
-                            <div className="input-group-prendend">
+                            <div className="input-group-prendend ">
+                                <span className="input-group-text">Vencimento</span>
+                            </div>
+                            <div className="pre">
+                                <input onChange={(e) => setVenc2(e.target.value)} id="date" className="form-control " type="date" />
+                            </div>
+
+                        </div>
+                        <div className=" input-group">
+                            <div className="input-group-prendend ">
                                 <span className="input-group-text">Nª</span>
                             </div>
-                            <select className="custom-select d-block " onChange={(e) => setParcelas(e.target.value)}  id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
+                            <select className="custom-select d-block" onChange={(e) => setParcelas(e.target.value)} id="parcelas" required>
+                                <option value="">{parcelas}</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
                             </select>
-                            <div className="input-group-prendend">
+                            <div className="input-group-prendend  ">
                                 <span className="input-group-text">Parcela(s) de: </span>
                             </div>
-                            <div className="input-group-prendend">
+                            <div className="input-group-prendend  ">
                                 <span className="input-group-text">R$ </span>
                             </div>
-                            <input onChange={(e) => setValor(e.target.value)} type="text" className="form-control" id="contrato" placeholder="Valor" required />
-                            <div className="input-group-prendend">
-                                <span className="input-group-text">Data de vencimento</span>
+                            <div className="pre">
+                                <input onChange={(e) => setValor(e.target.value)} type="text" className="form-control " id="contrato" placeholder="Valor" required />
                             </div>
-                            <input onChange={(e) => setVenc2(e.target.value)} id="date" className="form-control"  type="date" />
                         </div>
                     </form>
-                    <div className="cond">
+                    <div className="cond ">
                         <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
                             MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
                             TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
@@ -607,12 +648,13 @@
                                 <p className="font-weight-bold frase">
                                     Assessoria dos serviços valido por:
                                 </p>
-                                <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)}  id="estado" required>
-                                    <option value="">Escolha</option>
-                                    <option>1 mês</option>
-                                    <option>3 meses</option>
-                                    <option>6 meses</option>
-                                    <option>1 ano</option>
+                                <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)} id="estado" required>
+                                    <option value="">{validade}</option>
+                                    <option value="Cancelamento">Cancelamento</option>
+                                    <option value="1 mês">1 mês</option>
+                                    <option value="3 meses">3 meses</option>
+                                    <option value="6 meses">6 meses</option>
+                                    <option value="1 ano">1 ano</option>
                                 </select>
                                 <p className="font-weight-bold frase">
                                     a contar da data de adesão.
@@ -638,7 +680,7 @@
                             </div>
                         </div>
                     </div>
-                    <div className="entorno">
+                    <div className="entorno ">
                         <div className="linha3">
                             <h3 className="">
                                 SUA EMPRESA PODERÁ CONTAR COM OS SEGUINTES SERVIÇOS:
@@ -660,34 +702,16 @@
                                 SUPORTE PARA CRIAÇÃO DE ANUNCIOS COM GESTORES DE TRAFEGO</p>
                         </div>
                         <hr className="mb-4" />
-                        <div className="inf">
-                            <h3>
-                                G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
-                                <br />
-                                E-MAIL: CONTATO@MAPSEMPRESAS.COM.BR
-                                <br />
-                                CENTRAL DE ATENDIMENTO
-                                <br />
-                                0800 580 2766
-                            </h3>
-                        </div>
-                        <hr className="mb-4" />
-
-                        <div className="direitos">
-                            <p className="font-weight-bold">
-                                <u> SIGA-NOS NAS REDES SOCIAIS CLIQUE NOS ICONES A BAIXO</u>
-                            </p>
-                        </div>
                         <div className="siga-redes">
                             <ul style={{ listStyle: 'none', padding: 0, display: 'flex' }}>
                                 <li className="so">
                                     <Link to="https://m.facebook.com/grupomapsempresas/" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-facebook"></i>
+                                        <i class="fa-brands fa-facebook face"></i>
                                     </Link>
                                 </li>
                                 <li className="so">
                                     <Link to="https://www.instagram.com/grupomaps/?igsh=OTAxMmV4Y2F2cHp3&utm_source=qr" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-instagram"></i>
+                                        <i class="fa-brands fa-instagram insta"></i>
                                     </Link>
                                 </li>
                                 <li className="so">
@@ -697,28 +721,35 @@
                                 </li>
                                 <li className="so">
                                     <Link to="https://www.youtube.com/watch?v=TdAkLQayZC8" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-youtube"></i>
+                                        <i class="fa-brands fa-youtube youtube"></i>
                                     </Link>
                                 </li>
                                 <li className="so">
                                     <Link to="https://api.whatsapp.com/send?phone=5508005802766&text=Ol%C3%A1" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-whatsapp"></i>
+                                        <i class="fa-brands fa-whatsapp whats"></i>
                                     </Link>
                                 </li>
                             </ul>
                         </div>
                         <br />
 
-                        <div className="direitos">
+                        <div className="direitos1">
                             <p className="font-weight-bold">
                                 <u> Verifique os termos de uso clicando no Link Abaixo;</u>
                             </p>
                         </div>
-
-                        <div className="linha-verde ">
-                            <h3>
-                                LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
-                            </h3>
+                        <div className="row faixa-arrow">
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="linha-verde ">
+                                <h3>
+                                    <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
+                                </h3>
+                            </div>
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            </div>
                         </div>
                     </div>
                     <div className="linha3 ">
@@ -726,7 +757,7 @@
                             LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
                         </h3>
                     </div>
-                    <div className="texto">
+                    <div className="texto ">
                         <p>
                             1. Do direito à privacidade
                             A Lei 13709/2018 - Lei Geral de Proteção de Dados (LGPD) estabelece como fundamento o respeito à privacidade. Desse modo, o
@@ -754,14 +785,13 @@
                             Não compartilhe a sua senha, ceder ou utilizar a senha de outra pessoa é tipificado como crime no art. 308, do Código Penal.
                         </p>
                     </div>
-                    <div className="escrever2 row">
+                    <div className="escrever2 row ">
                         <h5>
                             ASSINATURA DA CONTRATADA:
                         </h5>
                         <img src="../../../img/assinatura-maps.jpg" alt="" />
                     </div>
-                    <br /><br /><br />
-                    <div className="inf">
+                    <div className="inf ">
                         <h3>
                             G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
                             <br />
@@ -772,17 +802,19 @@
                             0800 580 2766
                         </h3>
                     </div>
-                    {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
-                    {sucesso === 'S' ? <Navigate to='/app/home' /> : null}
                 </div>
+                {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
+                {sucesso === 'S' ? <Navigate to='/app/home' /> : null}
             </div>
-            <div className="row salvar">
-                <Link to="/app/home" className="btn btn-warning btn-acao">Cancelar</Link>
-                <button onClick={cadastrarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
-                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
-                    {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
-                </button>
-            </div>
-        </div >
-    }
-    export default NovoCliente;
+
+        </div>
+        <div className="row salvar">
+            <Link to="/app/home" className="btn btn-warning btn-acao">Cancelar</Link>
+            <button onClick={cadastrarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
+            <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={loader}>
+                {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
+            </button>
+        </div>
+    </div >
+}
+export default NovoCliente;

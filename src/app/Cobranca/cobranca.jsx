@@ -30,6 +30,7 @@ function Cobranca() {
           valor: doc.data().valor,
           venc2: doc.data().venc2,
           pago: doc.data().pago || false,
+          cobrador: doc.data().cobrador,
         }));
         const filteredClientes = listaCli.filter(cliente => !cliente.pago);
         setClientes(filteredClientes);

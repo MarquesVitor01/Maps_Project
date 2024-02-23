@@ -10,32 +10,35 @@
 }
 
 body {
+    font-size: small;
     overflow-x: hidden;
     font-family: Arial, Helvetica, sans-serif;
 }
-
+.renovacao{
+    margin-top: -15px;
+}
 .titulo-2 {
     background-color: white;
-    width: 1050px;
+    width: 790px;
     margin-top: 15px;
     border: 5px solid black;
     font-family: Arial, Helvetica, sans-serif;
 }
-
-
-
 .texto-cima h1 {
     text-align: center;
     display: inline-block;
-    font-size: x-large;
+    font-size: large;
 }
-.escolha-select{
+
+.escolha-select {
     margin-top: -4px;
     padding: 2px;
 }
-.frase{
+
+.frase {
     padding: 5px;
 }
+
 .salvar {
     display: flex;
     justify-content: center;
@@ -54,14 +57,15 @@ body {
 
 .contrato {
     background-color: white;
+    margin: 0 auto;
 }
 
 .logo-street {
     justify-content: center;
     display: flex;
     padding: 10px;
-
-
+    margin-top: -15px;
+    margin-bottom: -15px;
 }
 
 .logo-street img {
@@ -80,13 +84,11 @@ body {
 .cima,
 .baixo {
     font-size: large;
-    padding: 8px;
     text-align: left;
 }
 
 .th {
     font-size: medium;
-
     background-color: #f2f2f2;
 }
 
@@ -140,6 +142,7 @@ body {
 }
 
 .siga-redes {
+    margin-top: -25px;
     display: flex;
     justify-content: space-around;
     list-style: none;
@@ -149,20 +152,23 @@ body {
     list-style: none;
     padding: 0;
     display: flex;
-  }
-  
-  .siga-redes li {
-    margin-right: 10px; /* ou qualquer valor que desejar */
-  }
-
-.so{
-    font-size: xx-large;
 }
+
+.siga-redes li {
+    margin-right: 10px;
+    /* ou qualquer valor que desejar */
+}
+
+.so {
+    font-size: medium;
+}
+
 .caixa2 {
     font-size: small;
-    padding: 5px;
     border: 1px solid black;
-
+}
+.caixa2 input{
+    margin-top: -8px;
 }
 
 .entorno {
@@ -210,6 +216,7 @@ body {
 .texto {
     margin-top: 5px;
     border: 1px solid black;
+    
 }
 
 .texto p {
@@ -218,7 +225,7 @@ body {
 
 
 .escrever2 {
-    padding: 20px;
+    padding: 5px;
     justify-content: center;
 }
 
@@ -229,71 +236,102 @@ body {
 
 .escrever2 h3 {
     text-align: center;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .linha3 {
     color: #ffffff;
-    height: 35px;
+    height: 20px;
     background-color: rgb(87, 87, 207);
     margin-top: 1px;
     text-align: center;
     border: 1px solid black;
     border-radius: 5px;
-    padding-top: 5px;
-
 }
-.linha3 h3{
-    font-size: medium;
 
+.linha3 h3 {
+    font-size: medium;
 }
 
 .linha-verde {
     color: #ffffff;
-    height: 30px;
-    background-color:rgb(11, 68, 11);
+    height: 40px;   
+    background-color: rgb(55, 189, 55);
     margin-top: 1px;
-    width: 50%;
+    width: 55%;
     text-align: center;
     border: 1px solid black;
     border-radius: 5px;
-    padding-top: 5px;
-    margin-left: 240px;
     margin-bottom: 5px;
-}
-.linha-verde h3{
-    font-size: medium;
+    text-decoration: none;
 }
 
+.linha-verde h3 {
+    font-size: medium;
+    margin-top: 10px;
+
+}
+
+.faixa-arrow{
+    justify-content: space-around;
+}
+
+.flecha-amarela i{
+    font-size: 80px;
+    margin-top: -20px ;
+    margin-bottom: -10px;
+}
+
+.linha-verde a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.face{
+    color: #366894;
+}
+.insta{
+    color: rgb(196, 20, 93);
+}
 .cond {
     margin-top: 10px;
     padding: 5px;
     border: 1px solid black;
     text-align: center;
-    font-size: medium;
+    font-size: small;
 }
 
 .acessoria {
     justify-content: space-around;
+    margin-top: -25px;
 
 }
 
-.renovacao {
-    margin-top: 20px;
+.youtube{
+    color: red;
 }
+.whats{
+    color: green;
+}
+
 
 .direitos {
-    padding: 5px;
+    padding: 4px;
     text-align: center;
-    font-size: medium;
+    font-size: small;
 }
 
-
-.linha3 h3 {
-    font-size: 20px;
+.direitos1 {
+    margin-top: -30px;
+    margin-bottom: -10px;
+    text-align: center;
+    font-size: small;
 }
-
 .inf h3 {
     font-size: small;
     text-align: center;
+}
+
+.pre{
+    margin-top: 8px;
 }

@@ -159,7 +159,7 @@ function EditarCliente(props) {
                         </h1>
                     </div>
                     <div className="logo-street">
-                        <img src="https://media-gru2-2.cdn.whatsapp.net/v/t61.24694-24/322994036_1408740073183042_3992297649926957677_n.jpg?ccb=11-4&oh=01_AdTVAJAZQajXQmQ7Kukg4zOgoHgvHDqPTRN5vVKvshP2fQ&oe=65C4EF59&_nc_sid=e6ed6c&_nc_cat=107" alt="" />
+                        <img src="../../../img/maps--1-.webp" alt="" />
                     </div>
                 </div>
                 <table>
@@ -495,76 +495,85 @@ function EditarCliente(props) {
                             </label>
                         </div>
                     </div>
-                    <div className="input-group">
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Plano</span>
+                    <div className="input-group planos">
+                            <div className="input-group-prendend ">
+                                <span className="input-group-text">Plano</span>
+                            </div>
+                            <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)} id="estado" required>
+                                <option value="">{plano}</option>
+                                <option value="Cancelamento">Cancelamento</option>
+                                <option value="Mensal">Mensal</option>
+                                <option value="Trimestral">Trimestral</option>
+                                <option value="Semestral">Semestral</option>
+                                <option value="Anual">Anual</option>
+                            </select>
+                            <div className="invalid-feedback">
+                                Por favor, insira um estado válido.
+                            </div>
+                            <div className="input-group-prendend ">
+                                <span className="input-group-text">Vencimento</span>
+                            </div>
+                            <div className="pre">
+                                <input onChange={(e) => setVenc2(e.target.value)} value={venc2} id="date" className="form-control " type="date" />
+                            </div>
+                            
                         </div>
-                        <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)}  value={plano} id="estado" required>
-                            <option value="">Escolha</option>
-                            <option>Mensal</option>
-                            <option>Trimestral</option>
-                            <option>Semestral</option>
-                            <option>Anual</option>
-                        </select>
-                        <div className="invalid-feedback">
-                            Por favor, insira um estado válido.
-                        </div>
-                        <div className="input-group-prendend">
+                        <div className=" input-group">
+                        <div className="input-group-prendend ">
                                 <span className="input-group-text">Nª</span>
                             </div>
-                            <select className="custom-select d-block " onChange={(e) => setParcelas(e.target.value)} value={parcelas}  id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
+                            <select className="custom-select d-block" onChange={(e) => setParcelas(e.target.value)} id="parcelas" required>
+                                <option value="">{parcelas}</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
                             </select>
-                            <div className="input-group-prendend">
+                            <div className="input-group-prendend  ">
                                 <span className="input-group-text">Parcela(s) de: </span>
                             </div>
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">R$</span>
+                            <div className="input-group-prendend  ">
+                                <span className="input-group-text">R$ </span>
+                            </div>
+                            <div className="pre">
+                                <input onChange={(e) => setValor(e.target.value)} value={valor} type="text" className="form-control " id="contrato" placeholder="Valor" required />
+                            </div>
                         </div>
-                        <input onChange={(e) => setValor(e.target.value)}  value={valor} type="text" className="form-control" id="contrato" placeholder="" required />
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Data de vencimento</span>
+                    </form>
+                    <div className="cond ">
+                        <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
+                            MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
+                            TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
+                            PRESTADO, ESTANDO CIENTE DO VALOR E DATA DE VENCIMENTO CONFORME COMBINADO ENTRE AS PARTES.
+                            APÓS O ACEITE VERBAL A EMPRESA G MAPS CONTACT CENTER EIRELI DARA INICIO AO PROCESSO DE ASSESSORIA A CONTRATANTE.
+                        </p>
+                        <br /><br /><br />
+                        <div className="acessoria ">
+                            <div className="input-group">
+                                <p className="font-weight-bold frase">
+                                    Assessoria dos serviços valido por:
+                                </p>
+                                <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)} id="estado" required>
+                                    <option value="">{validade}</option>
+                                    <option value="Cancelamento">Cancelamento</option>
+                                    <option value="1 mes">1 mês</option>
+                                    <option value="3 meses">3 meses</option>
+                                    <option value="6 meses">6 meses</option>
+                                    <option value="1 ano">1 ano</option>
+                                </select>
+                                <p className="font-weight-bold frase">
+                                    a contar da data de adesão.
+                                </p>
+                            </div>
                         </div>
-                        <input onChange={(e) => setVenc2(e.target.value)}  value={venc2} id="date" className="form-control" type="date" />
-                    </div>
-                </form>
-                <div className="cond">
-                    <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
-                        MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
-                        TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
-                        PRESTADO, ESTANDO CIENTE DO VALOR E DATA DE VENCIMENTO CONFORME COMBINADO ENTRE AS PARTES.
-                        APÓS O ACEITE VERBAL A EMPRESA G MAPS CONTACT CENTER EIRELI DARA INICIO AO PROCESSO DE ASSESSORIA A CONTRATANTE.
-                    </p>
-                    <br /><br /><br />
-                    <div className="acessoria ">
-                        <div className="input-group">
-                            <p className="font-weight-bold frase">
-                                Assessoria dos serviços valido por:
-                            </p>
-                            <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)}  value={validade} id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>1 mês</option>
-                                <option>3 meses</option>
-                                <option>6 meses</option>
-                                <option>1 ano</option>
-                            </select>
-                            <p className="font-weight-bold frase">
-                                a contar da data de adesão.
-                            </p>
-                        </div>
-                    </div>
                     <hr className="mb-4" />
                     <div className="row d-flex justify-content-center renovacao" >
                         <p className="col-md-3 mb-3">
@@ -660,12 +669,19 @@ function EditarCliente(props) {
                             <u> Verifique os termos de uso clicando no Link Abaixo;</u>
                         </p>
                     </div>
-
-                    <div className="linha-verde ">
-                        <h3>
-                            LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
-                        </h3>
-                    </div>
+                    <div className="row faixa-arrow">
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="linha-verde ">
+                                <h3>
+                                    <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
+                                </h3>
+                            </div>
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                        </div>
                 </div>
                 <div className="linha3 ">
                     <h3>

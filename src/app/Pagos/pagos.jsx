@@ -22,6 +22,9 @@ function Pagos() {
   const [cobradoresInfo, setCobradoresInfo] = useState({});
   const auth = getAuth();
   const user = auth.currentUser;
+  const [pagamentosPorDia, setPagamentosPorDia] = useState({});
+  const [pagamentosPorMes, setPagamentosPorMes] = useState({});
+  const [pagamentosPorAno, setPagamentosPorAno] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,15 +45,22 @@ function Pagos() {
           valor: doc.data().valor,
           venc2: doc.data().venc2,
           pago: doc.data().pago || false,
-          cobrador: doc.data().cobrador || 'Sem cobrança'
+          cobrador: doc.data().cobrador || 'Sem cobrança',
+          data: doc.data().data,
+          parcelas: doc.data().parcelas 
         }));
-  
+
         // Filtrar apenas os clientes marcados como pagos
         const clientesPagos = listaCli.filter(cliente => cliente.pago);
-  
+
         // Contar a frequência e calcular o valor total para cada cobrador dos clientes pagos
         const info = {};
+        const pagamentosPorDia = {};
+        const pagamentosPorMes = {};
+        const pagamentosPorAno = {};
+
         clientesPagos.forEach(cliente => {
+          // Contagem por cobrador
           if (!info[cliente.cobrador]) {
             info[cliente.cobrador] = {
               quantidade: 0,
@@ -59,23 +69,51 @@ function Pagos() {
           }
           info[cliente.cobrador].quantidade++;
           info[cliente.cobrador].valorTotal += parseFloat(cliente.valor); // Converter para número e somar
+
+          // Contagem por dia
+          const dataPagamento = new Date(cliente.data);
+          const dia = dataPagamento.getDate();
+          const chaveDia = `${dia}/${dataPagamento.getMonth() + 1}/${dataPagamento.getFullYear()}`;
+          if (!pagamentosPorDia[chaveDia]) {
+            pagamentosPorDia[chaveDia] = 0;
+          }
+          pagamentosPorDia[chaveDia]++;
+
+          // Contagem por mês
+          const chaveMes = `${dataPagamento.getMonth() + 1}/${dataPagamento.getFullYear()}`;
+          if (!pagamentosPorMes[chaveMes]) {
+            pagamentosPorMes[chaveMes] = 0;
+          }
+          pagamentosPorMes[chaveMes]++;
+
+          // Contagem por ano
+          const chaveAno = `${dataPagamento.getFullYear()}`;
+          if (!pagamentosPorAno[chaveAno]) {
+            pagamentosPorAno[chaveAno] = 0;
+          }
+          pagamentosPorAno[chaveAno]++;
         });
+
+        // Definir os estados com as informações calculadas
         setCobradoresInfo(info);
-  
+        setPagamentosPorDia(pagamentosPorDia);
+        setPagamentosPorMes(pagamentosPorMes);
+        setPagamentosPorAno(pagamentosPorAno);
+
         // Calcular o valor total apenas para os clientes marcados como pagos
         const totalValor = clientesPagos.reduce((total, cliente) => total + parseFloat(cliente.valor), 0); // Converter para número e somar
         setTotalValor(totalValor);
-  
+
         // Definir a lista de clientes
         setClientes(listaCli);
-  
+
         // Armazenar os clientes no localStorage
         localStorage.setItem('clientes', JSON.stringify(listaCli));
       } catch (error) {
         console.error('Erro ao obter dados:', error);
       }
     };
-  
+
     fetchData();
   }, [busca]);
 
@@ -132,7 +170,8 @@ function Pagos() {
                 valor: doc.data().valor,
                 data: doc.data().data,
                 venc2: doc.data().venc2,
-                cobrador: doc.data().cobrador
+                cobrador: doc.data().cobrador,
+                parcelas: doc.data().parcelas
               });
             }
           });
@@ -166,12 +205,14 @@ function Pagos() {
     if (user) {
       fetchData();
     }
-  }, [busca]);
+  }, [busca, user]);
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
   const contentDocument = useRef();
   const handlePrint = useReactToPrint({
     content: () => contentDocument.current,
   });
+
 
   return (
     <div>
@@ -188,13 +229,21 @@ function Pagos() {
                 {showDashboard ? 'Ocultar Dashboard' : 'Exibir Dashboard'}
               </button>
               <button
-              onClick={() => setOpen(!open)}
-              aria-controls="cobradores-info"
-              aria-expanded={open}
-              className="btn btn-primary btn-cli"
-            >
-              {open ? 'Esconder Informações' : 'Mostrar Informações'}
-            </button>
+                onClick={() => setOpen(!open)}
+                aria-controls="cobradores-info"
+                aria-expanded={open}
+                className="btn btn-primary btn-cli"
+              >
+                {open ? 'Fechar' : 'Cobrança'}
+              </button>
+              <button
+                onClick={() => setOpen2(!open2)}
+                aria-controls="cobradores-info"
+                aria-expanded={open2}
+                className="btn btn-danger btn-cli"
+              >
+                {open2 ? <i class="fa-solid fa-calendar-days"></i> : <i class="fa-solid fa-calendar-days"></i>}
+              </button>
             </div>
             <div className="col-8">
               <div className="input-group mb-3">
@@ -205,16 +254,46 @@ function Pagos() {
               </div>
             </div>
           </div>
+          <div>
+            <Collapse in={open2}>
+              <div ref={contentDocument}>
+                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
+                  {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
+                </button>
+
+                {Object.entries(pagamentosPorMes).map(([mes, quantidade]) => (
+                  <Card key={`mes_${mes}`} style={{ margin: '10px', padding: '10px' }}>
+                    <Card.Body>
+                      <Card.Title>Pagamentos em {mes}</Card.Title>
+                      <Card.Text>
+                        Quantidade de pagamentos: {quantidade}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+
+                {Object.entries(pagamentosPorAno).map(([ano, quantidade]) => (
+                  <Card key={`ano_${ano}`} style={{ margin: '10px', padding: '10px' }}>
+                    <Card.Body>
+                      <Card.Title>Pagamentos em {ano}</Card.Title>
+                      <Card.Text>
+                        Quantidade de pagamentos: {quantidade}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </div>
+            </Collapse>
+          </div>
           <div >
-            
             <Collapse in={open}>
               <div ref={contentDocument}>
-              <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
+                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
                   {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
                 </button>
                 {Object.entries(cobradoresInfo).map(([cobrador, info]) => (
                   <Card key={cobrador} style={{ margin: '10px', padding: '10px' }}>
-                    <Card.Body >
+                    <Card.Body>
                       <Card.Title>{cobrador}</Card.Title>
                       <Card.Text>
                         Vendas pagas: {info.quantidade}
@@ -227,7 +306,6 @@ function Pagos() {
               </div>
             </Collapse>
           </div>
-
           {showDashboard ? (
             <>
               <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
@@ -237,7 +315,7 @@ function Pagos() {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

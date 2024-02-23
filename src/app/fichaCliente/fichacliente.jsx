@@ -4,8 +4,8 @@ import '../EditarCliente/editarcliente.css'
 import '../fichaCliente/fichacliente.css'
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import 'firebase/firestore'
-import { useReactToPrint } from "react-to-print";
 import { linkWithRedirect } from "firebase/auth";
+import html2pdf from "html2pdf.js";
 function FichaCliente(props) {
     const [loader, setLoader] = useState(false);
     const [numeroContrato, setNumeroContrato] = useState('');
@@ -92,10 +92,6 @@ function FichaCliente(props) {
         };
         fetchData();
     }, [db, id]);
-    const contentDocument = useRef();
-    const handlePrint = useReactToPrint({
-        content: () => contentDocument.current,
-    });
     const [checkboxes, setCheckboxes] = useState({
         atualizacao: true,
         criacao: false,
@@ -111,9 +107,43 @@ function FichaCliente(props) {
         }));
     };
 
+    const handleDownloadPDF = () => {
+        // Seleciona os elementos que você deseja incluir no PDF
+        const elementos = document.querySelectorAll(".element");
+
+        // Cria um novo documento HTML para armazenar o conteúdo
+        const docHTML = document.createElement("div");
+
+        // Adiciona cada elemento selecionado ao documento HTML
+        elementos.forEach((elemento) => {
+            docHTML.appendChild(elemento.cloneNode(true));
+        }); 
+
+        const elementosClonados = docHTML.querySelectorAll(".element");
+        elementosClonados.forEach((elementoClonado) => {
+            elementoClonado.style.textAlign = "center"; // Centraliza o conteúdo
+            elementoClonado.style.fontSize = "10px"; // Define um tamanho de fonte menor (alterado para 10px)
+            elementoClonado.style.lineHeight = "1.2"; // Define a altura da linha para evitar o texto sobreposto
+            // Adicione outras propriedades de estilo conforme necessário para reduzir o tamanho das informações
+        });
+
+        const options = {
+            filename: `${razao}.pdf`,
+            image: { type: 'jpeg', quality: 1 }, // Melhora a qualidade da imagem
+            html2canvas: { scale: 2 }, // Aumenta a escala para melhorar a qualidade da imagem
+            jsPDF: {
+                format: 'a4',
+                margin: { top: 40, right: 40, bottom: 40, left: 40 } // Define margens em todos os lados
+            }
+        };
+
+        // Usa o html2pdf para converter o documento HTML em PDF e fazer o download
+        html2pdf().set(options).from(docHTML).save();
+    };
+
     return <div>
         <div className="background">
-        <div ref={contentDocument} className="contrato container-fluid titulo-2" id="formId">
+            <div className="element contrato container-fluid titulo-2" id="formId">
                 <div>
                     <div className="texto-cima">
                         <h1>
@@ -122,7 +152,7 @@ function FichaCliente(props) {
                         </h1>
                     </div>
                     <div className="logo-street">
-                        <img src="https://media-gru2-2.cdn.whatsapp.net/v/t61.24694-24/322994036_1408740073183042_3992297649926957677_n.jpg?ccb=11-4&oh=01_AdTVAJAZQajXQmQ7Kukg4zOgoHgvHDqPTRN5vVKvshP2fQ&oe=65C4EF59&_nc_sid=e6ed6c&_nc_cat=107" alt="" />
+                        <img src="../../../img/maps--1-.webp" alt="" />
                     </div>
                 </div>
                 <table>
@@ -138,7 +168,7 @@ function FichaCliente(props) {
                             </td>
                             <td className="baixo">
                                 <p>OPERADOR:</p>
-                                <input onChange={(e) => setOperador(e.target.value)} disabled value={operador} id="text" type="text" className="form-control" placeholder="Operador"/>
+                                <input onChange={(e) => setOperador(e.target.value)} disabled value={operador} id="text" type="text" className="form-control" placeholder="Operador" />
                             </td>
                         </tr>
                     </tbody>
@@ -458,52 +488,60 @@ function FichaCliente(props) {
                             </label>
                         </div>
                     </div>
-                    <div className="input-group">
-                        <div className="input-group-prendend">
+                    <div className="input-group planos">
+                        <div className="input-group-prendend ">
                             <span className="input-group-text">Plano</span>
                         </div>
-                        <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)} disabled value={plano}  id="estado" required>
-                            <option value="">Escolha</option>
-                            <option>Mensal</option>
-                            <option>Trimestral</option>
-                            <option>Semestral</option>
-                            <option>Anual</option>
+                        <select className="custom-select d-block " disabled onChange={(e) => setPlano(e.target.value)} id="estado" required>
+                            <option value="">{plano}</option>
+                            <option value="Cancelamento">Cancelamento</option>
+                            <option value="Mensal">Mensal</option>
+                            <option value="Trimestral">Trimestral</option>
+                            <option value="Semestral">Semestral</option>
+                            <option value="Anual">Anual</option>
                         </select>
                         <div className="invalid-feedback">
                             Por favor, insira um estado válido.
                         </div>
-                        <div className="input-group-prendend">
-                                <span className="input-group-text">Nª</span>
-                            </div>
-                            <select className="custom-select d-block " onChange={(e) => setParcelas(e.target.value)} value={parcelas} disabled  id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                            </select>
-                            <div className="input-group-prendend">
-                                <span className="input-group-text">Parcela(s) de: </span>
-                            </div>
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">R$</span>
+                        <div className="input-group-prendend ">
+                            <span className="input-group-text">Vencimento</span>
                         </div>
-                        <input onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" className="form-control" id="contrato" placeholder="" required />
-                        <div className="input-group-prendend">
-                            <span className="input-group-text">Data de vencimento</span>
+                        <div className="pre">
+                            <input onChange={(e) => setVenc2(e.target.value)} disabled value={venc2} id="date" className="form-control " type="date" />
                         </div>
-                        <input onChange={(e) => setVenc2(e.target.value)} disabled value={venc2} id="date" className="form-control"  type="date" />
+
+                    </div>
+                    <div className=" input-group">
+                        <div className="input-group-prendend ">
+                            <span className="input-group-text">Nª</span>
+                        </div>
+                        <select className="custom-select d-block" onChange={(e) => setParcelas(e.target.value)} disabled id="parcelas" required>
+                            <option value="">{parcelas}</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <div className="input-group-prendend  ">
+                            <span className="input-group-text">Parcela(s) de: </span>
+                        </div>
+                        <div className="input-group-prendend  ">
+                            <span className="input-group-text">R$ </span>
+                        </div>
+                        <div className="pre">
+                            <input onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" className="form-control " id="contrato" placeholder="Valor" required />
+                        </div>
                     </div>
                 </form>
-                <div className="cond">
+                <div className="cond ">
                     <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
                         MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
                         TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
@@ -516,13 +554,14 @@ function FichaCliente(props) {
                             <p className="font-weight-bold frase">
                                 Assessoria dos serviços valido por:
                             </p>
-                            <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)} disabled value={validade} id="estado" required>
-                                <option value="">Escolha</option>
-                                <option>1 mês</option>
-                                <option>3 meses</option>
-                                <option>6 meses</option>
-                                <option>1 ano</option>
-                            </select>
+                            <select className="custom-select d-block escolha-select " disabled onChange={(e) => setValidade(e.target.value)} id="estado" required>
+                                    <option value="">{validade}</option>
+                                    <option value="Cancelamento">Cancelamento</option>
+                                    <option value="1 mes">1 mês</option>
+                                    <option value="3 meses">3 meses</option>
+                                    <option value="6 meses">6 meses</option>
+                                    <option value="1 ano">1 ano</option>
+                                </select>
                             <p className="font-weight-bold frase">
                                 a contar da data de adesão.
                             </p>
@@ -534,13 +573,13 @@ function FichaCliente(props) {
                             <b>Renovação automatica</b>
                         </p>
                         <div className="form-check col-md-1 mb-3">
-                            <input onChange={(e) => setRenovSim(e.target.checked)}  checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
+                            <input onChange={(e) => setRenovSim(e.target.checked)} checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
                             <label className="form-check-label" htmlFor="flexCheckDefault">
                                 <b>Sim</b>
                             </label>
                         </div>
                         <div className="form-check mb-3">
-                            <input onChange={(e) => setRenovNao(e.target.checked)}  checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
+                            <input onChange={(e) => setRenovNao(e.target.checked)} checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
                             <label className="form-check-label" htmlFor="flexCheckChecked">
                                 <b>Não</b>
                             </label>
@@ -569,34 +608,16 @@ function FichaCliente(props) {
                             SUPORTE PARA CRIAÇÃO DE ANUNCIOS COM GESTORES DE TRAFEGO</p>
                     </div>
                     <hr className="mb-4" />
-                    <div className="inf">
-                        <h3>
-                            G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
-                            <br />
-                            E-MAIL: CONTATO@MAPSEMPRESAS.COM.BR
-                            <br />
-                            CENTRAL DE ATENDIMENTO
-                            <br />
-                            0800 580 2766
-                        </h3>
-                    </div>
-                    <hr className="mb-4" />
-
-                    <div className="direitos">
-                        <p className="font-weight-bold">
-                            <u> SIGA-NOS NAS REDES SOCIAIS CLIQUE NOS ICONES A BAIXO</u>
-                        </p>
-                    </div>
                     <div className="siga-redes">
                         <ul style={{ listStyle: 'none', padding: 0, display: 'flex' }}>
                             <li className="so">
                                 <Link to="https://m.facebook.com/grupomapsempresas/" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-facebook"></i>
+                                    <i class="fa-brands fa-facebook face"></i>
                                 </Link>
                             </li>
                             <li className="so">
                                 <Link to="https://www.instagram.com/grupomaps/?igsh=OTAxMmV4Y2F2cHp3&utm_source=qr" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-instagram"></i>
+                                    <i class="fa-brands fa-instagram insta"></i>
                                 </Link>
                             </li>
                             <li className="so">
@@ -606,29 +627,36 @@ function FichaCliente(props) {
                             </li>
                             <li className="so">
                                 <Link to="https://www.youtube.com/watch?v=TdAkLQayZC8" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-youtube"></i>
+                                    <i class="fa-brands fa-youtube youtube"></i>
                                 </Link>
                             </li>
                             <li className="so">
                                 <Link to="https://api.whatsapp.com/send?phone=5508005802766&text=Ol%C3%A1" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-whatsapp"></i>
+                                    <i class="fa-brands fa-whatsapp whats"></i>
                                 </Link>
                             </li>
                         </ul>
                     </div>
                     <br />
 
-                    <div className="direitos">
+                    <div className="direitos1">
                         <p className="font-weight-bold">
                             <u> Verifique os termos de uso clicando no Link Abaixo;</u>
                         </p>
                     </div>
-
-                    <div className="linha-verde ">
-                        <h3>
-                            LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
-                        </h3>
-                    </div>
+                    <div className="row faixa-arrow">
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="linha-verde ">
+                                <h3>
+                                    <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
+                                </h3>
+                            </div>
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                        </div>
                 </div>
                 <div className="linha3 ">
                     <h3>
@@ -669,7 +697,6 @@ function FichaCliente(props) {
                     </h5>
                     <img src="../../../img/assinatura-maps.jpg" alt="" />
                 </div>
-                <br /><br /><br />
                 <div className="inf">
                     <h3>
                         G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
@@ -686,7 +713,7 @@ function FichaCliente(props) {
             </div>
             <div className="row salvar">
                 {/* <Link to="/app/home" className="btn btn-warning btn-acao">Voltar</Link> */}
-                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={!(loader === false)}>
+                <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={!(loader === false)}>
                     {loader ? (<span>Baixando  </span>) : (<span>Baixar PDF  </span>)}<i className="fa-solid fa-file-pdf"></i>
                 </button>
             </div>

@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from 'sweetalert2';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 function ListaCliente3(props) {
     const [pagoStatus, setPagoStatus] = useState(() => {
         const storedStatus = localStorage.getItem('pagoStatus');
@@ -170,6 +171,8 @@ function ListaCliente3(props) {
         };
         fetchAcordoStatus();
     }, [props.arrayClientes]);
+
+
     const handleAcordoChange = async (clienteId, newValue) => {
         const currentDate = new Date().toISOString();
         const newData = newValue
@@ -210,6 +213,7 @@ function ListaCliente3(props) {
             <thead>
                 <tr className="table-secondary">
                     <th scope="col">CNPJ/CPF</th>
+                    <th scope="col">Cobrador</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Email</th>
                     <th scope="col">UF</th>
@@ -241,6 +245,7 @@ function ListaCliente3(props) {
                                 <Link to={`/app/home/fichacliente/${cliente.id}`}><i className="fa-solid fa-list icone-acao1"></i></Link>
                                 {cliente.cpf}
                             </th>
+                            <td className="align-middle">{cliente.cobrador || 'N/A'}</td>
                             <td className="align-middle">{cliente.nome || 'N/A'}</td>
                             <td className="align-middle">{cliente.email || 'N/A'}</td>
                             <td className="align-middle">{cliente.uf || 'N/A'}</td>
