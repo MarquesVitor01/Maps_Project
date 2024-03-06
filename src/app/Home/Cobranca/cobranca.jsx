@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar2 from "../Componentes/Navbar/navbar2";
-import ListaCliente3 from "../Componentes/ListaCliente/listacliente3";
+import Navbar2 from "../../Componentes/Navbar/navbar2";
+import ListaCliente3 from "../../Listas/listacobranca";
 import '../Cobranca/cobranca.css';
 import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';

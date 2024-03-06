@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import Navbar2 from "../Componentes/Navbar/navbar2";
-import ListaCliente2 from "../Componentes/ListaCliente/listacliente2";
-import '../Pagos/pagos.css';
-import Dashboard from "../Graficos/graficos";
-import { collection, getFirestore, getDocs, query } from 'firebase/firestore';
+import Navbar2 from "../../Componentes/Navbar/navbar2";
+import ListaPagos from "../../Listas/listapagos";
+import './financeiro.css';
+import Dashboard from "../../Componentes/Graficos/graficos";
+import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
 import 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useReactToPrint } from "react-to-print";
 import 'chart.js/auto';
 import { Collapse, Card } from 'react-bootstrap';
 
-function Pagos() {
+function Financeiro() {
   const [loader, setLoader] = useState(false);
   const [clientes, setClientes] = useState([]);
   const [busca, setBusca] = useState('');
@@ -33,7 +33,12 @@ function Pagos() {
         const user = auth.currentUser;
         const db = getFirestore();
         const clientesRef = collection(db, 'clientes');
-        const q = query(clientesRef);
+        let q;
+        if (exibirPagos) {
+          q = query(clientesRef, where("pago", "==", true));
+        } else {
+          q = query(clientesRef);
+        }
         const snapshot = await getDocs(q);
         const listaCli = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -47,11 +52,8 @@ function Pagos() {
           pago: doc.data().pago || false,
           cobrador: doc.data().cobrador || 'Sem cobrança',
           data: doc.data().data,
-          parcelas: doc.data().parcelas 
+          parcelas: doc.data().parcelas
         }));
-
-        // Filtrar apenas os clientes marcados como pagos
-        const clientesPagos = listaCli.filter(cliente => cliente.pago);
 
         // Contar a frequência e calcular o valor total para cada cobrador dos clientes pagos
         const info = {};
@@ -59,7 +61,7 @@ function Pagos() {
         const pagamentosPorMes = {};
         const pagamentosPorAno = {};
 
-        clientesPagos.forEach(cliente => {
+        listaCli.forEach(cliente => {
           // Contagem por cobrador
           if (!info[cliente.cobrador]) {
             info[cliente.cobrador] = {
@@ -101,7 +103,7 @@ function Pagos() {
         setPagamentosPorAno(pagamentosPorAno);
 
         // Calcular o valor total apenas para os clientes marcados como pagos
-        const totalValor = clientesPagos.reduce((total, cliente) => total + parseFloat(cliente.valor), 0); // Converter para número e somar
+        const totalValor = listaCli.reduce((total, cliente) => total + parseFloat(cliente.valor), 0); // Converter para número e somar
         setTotalValor(totalValor);
 
         // Definir a lista de clientes
@@ -115,7 +117,7 @@ function Pagos() {
     };
 
     fetchData();
-  }, [busca]);
+  }, [busca, exibirPagos]);
 
   useEffect(() => {
     const storedClientes = localStorage.getItem('clientes');
@@ -155,10 +157,16 @@ function Pagos() {
           const querySnapshot = await getDocs(q);
           const listaCli = [];
           querySnapshot.forEach((doc) => {
+            const lowercaseBusca = busca.toLowerCase(); // Convertendo a busca para minúsculas
+            const lowercaseNome = doc.data().nome.toLowerCase(); // Convertendo o nome do documento para minúsculas
+            const lowercaseEmail = doc.data().email.toLowerCase(); // Convertendo o email do documento para minúsculas
+            const lowercaseCPF = doc.data().cpf.toLowerCase(); // Convertendo o CPF do documento para minúsculas
+            const lowercaseRazao = doc.data().razao.toLowerCase();
             if (
-              doc.data().nome.indexOf(busca) >= 0 ||
-              doc.data().email.indexOf(busca) >= 0 ||
-              doc.data().cpf.indexOf(busca) >= 0
+              lowercaseNome.indexOf(lowercaseBusca) >= 0 ||
+              lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
+              lowercaseCPF.indexOf(lowercaseBusca) >= 0 ||
+              lowercaseRazao.indexOf(lowercaseBusca) >= 0
             ) {
               listaCli.push({
                 id: doc.id,
@@ -171,7 +179,9 @@ function Pagos() {
                 data: doc.data().data,
                 venc2: doc.data().venc2,
                 cobrador: doc.data().cobrador,
-                parcelas: doc.data().parcelas
+                parcelas: doc.data().parcelas,
+                allCheckboxesChecked: doc.data().allCheckboxesChecked,
+                encaminharCliente: doc.data().encaminharCliente,
               });
             }
           });
@@ -206,13 +216,13 @@ function Pagos() {
       fetchData();
     }
   }, [busca, user]);
+
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const contentDocument = useRef();
   const handlePrint = useReactToPrint({
     content: () => contentDocument.current,
   });
-
 
   return (
     <div>
@@ -298,7 +308,7 @@ function Pagos() {
                       <Card.Text>
                         Vendas pagas: {info.quantidade}
                         <br />
-                        Valor total: {info.valorTotal !== undefined ? parseFloat(info.valorTotal).toFixed(2) : 'Sem cobrança'}
+                        Valor total: {parseFloat(info.valorTotal).toFixed(2)}
                       </Card.Text>
                     </Card.Body>
                   </Card>
@@ -311,7 +321,7 @@ function Pagos() {
               <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
             </>
           ) : (
-            <ListaCliente2 arrayClientes={clientes} exibirPagos={exibirPagos} />
+            <ListaPagos arrayClientes={clientes} exibirPagos={exibirPagos} />
           )}
         </div>
       </div>
@@ -319,4 +329,4 @@ function Pagos() {
   );
 }
 
-export default Pagos;
+export default Financeiro;

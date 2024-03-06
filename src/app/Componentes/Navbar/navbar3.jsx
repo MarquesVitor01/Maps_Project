@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, query, getDocs, where } from 'firebase/firestore';
 import '../Navbar/navbar.css';
-import { AuthContext } from '../../Context/auth';
+import { AuthContext } from '../../Acesso/Context/auth';
 function Navbar3() {
     const [clientes, setClientes] = useState([]);
     const [quantidadeClientes, setQuantidadeClientes] = useState(0);

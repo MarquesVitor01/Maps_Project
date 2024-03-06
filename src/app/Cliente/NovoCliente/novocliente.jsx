@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
-import '../NovoCliente/novocliente.css'
+import './novocliente.css'
 import { getAuth } from 'firebase/auth';
 import { isEmpty } from 'lodash';
 import html2pdf from "html2pdf.js";
@@ -10,6 +10,7 @@ function NovoCliente() {
     const [loader, setLoader] = useState(false);
     const [formState, setFormState] = useState({
         nome: '',
+        nota: '',
         email: '',
         fone: '',
         numeroContrato: '',
@@ -39,7 +40,17 @@ function NovoCliente() {
         sociais: '',
         cobrador: '',
         vencimentoCobranca: '',
-        dataCobranca: ''
+        dataCobranca: '',
+        prop: '',
+        venc: '',
+        importanteDado: '',
+        apresentacao: '',
+        google: '',
+        dadosEmpresa: '',
+        conf: '',
+        naoEncaminharCliente: '',
+        encaminharCliente: '',
+        servicosRealizados: '',
     });
     const handleInputChange = (field, value) => {
         setFormState((prevState) => ({ ...prevState, [field]: value }));
@@ -60,6 +71,13 @@ function NovoCliente() {
     const [whats, setWhats] = useState('');
     const [endereco, setEndereco] = useState('');
     const [razao, setRazao] = useState('');
+    const [apresentacao, setApresentacao] = useState('');
+    const [google, setGoogle] = useState('');
+    const [dadosEmpresa, setDadosEmpresa] = useState('')
+    const [prop, setProp] = useState('');
+    const [conf, setConf] = useState('');
+    const [venc, setVenc] = useState('');
+    const [importanteDado, setImportanteDado] = useState('');
     const [cpf, setCpf] = useState('');
     const [link, setLink] = useState('');
     const [nome, setNome] = useState('');
@@ -67,6 +85,9 @@ function NovoCliente() {
     const [fantasia, setFantasia] = useState('');
     const [parcelas, setParcelas] = useState('1');
     const [cobrador, setCobrador] = useState('');
+    const [encaminharCliente, setEncaminharCliente] = useState(false);
+    const [naoEncaminharCliente, setNaoEncaminharCliente] = useState(false);
+    const [servicosRealizados, setServicosRealizados] = useState(false)
     const [vencimentoCobranca, setVencimentoCobranca] = useState('');
     const [dataCobranca, setDataCobranca] = useState('');
     const [email, setEmail] = useState('');
@@ -76,6 +97,7 @@ function NovoCliente() {
     const [renovNao, setRenovNao] = useState(false);
     const [validade, setValidade] = useState('');
     const [mensagem, setMensagem] = useState('');
+    const [nota, setNOta] = useState('')
     const [cargo, setCargo] = useState('');
     const [sucesso, setSucesso] = useState('');
     const navigate = useNavigate();
@@ -115,6 +137,7 @@ function NovoCliente() {
             }
             const clienteData = {
                 nome,
+                nota,
                 email,
                 fone,
                 numeroContrato,
@@ -145,7 +168,17 @@ function NovoCliente() {
                 dataCobranca,
                 vencimentoCobranca,
                 cobrador,
-                parcelas
+                parcelas,
+                prop,
+                venc,
+                importanteDado,
+                apresentacao,
+                google,
+                dadosEmpresa,
+                conf,
+                naoEncaminharCliente,
+                encaminharCliente,
+                servicosRealizados
             };
             const auth = getAuth();
             const userId = auth.currentUser.uid;
@@ -188,7 +221,18 @@ function NovoCliente() {
                 cobrador: '',
                 vencimentoCobranca: '',
                 dataCobranca: '',
-                parcelas: ''
+                parcelas: '',
+                nota: '',
+                prop: '',
+                venc: '',
+                importanteDado: '',
+                apresentacao: '',
+                google: '',
+                dadosEmpresa: '',
+                conf: '',
+                naoEncaminharCliente: '',
+                encaminharCliente: '',
+                servicosRealizados: '',
             });
             setMensagem('');
             setSucesso('S');
@@ -199,11 +243,6 @@ function NovoCliente() {
             setSucesso('N');
         }
     }
-    // const contentDocument = useRef();
-    // const handlePrint = useReactToPrint({
-    //     content: () => contentDocument.current,
-    // });
-
     const [checkboxes, setCheckboxes] = useState({
         atualizacao: true,
         criacao: false,
@@ -812,7 +851,7 @@ function NovoCliente() {
             <Link to="/app/home" className="btn btn-warning btn-acao">Cancelar</Link>
             <button onClick={cadastrarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
             <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={loader}>
-                {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
+                <i className="fa-solid fa-file-pdf"></i>{loader ? <span>Baixando</span> : <span>Baixar PDF</span>}
             </button>
         </div>
     </div >

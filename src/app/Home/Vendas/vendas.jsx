@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, Navigate } from 'react-router-dom';
-import Navbar from "../Componentes/Navbar/navbar";
-import ListaCliente from "../Componentes/ListaCliente/listacliente";
-import '../Home/home.css'
+import Navbar from "../../Componentes/Navbar/navbar";
+import ListaCliente from "../../Listas/listacliente";
+import './vendas.css'
 import { getAuth } from 'firebase/auth';
 import { collection, getFirestore, getDocs, doc, deleteDoc, query, where } from 'firebase/firestore';
 import 'firebase/firestore';
 import SweetAlert from "react-bootstrap-sweetalert";
-import clientesPDF from "../Reports/Clientes/clientes";
 const ScriptModal = ({ onClose }) => {
     return (
         <div className="script-modal over">
@@ -46,7 +45,22 @@ const ScriptModal = ({ onClose }) => {
         </div>
     );
 };
-function Home() {
+const MonthlyReportModal = ({ salesByMonth, onClose }) => {
+    return (
+        <div className="script-modal over">
+            <div className="script-modal-content">
+                <span className="close" onClick={onClose}>&times;</span>
+                <h2>Relatório Mensal</h2>
+                <ul>
+                    {Object.entries(salesByMonth).map(([month, count]) => (
+                        <li key={month}>Mês {month}: {count} vendas</li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+};
+function Vendas() {
     const [clientes, setClientes] = useState([]);
     const [busca, setBusca] = useState('');
     const [texto, setTexto] = useState('');
@@ -62,7 +76,7 @@ function Home() {
     const deleteUser = (id) => {
         const db = getFirestore();
         const clienteDocRef = doc(db, 'clientes', id);
-        if (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') {
+        if (user.uid === 'qZcIK0QqohSn5HYl7ppC5Mldnd73') {
             deleteDoc(clienteDocRef)
                 .then(() => {
                     console.log('Documento excluído com sucesso:', id);
@@ -77,15 +91,15 @@ function Home() {
             console.error('Usuário não tem permissão para excluir clientes.');
             setError('Você não tem permissão para excluir clientes.');
             alert('Você não tem permissão para excluir clientes.')
-            setConfirmacao(false); 
+            setConfirmacao(false);
         }
     };
     useEffect(() => {
         if (error) {
             const timeout = setTimeout(() => {
-                setError(null); 
-                <Navigate to='/app/home'></Navigate> 
-            }, 3000); 
+                setError(null);
+                <Navigate to='/app/home'></Navigate>
+            }, 3000);
             return () => clearTimeout(timeout);
         }
     }, [error]);
@@ -113,30 +127,37 @@ function Home() {
                 const querySnapshot = await getDocs(q);      
                 const listaCli = [];     
                 querySnapshot.forEach((doc) => {
-                  if (
-                    doc.data().nome.indexOf(busca) >= 0 ||
-                    doc.data().email.indexOf(busca) >= 0 ||
-                    doc.data().cpf.indexOf(busca) >= 0
-                  ) {
-                    listaCli.push({
-                      id: doc.id,
-                      cpf: doc.data().cpf,
-                      nome: doc.data().nome,
-                      email: doc.data().email,
-                      uf: doc.data().uf,
-                      fone: doc.data().fone,
-                      operador: doc.data().operador,
-                      valor: doc.data().valor,
-                      data: doc.data().data,
-                      cobrador: doc.data().cobrador,
-                    });
-                  }
+                    const lowercaseBusca = busca.toLowerCase(); // Convertendo a busca para minúsculas
+                    const lowercaseNome = doc.data().nome.toLowerCase(); // Convertendo o nome do documento para minúsculas
+                    const lowercaseEmail = doc.data().email.toLowerCase(); // Convertendo o email do documento para minúsculas
+                    const lowercaseCPF = doc.data().cpf.toLowerCase(); // Convertendo o CPF do documento para minúsculas
+                    const lowercaseRazao = doc.data().razao.toLowerCase(); // Convertendo a razão social do documento para minúsculas
+            
+                    if (
+                        lowercaseNome.indexOf(lowercaseBusca) >= 0 ||
+                        lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
+                        lowercaseCPF.indexOf(lowercaseBusca) >= 0 ||
+                        lowercaseRazao.indexOf(lowercaseBusca) >= 0
+                    ) {
+                        listaCli.push({
+                            id: doc.id,
+                            cpf: doc.data().cpf,
+                            nome: doc.data().nome,
+                            email: doc.data().email,
+                            uf: doc.data().uf,
+                            fone: doc.data().fone,
+                            operador: doc.data().operador,
+                            valor: doc.data().valor,
+                            data: doc.data().data,
+                            cobrador: doc.data().cobrador,
+                        });
+                    }
                 });
                 setClientes(listaCli);
                 setQuantidadeClientes(listaCli.length);
                 setLoading(false);
                 localStorage.setItem('clientes', JSON.stringify(listaCli));
-              }
+            }
             } catch (error) {
               console.error('Erro ao obter dados:', error);
               setError(error);
@@ -161,8 +182,103 @@ function Home() {
     const handleFecharScriptModal = () => {
         setScriptModalVisible(false);
     };
+    const [showModal, setShowModal] = useState(false);
+    const openModal = () => {
+        setShowModal(true);
+    };
+    const closeModal = () => {
+        setShowModal(false);
+    };
+    const countSalesByMonth = (clientes) => {
+        const salesByMonth = {};
+        clientes.forEach(cliente => {
+            const month = new Date(cliente.data).getMonth() + 1; // +1 porque os meses em JavaScript são indexados a partir de zero
+            if (salesByMonth[month]) {
+                salesByMonth[month]++;
+            } else {
+                salesByMonth[month] = 1;
+            }
+        });
+        return salesByMonth;
+    };
+    const salesByMonth = countSalesByMonth(clientes);
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            setBusca(texto);
+        }
+    };
+
+    const handleDownloadXML = () => {
+        // Criar o conteúdo do XML com base nos dados dos clientes
+        const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+          <clientes>
+            ${clientes.map(cliente => `
+              <cliente>
+                <cpf>${cliente.cpf}</cpf>
+                <nome>${cliente.nome}</nome>
+                <email>${cliente.email}</email>
+                <estado>${cliente.uf}</estado>
+                <telefone>${cliente.fone}</telefone>
+                <operador>${cliente.operador}</operador>
+                <valor>${cliente.valor}</valor>
+                <data>${cliente.data}</data>
+                <vencimento>${cliente.venc2}</vencimento>
+                <cobrador>${cliente.cobrador}</cobrador>
+              </cliente>
+            `).join('')}
+          </clientes>`;
+    
+        // Converter o XML em Blob
+        const blob = new Blob([xmlContent], { type: 'application/xml' });
+    
+        // Criar o URL do Blob
+        const url = URL.createObjectURL(blob);
+    
+        // Criar um link para download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'clientes.xml';
+    
+        // Simular o clique no link para iniciar o download
+        link.click();
+    
+        // Limpar o URL do Blob após o download
+        URL.revokeObjectURL(url);
+      };
+
+      const [showPopup, setShowPopup] = useState(false);
+  
+      useEffect(() => {
+          const checkTimeAndShowPopup = () => {
+              const now = new Date();
+              if (now.getHours() === 12 && now.getMinutes() === 0) {
+                  setShowPopup(true);
+              }
+          };
+          checkTimeAndShowPopup();
+  
+          const intervalId = setInterval(() => {
+              checkTimeAndShowPopup(); 
+          }, 60000); 
+  
+          return () => clearInterval(intervalId); 
+      }, []);
+  
+      const closePopup = () => {
+          setShowPopup(false);
+      };
+    
     return (
         <div>
+         {showPopup && (
+                <SweetAlert
+                    title="Horário do Almoço!"
+                    onConfirm={closePopup}
+                >
+                Bom apetite e não se esqueça de bater o ponto 😉
+                </SweetAlert>
+            )}
+            
             <Navbar />
             <div className="background7">
                 <div className="container-fluid titulo">
@@ -172,7 +288,7 @@ function Home() {
                             <Link to='/app/home/novocliente' className="btn btn-primary btn-cli" type="button">
                                 <i className="fa-solid fa-plus"></i> Clientes
                             </Link>
-                            <button onClick={(e) => clientesPDF(clientes)} className="btn btn-danger btn-cli" type="button" id="button-addon2">
+                            <button onClick={handleDownloadXML} className="btn btn-danger btn-cli" type="button" id="button-addon2">
                                 <i className="fa-solid fa-file-pdf"></i> Relatório de vendas
                             </button>
                             <button onClick={handleMostrarScript} className="btn btn-cli" type="button" id="button-addon2">
@@ -181,11 +297,32 @@ function Home() {
                             {isScriptModalVisible && (
                                 <ScriptModal onClose={handleFecharScriptModal} />
                             )}
+                            <button onClick={openModal} className="btn btn-success btn-cli" type="button" id="button-addon2">
+                                Relatório Mensal
+                            </button>
                         </div>
+                        {showModal && (
+                            <MonthlyReportModal
+                                salesByMonth={salesByMonth}
+                                onClose={closeModal}
+                            />
+                        )}
                         <div className="col-8 pesquisa">
                             <div className="input-group mb-3 ">
-                                <input onChange={(e) => setTexto(e.target.value)} type="text" className="form-control" placeholder="Pesquisar por descrição" aria-describedby="button-addon2" />
-                                <button onClick={(e) => setBusca(texto)} className="btn btn-primary" type="button" id="button-addon2">
+                                <input
+                                    onChange={(e) => setTexto(e.target.value)}
+                                    onKeyDown={handleKeyDown} // Adicionando o evento onKeyDown
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Pesquisar por descrição"
+                                    aria-describedby="button-addon2"
+                                />
+                                <button
+                                    onClick={() => setBusca(texto)}
+                                    className="btn btn-primary"
+                                    type="button"
+                                    id="button-addon2"
+                                >
                                     <i className="fa-solid fa-magnifying-glass"></i> Pesquisar
                                 </button>
                             </div>
@@ -213,4 +350,4 @@ function Home() {
         </div>
     );
 }
-export default Home;
+export default Vendas;

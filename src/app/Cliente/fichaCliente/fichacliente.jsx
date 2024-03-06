@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams, Navigate } from 'react-router-dom';
 import '../EditarCliente/editarcliente.css'
-import '../fichaCliente/fichacliente.css'
+import './fichacliente.css'
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import 'firebase/firestore'
-import { linkWithRedirect } from "firebase/auth";
+import emailjs from 'emailjs-com';
 import html2pdf from "html2pdf.js";
+
 function FichaCliente(props) {
     const [loader, setLoader] = useState(false);
     const [numeroContrato, setNumeroContrato] = useState('');
@@ -39,6 +40,13 @@ function FichaCliente(props) {
     const [email, setEmail] = useState('');
     const [fone, setFone] = useState('');
     const [mensagem, setMensagem] = useState('');
+    const [isScriptModalVisible, setScriptModalVisible] = useState(false);
+    const handleMostrarScript = () => {
+        setScriptModalVisible(true);
+    };
+    const handleFecharScriptModal = () => {
+        setScriptModalVisible(false);
+    };
     const db = getFirestore();
     const { id } = useParams();
     useEffect(() => {
@@ -117,7 +125,7 @@ function FichaCliente(props) {
         // Adiciona cada elemento selecionado ao documento HTML
         elementos.forEach((elemento) => {
             docHTML.appendChild(elemento.cloneNode(true));
-        }); 
+        });
 
         const elementosClonados = docHTML.querySelectorAll(".element");
         elementosClonados.forEach((elementoClonado) => {
@@ -139,6 +147,51 @@ function FichaCliente(props) {
 
         // Usa o html2pdf para converter o documento HTML em PDF e fazer o download
         html2pdf().set(options).from(docHTML).save();
+    };
+    const ScriptModal = ({ onClose }) => {
+
+        const [attachment, setAttachment] = useState(null);
+
+        const handleSendEmail = async () => {
+            const serviceID = 'service_9fer5al';
+            const templateID = 'template_omvbb2y';
+            const userID = 'DkZxCeqcBJqtQF_H_';
+            
+            try {
+                await emailjs.send(serviceID, templateID, {
+                    to_email: email,
+                    message: "oioioioioioioio",
+                }, userID, attachment);
+                console.log('E-mail enviado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao enviar e-mail:', error);
+            }
+        };
+        const handleFileChange = (event) => {
+            const file = event.target.files[0];
+            setAttachment(file);
+        };
+        return (
+            <div className="script-modal over">
+                <div className="script-modal-content ">
+                    <span className="close" onClick={onClose}>&times;</span>
+                    <br />
+                    <div className="caixa-modal">
+                        <h5>
+                            <b>ENCAMINHE APENAS PARA OS NOVOS CLIENTES!!!</b>
+                        </h5>
+                        <p>
+                            O e-mail vai com a mensagem automática de bem vindo para os novos clientes. <br />
+                            Só é necessario incluir o arquivo da venda e clicar no icone de enviar.
+                        </p>
+                        <div className="campo-modal">
+                            <input type="file" onChange={handleFileChange} />
+                            <button className="btn btn-danger btn-climodal" onClick={handleSendEmail}><i className="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return <div>
@@ -555,13 +608,13 @@ function FichaCliente(props) {
                                 Assessoria dos serviços valido por:
                             </p>
                             <select className="custom-select d-block escolha-select " disabled onChange={(e) => setValidade(e.target.value)} id="estado" required>
-                                    <option value="">{validade}</option>
-                                    <option value="Cancelamento">Cancelamento</option>
-                                    <option value="1 mes">1 mês</option>
-                                    <option value="3 meses">3 meses</option>
-                                    <option value="6 meses">6 meses</option>
-                                    <option value="1 ano">1 ano</option>
-                                </select>
+                                <option value="">{validade}</option>
+                                <option value="Cancelamento">Cancelamento</option>
+                                <option value="1 mes">1 mês</option>
+                                <option value="3 meses">3 meses</option>
+                                <option value="6 meses">6 meses</option>
+                                <option value="1 ano">1 ano</option>
+                            </select>
                             <p className="font-weight-bold frase">
                                 a contar da data de adesão.
                             </p>
@@ -645,18 +698,18 @@ function FichaCliente(props) {
                         </p>
                     </div>
                     <div className="row faixa-arrow">
-                            <div className="flecha-amarela">
-                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
-                            </div>
-                            <div className="linha-verde ">
-                                <h3>
-                                    <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
-                                </h3>
-                            </div>
-                            <div className="flecha-amarela">
-                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
-                            </div>
+                        <div className="flecha-amarela">
+                            <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
                         </div>
+                        <div className="linha-verde ">
+                            <h3>
+                                <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
+                            </h3>
+                        </div>
+                        <div className="flecha-amarela">
+                            <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                        </div>
+                    </div>
                 </div>
                 <div className="linha3 ">
                     <h3>
@@ -714,8 +767,14 @@ function FichaCliente(props) {
             <div className="row salvar">
                 {/* <Link to="/app/home" className="btn btn-warning btn-acao">Voltar</Link> */}
                 <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={!(loader === false)}>
-                    {loader ? (<span>Baixando  </span>) : (<span>Baixar PDF  </span>)}<i className="fa-solid fa-file-pdf"></i>
+                <i className="fa-solid fa-file-pdf"></i> {loader ? (<span>Baixando  </span>) : (<span>Baixar PDF  </span>)}
                 </button>
+                {/* <button onClick={handleMostrarScript} className="btn btn-primary btn-cli" type="button" id="button-addon2">
+                    <i class="fa-solid fa-envelope"></i> E-mail
+                </button>
+                {isScriptModalVisible && (
+                    <ScriptModal onClose={handleFecharScriptModal} />
+                )} */}
             </div>
         </div>
     </div>

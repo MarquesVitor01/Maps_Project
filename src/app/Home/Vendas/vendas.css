@@ -83,3 +83,6 @@
       opacity: 0.1; 
       z-index: -1; 
 }
+.script-modal-content{
+    padding: 7px;
+}

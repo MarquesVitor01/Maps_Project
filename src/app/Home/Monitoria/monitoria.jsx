@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Navbar4 from "../Componentes/Navbar/navbar4";
-import ListaClienteMarketing from "../Componentes/ListaCliente/listaclientemarketing";
-import '../HomeMarketing/homemarketing.css'
+import Navbar4 from "../../Componentes/Navbar/navbar4";
+import ListaClienteMarketing from "../../Listas/listamonitoria";
+import './monitoria.css'
 import { getAuth } from 'firebase/auth';
 import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
 import 'firebase/firestore';
-function HomeMarketing() {
+function Monitoria() {
     const [clientes, setClientes] = useState([]);
     const [busca, setBusca] = useState('');
     const [texto, setTexto] = useState('');
@@ -13,6 +13,8 @@ function HomeMarketing() {
     const [error, setError] = useState(null);
     const [quantidadeClientes, setQuantidadeClientes] = useState(0);
     const [showConcluidos, setShowConcluidos] = useState(false);
+    const [showNotConcluidos, setShowNotConcluidos] = useState(false);
+
     const auth = getAuth();
     const user = auth.currentUser;
     useEffect(() => {
@@ -21,8 +23,11 @@ function HomeMarketing() {
           const db = getFirestore();
           let q;
           if (showConcluidos) {
-            q = query(collection(db, 'clientes'), where('concluido', '==', true));
-          } else {
+            q = query(collection(db, 'clientes'), where('encaminharCliente', '==', true));
+          } else if(showNotConcluidos) {
+            q = query(collection(db, 'clientes'), where('encaminharCliente', '==', false));
+          }
+           else {
             q = query(collection(db, 'clientes'));
           }
           const querySnapshot = await getDocs(q);
@@ -37,7 +42,10 @@ function HomeMarketing() {
                 uf: doc.data().uf,
                 fone: doc.data().fone,
                 valor: doc.data().valor,
-                data: doc.data().data
+                data: doc.data().data,
+                operador: doc.data().operador,
+                encaminharCliente: doc.data().encaminharCliente,
+                naoEncaminharCliente: doc.data().naoEncaminharCliente
               });
             }
           });
@@ -53,7 +61,7 @@ function HomeMarketing() {
       if (user) {
         fetchData();
       }
-    }, [busca, showConcluidos, user]);
+    }, [busca, showConcluidos, showNotConcluidos, user]);
     useEffect(() => {
         const storedClientes = localStorage.getItem('clientes');
 
@@ -66,12 +74,20 @@ function HomeMarketing() {
     const handleShowConcluidos = () => {
         setShowConcluidos(!showConcluidos);
     };
+    const handleShowNotConcluidos = () => {
+      setShowNotConcluidos(!showNotConcluidos);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+        setBusca(texto);
+    }
+};
     return (
         <div>
             <Navbar4 />
             <div className="background6">
                 <div className="container-fluid titulo">
-                    <h1>Fila do Marketing</h1>
+                    <h1>Monitoria</h1>
                     <div className="row">
                         <div className="col-4 buttons">
                             <button
@@ -79,13 +95,21 @@ function HomeMarketing() {
                                 type="button"
                                 onClick={handleShowConcluidos}
                             >
-                                <i className="fa-solid fa-check"></i> {showConcluidos ? 'Todos' : 'Concluídos'}
+                                <i className="fa-solid fa-check"></i> {showConcluidos ? 'Todos' : 'Monitoria OK'}
+                            </button>
+                            <button
+                                className="btn btn-warning btn-cli"
+                                type="button"
+                                onClick={handleShowNotConcluidos}
+                            >
+                                 <i class="fa-solid fa-bell"></i>{showNotConcluidos ? 'Todos' : ' Vendas para analisar'}
                             </button>
                         </div>
                         <div className="col-8 pesquisa">
                             <div className="input-group mb-3 ">
                                 <input
                                     onChange={(e) => setTexto(e.target.value)}
+                                    onKeyDown={handleKeyDown} // Adicionando o evento onKeyDown
                                     type="text"
                                     className="form-control"
                                     placeholder="Pesquisar por nome"
@@ -108,4 +132,4 @@ function HomeMarketing() {
         </div>
     );
 }
-export default HomeMarketing;
+export default Monitoria;

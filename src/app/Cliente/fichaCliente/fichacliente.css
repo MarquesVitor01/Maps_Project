@@ -338,3 +338,13 @@ body {
 .pre{
     margin-top: 8px;
 }
+.caixa-modal{
+    text-align: center;
+}
+.campo-modal{
+    justify-content: space-around;
+    display: flex;
+}
+.campo-modal input{
+    padding-top: 5px;
+}

@@ -1,34 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getFirestore, collection, getDocs, where, query} from 'firebase/firestore';
 import { getStorage, ref, listAll } from 'firebase/storage';
 import '../Navbar/navbar.css';
-import { AuthContext } from '../../Context/auth';
+import { AuthContext } from '../../Acesso/Context/auth';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 function Navbar() {
   const [quantidadeClientes, setQuantidadeClientes] = useState(0);
-  const [clientesComArquivosCount, setClientesComArquivosCount] = useState(0);
   const { setLogado } = useContext(AuthContext);
   const auth = getAuth();
-  const navigate = useNavigate();
   const [isAdmUser, setIsAdmUser] = useState(false);
-  // const handleQuantidadeClientesComArquivos = async (clientesList) => {
-  //   try {
-  //     const storage = getStorage();
-  //     let clientesComArquivosCount = 0;
-  //     for (const cliente of clientesList) {
-  //       const clientePath = `arquivos/${cliente.id}`;
-  //       const clienteRef = ref(storage, clientePath);
-  //       const filesList = await listAll(clienteRef);
-  //       if (filesList.items.length > 0) {
-  //         clientesComArquivosCount++;
-  //       }
-  //     }
-  //     setClientesComArquivosCount(clientesComArquivosCount);
-  //   } catch (error) {
-  //     console.error('Erro ao obter a quantidade de clientes com arquivos:', error);
-  //   }
-  // };
   const handleVerificarPagos = async () => {
     try {
       const db = getFirestore();
@@ -86,9 +67,9 @@ function Navbar() {
           <h4 className="qtdClientes">
             <i className="fa-solid fa-user user-icon"></i>Vendas: {quantidadeClientes}
           </h4>
-          {/* <h4 className="qtdClientesAss">
-            <i className="fa-solid fa-file user-icon"></i>Assinados: {clientesComArquivosCount}
-          </h4> */}
+          <h4 className="qtdClientesAss">
+            <i className="fa-solid fa-file user-icon"></i>Nota: 7
+          </h4>
         </div>
         <button
           className="navbar-toggler"
@@ -115,7 +96,7 @@ function Navbar() {
             {isAdmUser && (
               <>
                 <li className="nav-item ">
-                  <Link to="/app/financeiromapsempresas" className="nav-link text-success" aria-current="page">
+                  <Link to="/app/financeiromapsempresas" className="nav-link text-primary" aria-current="page">
                     <b><i className="fa-solid fa-dollar-sign"></i> Financeiro</b>
                   </Link>
                 </li>
@@ -127,8 +108,14 @@ function Navbar() {
                 </li>
                 <li className="nav-item bar"> | </li>
                 <li className="nav-item ">
-                  <Link to="/app/cobrancamapsempresas" className="nav-link text" aria-current="page">
+                  <Link to="/app/cobrancamapsempresas" className="nav-link text-primary" aria-current="page">
                     <b><i className="fa-solid fa-tag"></i> Cobrança</b>
+                  </Link>
+                </li>
+                <li className="nav-item bar"> | </li>
+                <li className="nav-item ">
+                  <Link to="/app/monitoriamapsempresas" className="nav-link text-primary" aria-current="page">
+                    <b><i class="fa-solid fa-phone"></i> Monitoria</b>
                   </Link>
                 </li>
                 <li className="nav-item bar"> | </li>

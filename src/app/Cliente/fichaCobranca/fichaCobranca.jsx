@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from 'react-router-dom';
-import '../fichaCobranca/fichaCobranca.css'
+import './fichaCobranca.css'
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import 'firebase/firestore'
 

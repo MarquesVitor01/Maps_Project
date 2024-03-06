@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { Link } from "react-router-dom";
-import "./listaclientemarketing.css";
+import "./listamarketing.css";
 import Swal from 'sweetalert2';
-
 function ListaClienteMarketing(props) {
-  const [filtroDataVenda, setFiltroDataVenda] = useState(""); // Estado para armazenar a data de filtro
+  const [filtroDataVenda, setFiltroDataVenda] = useState("");
   const ScriptModal = ({ onClose, clientId, onCheckAll }) => {
     const [checkboxes, setCheckboxes] = useState(() => {
       const savedCheckboxes = localStorage.getItem(
@@ -192,80 +191,84 @@ function ListaClienteMarketing(props) {
   };
   return (
     <div>
-    <input
-      type="date"
-      value={filtroDataVenda}
-      onChange={(e) => setFiltroDataVenda(e.target.value)}
-      className="form-control date"
-    />
-    <table className="table table-hover table-bordered">
-      <thead>
-        <tr className="table-secondary">
-          <th scope="col">CNPJ/CPF</th>
-          <th scope="col">Nome</th>
-          <th scope="col">Email</th>
-          <th scope="col">UF</th>
-          <th scope="col">Telefone</th>
-          <th scope="col">Valor</th>
-          <th scope="col">Data de venda</th>
-          <th scope="col" className=""></th>
-          <th scope="col">Informações do acordo</th>
+      <input
+        type="date"
+        value={filtroDataVenda}
+        onChange={(e) => setFiltroDataVenda(e.target.value)}
+        className="form-control date"
+      />
+      <table className="table table-hover table-bordered">
+        <thead>
+          <tr className="table-secondary">
+            <th scope="col">CNPJ/CPF</th>
+            <th scope="col">Encaminhar</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Email</th>
+            <th scope="col">UF</th>
+            <th scope="col">Telefone</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Data de venda</th>
+            <th scope="col" className=""></th>
+            <th scope="col">Informações do acordo</th>
 
-        </tr>
-      </thead>
-      <tbody>
-        {props.arrayClientes.filter((cliente) => !filtroDataVenda || cliente.data >= filtroDataVenda).map((cliente) => (
-          <tr key={cliente.id} className="table-light">
-            <th scope="row " className="align-middle">
-              <Link
-                to={`/app/home/fichacliente/${cliente.id}`}
-                className="fa-solid fa-list icone-acao1 align-middle"
-              ></Link>
-              {cliente.cpf || "N/A"}
-            </th>
-            <td className="align-middle">{cliente.nome || 'N/A'}</td>
-            <td className="align-middle">{cliente.email || 'N/A'}</td>
-            <td className="align-middle">{cliente.uf || 'N/A'}</td>
-            <td className="align-middle">{cliente.fone || 'N/A'}</td>
-            <td className="align-middle">{cliente.valor || 'N/A'}</td>
-            <td className="align-middle">{cliente.data || 'N/A'}</td>
-            <td>
-              <button onClick={() => handleMostrarScript(cliente.id)}>
-                <i
-                  className={`fa-solid ${allCheckboxesChecked[cliente.id]
-                    ? "fa-check icone-verde"
-                    : "fa-paperclip"
-                    }`}
-                ></i>
-              </button>
-            </td>
-            <td>
-              <button onClick={() => addInfoManually(cliente.id)}>
-                Adicionar Informações
-              </button>
-              {additionalInfo[cliente.id] && (
-                <div>
-                  <strong>Informações:</strong> {additionalInfo[cliente.id].info}
-                  <br />
-                  <strong>Adicionado por:</strong> {additionalInfo[cliente.id].name}
-                  <br />
-                  <button onClick={() => deleteInfo(cliente.id)}>
-                    Excluir Informações
-                  </button>
-                </div>
-              )}
-            </td>
           </tr>
-        ))}
-      </tbody>
+        </thead>
+        <tbody>
+          {props.arrayClientes.filter(cliente => cliente.encaminharCliente === true)
+            .filter(cliente => !filtroDataVenda || cliente.data >= filtroDataVenda)
+            .map((cliente) => (
+              <tr key={cliente.id} className="table-light">
+                <th scope="row " className="align-middle">
+                  <Link
+                    to={`/app/home/fichacliente/${cliente.id}`}
+                    className="fa-solid fa-list icone-acao1 align-middle"
+                  ></Link>
+                  {cliente.cpf || "N/A"}
+                </th>
+                <td className="align-middle">{cliente.encaminharCliente ? 'Sim' : 'Não'}</td>
+                <td className="align-middle">{cliente.nome || 'N/A'}</td>
+                <td className="align-middle">{cliente.email || 'N/A'}</td>
+                <td className="align-middle">{cliente.uf || 'N/A'}</td>
+                <td className="align-middle">{cliente.fone || 'N/A'}</td>
+                <td className="align-middle">{cliente.valor || 'N/A'}</td>
+                <td className="align-middle">{cliente.data || 'N/A'}</td>
+                <td>
+                  <button onClick={() => handleMostrarScript(cliente.id)}>
+                    <i
+                      className={`fa-solid ${allCheckboxesChecked[cliente.id]
+                        ? "fa-check icone-verde"
+                        : "fa-paperclip"
+                        }`}
+                    ></i>
+                  </button>
+                </td>
+                <td>
+                  <button onClick={() => addInfoManually(cliente.id)}>
+                    Adicionar Informações
+                  </button>
+                  {additionalInfo[cliente.id] && (
+                    <div>
+                      <strong>Informações:</strong> {additionalInfo[cliente.id].info}
+                      <br />
+                      <strong>Adicionado por:</strong> {additionalInfo[cliente.id].name}
+                      <br />
+                      <button onClick={() => deleteInfo(cliente.id)}>
+                        Excluir Informações
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
       {isScriptModalVisible && selectedClientId && (
-        <ScriptModal
-          onClose={handleFecharScriptModal}
-          clientId={selectedClientId}
-          onCheckAll={handleCheckAll}
-        />
-      )}
-    </table>
+          <ScriptModal
+            onClose={handleFecharScriptModal}
+            clientId={selectedClientId}
+            onCheckAll={handleCheckAll}
+          />
+        )}
     </div>
   );
 }

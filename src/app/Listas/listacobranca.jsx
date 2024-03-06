@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from 'sweetalert2';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 function ListaCliente3(props) {
     const [pagoStatus, setPagoStatus] = useState(() => {
         const storedStatus = localStorage.getItem('pagoStatus');
@@ -99,12 +97,9 @@ function ListaCliente3(props) {
         }).then((result) => {
             if (result.isConfirmed) {
                 const senhaDigitada = document.getElementById('senha-exclusao').value;
-
-                // Adicione aqui a lógica de verificação da senha
-                const senhaCorreta = '@1V?$9En9o#1qa'; // Substitua com a sua senha real
+                const senhaCorreta = '@1V?$9En9o#1qa';
 
                 if (senhaDigitada === senhaCorreta) {
-                    // Se a senha estiver correta, proceda com a exclusão
                     setAdditionalInfo((prevInfo) => {
                         const updatedInfo = { ...prevInfo };
                         delete updatedInfo[clienteId];
@@ -113,7 +108,6 @@ function ListaCliente3(props) {
                     localStorage.setItem('additionalInfo', JSON.stringify({ ...additionalInfo, [clienteId]: null }));
                     Swal.fire('Informações excluídas!', '', 'success');
                 } else {
-                    // Senha incorreta
                     Swal.fire('Senha incorreta!', 'Você não tem permissão para excluir informações.', 'error');
                 }
             }
@@ -146,7 +140,6 @@ function ListaCliente3(props) {
                 return;
             }
             setAdditionalInfo((prevInfo) => ({ ...prevInfo, [clienteId]: { info, name } }));
-            // Update local storage after adding information
             localStorage.setItem('additionalInfo', JSON.stringify({ ...additionalInfo, [clienteId]: { info, name } }));
         }
     };
@@ -171,8 +164,11 @@ function ListaCliente3(props) {
         };
         fetchAcordoStatus();
     }, [props.arrayClientes]);
-
-
+    const sortedClientes = props.arrayClientes.sort((b, a) => new Date(b.venc2) - new Date(a.venc2));
+    const formatarData = (venc2) => {
+        const partes = venc2.split("-");
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      };
     const handleAcordoChange = async (clienteId, newValue) => {
         const currentDate = new Date().toISOString();
         const newData = newValue
@@ -202,7 +198,6 @@ function ListaCliente3(props) {
             } else {
                 setAcordoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: false }));
                 setAcordoDates((prevDates) => ({ ...prevDates, [clienteId]: null }));
-                // Remove the agreement date from localStorage if the user clicks 'Não'
                 localStorage.removeItem(`acordoDates_${clienteId}`);
                 console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
             }
@@ -222,12 +217,10 @@ function ListaCliente3(props) {
                     <th scope="col">Vencimento</th>
                     <th scope="col">Acordo</th>
                     <th scope="col">Informações do acordo</th>
-                    {/* <th scope="col">Pago</th>
-                    <th scope="col">Data de Pagamento</th> */}
                 </tr>
             </thead>
             <tbody>
-                {props.arrayClientes.map((cliente) => {
+                {sortedClientes.map((cliente) => {
                     const isPago = pagoStatus[cliente.id] || false;
                     const paymentDate = paymentDates[cliente.id] || null;
                     const isAcordo = acordoStatus[cliente.id] || false;
@@ -245,13 +238,13 @@ function ListaCliente3(props) {
                                 <Link to={`/app/home/fichacliente/${cliente.id}`}><i className="fa-solid fa-list icone-acao1"></i></Link>
                                 {cliente.cpf}
                             </th>
-                            <td className="align-middle">{cliente.cobrador || 'N/A'}</td>
+                            <td className="align-middle">{cliente.cobrador}</td>
                             <td className="align-middle">{cliente.nome || 'N/A'}</td>
                             <td className="align-middle">{cliente.email || 'N/A'}</td>
                             <td className="align-middle">{cliente.uf || 'N/A'}</td>
                             <td className="align-middle">{cliente.fone || 'N/A'}</td>
                             <td className="align-middle">{cliente.valor || 'N/A'}</td>
-                            <td className="align-middle">{cliente.venc2 || 'N/A'}</td>
+                            <td className="align-middle">{formatarData(cliente.venc2)}</td>
                             <td className="align-middle">
                                 <input
                                     type="checkbox"
