@@ -45,7 +45,7 @@ function Navbar3() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log('ID do usuário:', user.uid);
+                // console.log('ID do usuário:', user.uid);
                 setLogado(true);
             } else {
                 console.log('Nenhum usuário autenticado.');
@@ -74,11 +74,10 @@ function Navbar3() {
             <div className="collapse navbar-collapse  d-lg-flex justify-content-end" id="navbarNavDropdown">
                 <ul className="navbar-nav active">
                     <li className="nav-item ">
-                        <button onClick={handleVerificarPagos} style={{ border: 'none', background: 'none', cursor: 'pointer'}}  className="nav-link text-primary" aria-current="page"><b>Verificar Pagos</b></button>
+                        <button onClick={handleVerificarPagos} style={{ border: 'none', background: 'none', cursor: 'pointer' }} className="nav-link text-primary" aria-current="page"><b>Verificar Pagos</b></button>
                     </li>
-                    <li className="nav-item bar"> | </li>
                     <li className="nav-item">
-                        <Link to="/app" onClick={Logout} className="nav-link text-danger" aria-current="page"><b>Sair</b></Link>
+                        <Link to="/app" onClick={Logout} className="btn btn-danger btn-nav" aria-current="page"><b><i className="fa-solid fa-right-from-bracket"></i> SAIR </b></Link>
                     </li>
                 </ul>
             </div>

@@ -1,186 +1,122 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Swal from 'sweetalert2';
-import './listacliente.css';
-import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
 
-function ListaPagos(props) {
-  const [filtroDataVenda, setFiltroDataVenda] = useState(""); // Estado para armazenar a data de filtro
-  const [pagoStatus, setPagoStatus] = useState(() => {
-    const storedStatus = localStorage.getItem('pagoStatus');
-    return storedStatus ? JSON.parse(storedStatus) : {};
-  });
-  const [paymentDates, setPaymentDates] = useState(() => {
-    const storedDates = localStorage.getItem('paymentDates');
-    return storedDates ? JSON.parse(storedDates) : {};
-  });
-  const [valoresPagos, setValoresPagos] = useState(() => {
-    const storedValues = localStorage.getItem('valoresPagos');
-    return storedValues ? JSON.parse(storedValues) : {};
-  });
+function ListaCliente2(props) {
+  const [filtroDataVenda03, setFiltroDataVenda03] = useState(localStorage.getItem('filtroDataVenda03') || "");
+  const [filtroDataVenda02, setFiltroDataVenda02] = useState(localStorage.getItem('filtroDataVenda02') || "");
+  const [filtroDataVenda01, setFiltroDataVenda01] = useState(localStorage.getItem('filtroDataVenda01') || "");
 
   useEffect(() => {
-    localStorage.setItem('pagoStatus', JSON.stringify(pagoStatus));
-    localStorage.setItem('paymentDates', JSON.stringify(paymentDates));
-    localStorage.setItem('valoresPagos', JSON.stringify(valoresPagos));
-  }, [pagoStatus, paymentDates, valoresPagos]);
+    localStorage.setItem('filtroDataVenda03', filtroDataVenda03);
+    localStorage.setItem('filtroDataVenda02', filtroDataVenda02);
+    localStorage.setItem('filtroDataVenda01', filtroDataVenda01);
 
-  const fetchPagoStatus = async () => {
-    const db = getFirestore();
-    for (const cliente of props.arrayClientes) {
-      const clienteRef = doc(db, 'clientes', cliente.id);
-      const clienteDoc = await getDoc(clienteRef);
-      if (clienteDoc.exists()) {
-        const data = clienteDoc.data();
-        setPagoStatus((prevStatus) => ({
-          ...prevStatus,
-          [cliente.id]: data.pago || [],
-        }));
-        setPaymentDates((prevDates) => ({
-          ...prevDates,
-          [cliente.id]: data.paymentDates || [],
-        }));
-      }
+  }, [filtroDataVenda01, filtroDataVenda03, filtroDataVenda02]);
+  useEffect(() => {
+    // Carrega o filtro de data salvo no localStorage ao montar o componente
+    setFiltroDataVenda03(localStorage.getItem('filtroDataVenda03') || "");
+    setFiltroDataVenda02(localStorage.getItem('filtroDataVenda02') || "");
+    setFiltroDataVenda01(localStorage.getItem('filtroDataVenda01') || "");
+
+  }, []);
+
+  const sortedClientes = React.useMemo(() => {
+    return props.arrayClientes.slice().sort((a, b) => new Date(b.data) - new Date(a.data));
+  }, [props.arrayClientes]);
+
+  const formattedClientes = React.useMemo(() => {
+    return sortedClientes.map(cliente => {
+      return {
+        ...cliente,
+        formattedData03: formatarData(cliente.dataPagamento),
+        formattedData02: formatarData(cliente.venc2),
+        formattedData01: formatarData(cliente.data)
+      };
+    });
+  }, [sortedClientes]);
+
+  function formatarData(data) {
+    if (typeof data === 'string' && data.includes('-')) {
+      const partes = data.split('-');
+      return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    } else {
+      return 'N/A';
     }
-  };
-
-  const handlePagoChange = async (clienteId, parcelaIndex, newValue) => {
-    const currentDate = new Date().toLocaleString('pt-BR', { timeZone: 'UTC' });
-    const newData = newValue
-      ? { pago: true, dataPagamento: (paymentDates[clienteId] && paymentDates[clienteId][parcelaIndex]) || currentDate }
-      : { pago: false, dataPagamento: null };
-
-    const { value: selectedDate } = await Swal.fire({
-      title: 'Selecione a Data de Pagamento',
-      html: '<input type="date" id="datepicker" class="swal2-input">',
-      preConfirm: () => {
-        const selectedDate = document.getElementById('datepicker').value;
-        return selectedDate;
-      }
-    });
-
-    if (selectedDate) {
-      newData.dataPagamento = new Date(selectedDate).toISOString();
-    }
-
-    Swal.fire({
-      title: 'Confirmação',
-      text: `O valor em aberto ${newValue ? 'está pago' : 'não está pago'}? Clique aqui para ${newValue ? 'marcar' : 'desmarcar'}!`,
-      icon: 'question',
-      showCancelButton: false,
-      confirmButtonText: 'Sim',
-      cancelButtonText: 'Não',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setPagoStatus((prevStatus) => ({
-          ...prevStatus,
-          [clienteId]: {
-            ...prevStatus[clienteId],
-            [parcelaIndex]: newValue,
-          }
-        }));
-        setPaymentDates((prevDates) => ({
-          ...prevDates,
-          [clienteId]: {
-            ...prevDates[clienteId],
-            [parcelaIndex]: newData.dataPagamento,
-          }
-        }));
-        // Atualize o estado dos valores pagos
-        setValoresPagos(prevValues => {
-          const novoValor = parseFloat(props.arrayClientes.find(cliente => cliente.id === clienteId).valor) || 0;
-          const novosValores = { ...prevValues };
-          if (!novosValores[clienteId]) {
-            novosValores[clienteId] = {};
-          }
-          novosValores[clienteId][parcelaIndex] = newValue ? novoValor : 0;
-          return novosValores;
-        });
-        const db = getFirestore();
-        const clienteRef = doc(db, 'clientes', clienteId);
-        await updateDoc(clienteRef, newData);
-        console.log(`Status pago para o cliente ID ${clienteId}, parcela ${parcelaIndex} atualizado para ${newValue}`);
-      }
-    });
-  };
-
-  // Função para calcular o valor total
-  const calcularValorTotal = () => {
-    let total = 0;
-    Object.values(valoresPagos).forEach(cliente => {
-      Object.values(cliente).forEach(valor => {
-        total += valor;
-      });
-    });
-    return total;
-  };
-
+  }
   return (
     <div>
-      <input
-        type="date"
-        value={filtroDataVenda}
-        onChange={(e) => setFiltroDataVenda(e.target.value)}
-        className="form-control date"
-      />
-      <table className="table table-hover table-bordered">
+      <div className="row divAss">
+        <div className="divDate">
+          <p>DATA DA VENDA:</p>
+          <input
+            type="date"
+            value={filtroDataVenda01}
+            onChange={(e) => setFiltroDataVenda01(e.target.value)}
+            className="form-control date date-config"
+          />
+        </div>
+        <div className="divDate">
+          <p>DATA DE VENCIMENTO:</p>
+          <input
+            type="date"
+            value={filtroDataVenda02}
+            onChange={(e) => setFiltroDataVenda02(e.target.value)}
+            className="form-control date date-config"
+          />
+        </div>
+        <div className="divDate">
+          <p>DATA DE PAGAMENTO:</p>
+          <input
+            type="date"
+            value={filtroDataVenda03}
+            onChange={(e) => setFiltroDataVenda03(e.target.value)}
+            className="form-control date date-config"
+          />
+        </div>
+        <div className="txtAss row">
+          <div className="divAgenciados">
+            <h1>
+            </h1>
+          </div>
+          <div className="divAgenciados">
+            <h1>
+            </h1>
+          </div>
+        </div>
+      </div>
+      <table className="table table-hover table-bordered table-rounded">
         <thead>
-          <tr className="table-secondary">
-            <th scope="col" className="col-acao text-center" >CNPJ/CPF</th>
-            <th scope="col" className="col-acao text-center">Nome</th>
-            <th scope="col" className="col-acao text-center">Email</th>
+          <tr className="table-primari">
+            <th scope="col" className="col-acao text-center">CNPJ/CPF</th>
+            <th scope="col" className="col-acao text-center">NOME</th>
             <th scope="col" className="col-acao text-center">UF</th>
-            <th scope="col" className="col-acao text-center">Telefone</th>
-            <th scope="col" className="col-acao text-center">Valor</th>
-            <th scope="col" className="col-acao text-center">Cobrança</th>
-            <th scope="col" className="col-acao text-center">Vencimento</th>
-            <th scope="col" className="col-acao text-center">Parcelas</th>
-            <th scope="col" className="col-acao text-center">Ações</th>
+            <th scope="col" className="col-acao text-center">VALOR</th>
+            <th scope="col" className="col-acao text-center">VENCIMENTO</th>
+            <th scope="col" className="col-acao text-center">DATA DO PAGAMENTO</th>
+            <th scope="col" className="col-acao text-center">PAGAMENTO</th>
+            <th scope="col" className="col-acao text-center">PARCELAS</th>
+            <th scope="col" className="col-acao text-center">AÇÃO</th>
+            <th scope="col" className="col-acao text-center">COBRANÇA</th>
           </tr>
         </thead>
         <tbody>
-          {props.arrayClientes.filter((cliente) => {
-            const parcelas = parseInt(cliente.parcelas) || 0;
-            return (!filtroDataVenda || cliente.venc2 >= filtroDataVenda) || (cliente.venc2 >= filtroDataVenda && (props.exibirPagos ? parcelas > 0 : (Array.isArray(pagoStatus[cliente.id]) && pagoStatus[cliente.id].some(Boolean))));
-          }).map((cliente) => {
-            const parcelas = parseInt(cliente.parcelas) || 0;
-            if (props.exibirPagos && parcelas === 0) {
-              return null;
-            }
+          {formattedClientes.filter((cliente) => (!filtroDataVenda01 || cliente.data === filtroDataVenda01) && (!filtroDataVenda02 || cliente.venc2 === filtroDataVenda02) && (!filtroDataVenda03 || cliente.dataPagamento === filtroDataVenda03)).map((cliente) => {
             return (
-              <tr key={cliente.id} className="table-light">
-                <th scope="row">
+              <tr key={cliente.id} className="table-light text-center">
+                <th scope="row" >
                   <Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1"></Link>
                   {cliente.cpf}
                 </th>
-                <td className="align-middle">{cliente.nome}</td>
-                <td className="align-middle">{cliente.email}</td>
-                <td className="align-middle">{cliente.uf}</td>
-                <td className="align-middle">{cliente.fone}</td>
-                <td className="align-middle">{cliente.valor}</td>
-                <td className="align-middle">{cliente.cobrador || 'Sem cobrança'}</td>
-                <td className="align-middle">{cliente.venc2}</td>
-                <td className="align-middle">{cliente.parcelas}</td>
-                <td>
-                  {[...Array(parcelas)].map((_, index) => (
-                    <div key={index}>
-                      <input
-                        type="checkbox"
-                        checked={(pagoStatus[cliente.id] && pagoStatus[cliente.id][index]) || false}
-                        onChange={(e) => handlePagoChange(cliente.id, index, e.target.checked)}
-                      />
-                      <DatePicker
-                        selected={(paymentDates[cliente.id] && paymentDates[cliente.id][index]) ? new Date(paymentDates[cliente.id][index]).setDate(new Date(paymentDates[cliente.id][index]).getDate() + 1) : null}
-                        dateFormat="dd/MM/yyyy"
-                        onChange={(date) => {
-                          // Nada a fazer aqui, apenas para exibição da data
-                        }}
-                      />
-                    </div>
-                  ))}
-                </td>
+                <td className="align-middle text-center">{cliente.nome || 'N/A'} </td>
+                <td className="align-middle text-center">{cliente.uf || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.valor || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.formattedData02}</td>
+                <td className="align-middle text-center">{cliente.formattedData03}</td>
+                <td className="align-middle text-center">{cliente.simPago ? 'Sim' : 'Não'}</td>
+                <td className="align-middle text-center">{cliente.parcelas}</td>
+                <td className="align-middle text-center"><Link to={`/app/fichapagamento/${cliente.id}`} className="btn btn-primary btn-cliG2" type="button" id="button-addon2"><i className="fa-solid fa-bars light"></i></Link></td>
+                <td className="align-middle text-center"><Link to={`/app/fichafinanceiro/${cliente.id}`}><i className="fa-solid fa-sack-dollar"></i></Link></td>
               </tr>
             );
           })}
@@ -189,5 +125,4 @@ function ListaPagos(props) {
     </div>
   );
 }
-
-export default ListaPagos;
+export default ListaCliente2;

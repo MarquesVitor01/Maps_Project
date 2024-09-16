@@ -1,113 +1,166 @@
-.background9 {
-    background: linear-gradient(to right, #366894, #b44248);
-    height: 1500px;
-    width: 100%;
-    display: flex; /* Adiciona display flex */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    flex-direction: column; /* Empilha os itens verticalmente */
+.background13 {
+  background: linear-gradient(to right, #366894, #b44248);
+  height: max-content;
+  width: 100%;
+  display: flex; /* Adiciona display flex */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  flex-direction: column; /* Empilha os itens verticalmente */
 }
 
 .box {
-    border: 2px solid black;
-    background-color: #ffffffff;
-    justify-content: center;
-    align-items: center;
-    margin: auto; /* Centraliza a caixa dentro do flex container */
-    width: 50%; /* Define uma largura máxima para a caixa */
-    padding: 15px;
+  border: 2px solid black;
+  background-color: #ffffffff;
+  justify-content: center;
+  align-items: center;
+  margin: auto; /* Centraliza a caixa dentro do flex container */
+  width: 50%; /* Define uma largura máxima para a caixa */
+  padding: 15px;
 }
-
+.box1{
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
 .title {
-    text-align: center;
+background-color: yellow;
+width: 50%;
+padding: 10px;
+text-align: center;
 }
 
+.box2{
+align-items: center;
+padding: 10px;
+}
+.title2{
+background-color: red;
+width: 50%;
+padding: 10px;
+text-align: center;
+}
+.divNota select{
+font-size: large;
+}
+.divCaixaNOta{
+justify-content: center;
+display: flex ;
+}
+.divCaixaNOta h1{
+font-size: large;
+padding: 10px;
+}
+.title h1{
+font-size: large;
+}
+.title2 h1{
+color: #ffff;
+font-size: large;
+}
 .voltar {
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
 }
 
 .caixa-cobrador{
-    padding: 5px;
+  padding: 5px;
 }
 
 p{
-    font-size: 14px;
+  font-size: 14px;
 }
 .encaminhar{
-  justify-content: space-around;
-  padding: 5px;
+justify-content: space-around;
+padding: 5px;
 }
 .divMkt{
-  text-align: center;
-  padding-top: 10px;
+text-align: center;
+padding-top: 10px;
 } 
 .calculator {
-    max-width: 300px;
-    margin: 15px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
-    padding: 20px;
-  }
-  
-  .display {
-    width: 100%;
-    height: 50px;
-    font-size: 24px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #fff;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
-    text-align: right;
-  }
-  
-  .btnGeral {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  
-  .btnGeral .btnCalc {
-    width: 100%;
-    height: 50px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #4caf50;
-    color: #fff;
-    transition: background-color 0.3s;
-  }
-  
-  .btnGeral .btnCalc:hover {
-    background-color: #45a049;
-  }
-  
-  .btnGeral .btnCalc.operator {
-    background-color: #2196f3;
-  }
-  
-  .btnGeral .btnCalc.operator:hover {
-    background-color: #1e87db;
-  }
-  
-  .btnGeral .btnCalc.clear {
-    background-color: #f44336;
-  }
-  
-  .btnGeral .btnCalc.clear:hover {
-    background-color: #d32f2f;
-  }
-  
-  .btnGeral .btnCalc.equal {
-    grid-column: span 2;
-    background-color: #ff9800;
-  }
-  
-  .btnGeral .btnCalc.equal:hover {
-    background-color: #f57c00;
-  }
+  max-width: 300px;
+  margin: 15px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  padding: 20px;
+}
+
+.display {
+  width: 100%;
+  height: 50px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  text-align: right;
+}
+
+.btnGeral {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.btnGeral .btnCalc {
+  width: 100%;
+  height: 50px;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.btnGeral .btnCalc:hover {
+  background-color: #45a049;
+}
+
+.btnGeral .btnCalc.operator {
+  background-color: #2196f3;
+}
+
+.btnGeral .btnCalc.operator:hover {
+  background-color: #1e87db;
+}
+
+.btnGeral .btnCalc.clear {
+  background-color: #f44336;
+}
+
+.btnGeral .btnCalc.clear:hover {
+  background-color: #d32f2f;
+}
+
+.btnGeral .btnCalc.equal {
+  grid-column: span 2;
+  background-color: #ff9800;
+}
+
+.btnGeral .btnCalc.equal:hover {
+  background-color: #f57c00;
+}
+
+
+.divSimOuNao span{
+  font-size: larger;
+  padding: 10px 0px 10px 0px;
+}
+.divSimOuNao input{ 
+    margin-left: 40px;
+}
+
+.divSimOuNao label{
+  font-size: larger;
+}
+
+.divEscolha span{
+  margin-left: 30px;
+}

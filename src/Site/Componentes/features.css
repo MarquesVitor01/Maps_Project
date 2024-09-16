@@ -1,5 +1,45 @@
-.features {
-    height: 250px;
-    background-color: white;
-    box-shadow: 0 -4px 10px #014FBB;
-  }
+.sobre-nos {
+  padding: 50px 0;
+  text-align: center; /* Centraliza o texto dentro do elemento */
+  box-shadow: 0 -10px 10px rgba(0, 0, 0, 0.3);
+
+}
+
+.container {
+  display: flex;
+  justify-content: space-around; /* Alterado para distribuir o espaço entre os elementos */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section {
+  width: 30%; /* Define a largura de cada seção */
+}
+
+.text-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.image {
+  width: 170px; /* Define a largura das imagens */
+  height: 170px; /* Define a altura das imagens */
+  border-radius: 50%; /* Torna as imagens arredondadas */
+  object-fit: cover; /* Garante que a imagem cubra todo o contêiner, mesmo que haja distorção */
+  margin-bottom: 10px; /* Reduz o espaçamento abaixo da imagem */
+}
+
+.titulo-sobre {
+  text-align: center; /* Centraliza o texto */
+  margin-top: 30px; /* Espaçamento superior */
+  margin-bottom: 40px; /* Espaçamento inferior */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Aplica um text shadow */
+}
+
+.section {
+box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra para cima */
+padding-top: 20px; /* Ajusta o espaçamento superior para acomodar a sombra */
+margin-bottom: 50px; /* Adiciona espaçamento entre as seções */
+}

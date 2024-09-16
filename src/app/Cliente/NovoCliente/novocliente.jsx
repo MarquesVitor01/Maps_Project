@@ -1,62 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import './novocliente.css'
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import { isEmpty } from 'lodash';
 import html2pdf from "html2pdf.js";
+import QRCode from 'qrcode.react';
+import axios from 'axios';
+import qrCode from 'qrcode';
 function NovoCliente() {
+    const [cob, setCob] = useState('');
+    const [nomeCob, setNomeCob] = useState('');
     const [clientes, setClientes] = useState([]);
     const [loader, setLoader] = useState(false);
-    const [formState, setFormState] = useState({
-        nome: '',
-        nota: '',
-        email: '',
-        fone: '',
-        numeroContrato: '',
-        razao: '',
-        cpf: '',
-        fantasia: '',
-        endereco: '',
-        bairro: '',
-        uf: '',
-        cidade: '',
-        cep: '',
-        whats: '',
-        obs: '',
-        funcionamento: '',
-        valor: '',
-        plano: '',
-        renovNao: '',
-        renovSim: '',
-        validade: '',
-        data: '',
-        cargo: '',
-        venc2: '',
-        representante: '',
-        operador: '',
-        site: '',
-        link: '',
-        sociais: '',
-        cobrador: '',
-        vencimentoCobranca: '',
-        dataCobranca: '',
-        prop: '',
-        venc: '',
-        importanteDado: '',
-        apresentacao: '',
-        google: '',
-        dadosEmpresa: '',
-        conf: '',
-        naoEncaminharCliente: '',
-        encaminharCliente: '',
-        servicosRealizados: '',
-    });
-    const handleInputChange = (field, value) => {
-        setFormState((prevState) => ({ ...prevState, [field]: value }));
-    };
+    const [formState, setFormState] = useState({ qrCode: 'Your QR Code Data Here' });
     const [plano, setPlano] = useState('Escolha');
     const [data, setData] = useState('');
+    const [naoPago, setNaoPago] = useState('');
+    const [simPago, setSimPago] = useState('');
+    const [concluidoNao, setConcluidoNao] = useState('');
+    const [concluidoSim, setConcluidoSim] = useState('');
+    const [dataPagamento, setDataPagamento] = useState('');
+    const [encaminharClienteCobranca, setEncaminharClienteCobranca] = useState(false);
+    const [naoEncaminharClienteCobranca, setNaoEncaminharClienteCobranca] = useState(false);
     const [numeroContrato, setNumeroContrato] = useState('');
     const [bairro, setBairro] = useState('');
     const [obs, setObs] = useState('');
@@ -85,20 +51,64 @@ function NovoCliente() {
     const [fantasia, setFantasia] = useState('');
     const [parcelas, setParcelas] = useState('1');
     const [cobrador, setCobrador] = useState('');
-    const [encaminharCliente, setEncaminharCliente] = useState(false);
-    const [naoEncaminharCliente, setNaoEncaminharCliente] = useState(false);
-    const [servicosRealizados, setServicosRealizados] = useState(false)
-    const [vencimentoCobranca, setVencimentoCobranca] = useState('');
-    const [dataCobranca, setDataCobranca] = useState('');
     const [email, setEmail] = useState('');
     const [fone, setFone] = useState('');
     const [representante, setRepresentante] = useState('');
     const [renovSim, setRenovSim] = useState(true);
     const [renovNao, setRenovNao] = useState(false);
+    const [encaminharCliente, setEncaminharCliente] = useState(false);
+    const [naoEncaminharCliente, setNaoEncaminharCliente] = useState(false);
+    const [servicosRealizados, setServicosRealizados] = useState(false)
+    const [vencimentoCobranca, setVencimentoCobranca] = useState('');
+    const [dataCobranca, setDataCobranca] = useState('');
+    const [obsMonitoria, setObsMonitoria] = useState('');
+    const [produtosNao, setProdutosNao] = useState(false);
+    const [produtosSim, setProdutosSim] = useState(false);
+    const [confirmNao, setConfirmNao] = useState(false);
+    const [confirmSim, setConfirmSim] = useState(false);
+    const [informNao, setInformNao] = useState(false);
+    const [informSim, setInformSim] = useState(false);
+    const [pagamentoSim, setPagamentoSim] = useState(false);
+    const [pagamentoNao, setPagamentoNao] = useState(false);
+    const [clienteSim, setClienteSim] = useState(false);
+    const [clienteNao, setClienteNao] = useState(false);
+    const [envioSim, setEnvioSim] = useState(false);
+    const [envioNao, setEnvioNao] = useState(false);
+    const [namesSim, setNamesSim] = useState(false);
+    const [namesNao, setNamesNao] = useState(false);
+    const [grupoSim, setGrupoSim] = useState(false);
+    const [grupoNao, setGrupoNao] = useState(false);
+    const [dataAuditoriaSIm, setDataAuditoriaSIm] = useState(false);
+    const [dataAuditoriaNao, setDataAuditoriaNao] = useState(false);
+    const [artigoSim, setArtigoSim] = useState(false);
+    const [artigoNao, setArtigoNao] = useState(false);
+    const [compromissoSim, setCompromissoSim] = useState(false);
+    const [compromissoNao, setCompromissoNao] = useState(false);
+    const [fichaCorretaSim, setFichaCorretaSim] = useState(false)
+    const [fichaCorretaNao, setFichaCorretaNao] = useState(false);
+    const [nomeAuditoriaSim, setNomeAuditoriaSim] = useState(false);
+    const [nomeAuditoriaNao, setNomeAuditoriaNao] = useState(false);
+    const [descontosSim, setDescontosSim] = useState(false);
+    const [descontosNao, setDescontosNao] = useState(false);
+    const [nomeMonitor, setNomeMonitor] = useState('');
+    const [ramal, setRamal] = useState('')
+    const [googleNao, setGoogleNao] = useState(false);
+    const [googleSim, setGoogleSim] = useState(false);
+    const [apresentacaoSim, setApresentacaoSim] = useState(false);
+    const [apresentacaoNao, setApresentacaoNao] = useState(false);
+    const [siteSim, setSiteSim] = useState(false);
+    const [siteNao, setSiteNao] = useState(false);
+    const [dataMonitoria, setDataMonitoria] = useState('');
+    const [declaro, setDeclaro] = useState(true);
+    const [auditor, setAuditor] = useState('');
+    const [confirmCNPJ, setConfirmCnpj] = useState('');
     const [validade, setValidade] = useState('');
+    const [equipe, setEquipe] = useState('G MARKETING DIGITAL');
     const [mensagem, setMensagem] = useState('');
-    const [nota, setNOta] = useState('')
+    const [nota, setNOta] = useState(100);
     const [cargo, setCargo] = useState('');
+    const [celular, setCelular] = useState('');
+    const [email2, setEmail2] = useState('');
     const [sucesso, setSucesso] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
@@ -122,20 +132,29 @@ function NovoCliente() {
         };
     }, [navigate]);
     const db = getFirestore();
-    const clienteJaExiste = async (cpf) => {
-        const querySnapshot = await getDocs(query(collection(db, 'clientes'), where('cpf', '==', cpf)));
-        return !isEmpty(querySnapshot.docs);
-    };
+    // const clienteJaExiste = async (cpf) => {
+    //     const querySnapshot = await getDocs(query(collection(db, 'clientes'), where('cpf', '==', cpf)));
+    //     return !isEmpty(querySnapshot.docs);
+    // };
     async function cadastrarCliente() {
         try {
             if (nome.length === 0) {
-                setMensagem('Informe o seu nome');
+                setMensagem('Informe o nome do autorizante 😤');
                 return;
-            } else if (email.length === 0) {
-                setMensagem('Informe o email');
+            } else if (operador.length === 0) {
+                setMensagem('Informe o nome do operador 😤');
+                return;
+            } else if (cpf.length === 0) {
+                setMensagem('Informe o CNPJ ou CPF do cliente 😤');
+                return;
+            }
+            else if (email.length === 0) {
+                setMensagem('Informe o email do cliente 😤');
                 return;
             }
             const clienteData = {
+                nomeCob,
+                cob,
                 nome,
                 nota,
                 email,
@@ -178,16 +197,69 @@ function NovoCliente() {
                 conf,
                 naoEncaminharCliente,
                 encaminharCliente,
-                servicosRealizados
+                servicosRealizados,
+                produtosNao,
+                produtosSim,
+                confirmNao,
+                confirmSim,
+                informNao,
+                informSim,
+                pagamentoSim,
+                pagamentoNao,
+                clienteSim,
+                clienteNao,
+                envioSim,
+                envioNao,
+                namesSim,
+                namesNao,
+                grupoSim,
+                grupoNao,
+                dataAuditoriaSIm,
+                dataAuditoriaNao,
+                artigoSim,
+                artigoNao,
+                compromissoSim,
+                compromissoNao,
+                fichaCorretaSim,
+                fichaCorretaNao,
+                nomeAuditoriaSim,
+                nomeAuditoriaNao,
+                descontosSim,
+                descontosNao,
+                nomeMonitor,
+                ramal,
+                googleNao,
+                googleSim,
+                apresentacaoSim,
+                apresentacaoNao,
+                dataMonitoria,
+                auditor,
+                confirmCNPJ,
+                obsMonitoria,
+                siteNao,
+                siteSim,
+                concluidoNao,
+                concluidoSim,
+                dataPagamento,
+                simPago,
+                naoPago,
+                naoEncaminharClienteCobranca,
+                encaminharClienteCobranca,
+                equipe,
+                declaro,
+                celular,
+                email2,
+                qrCode: formState.qrCode, // Adicione o campo do QR Code aqui
+
             };
             const auth = getAuth();
             const userId = auth.currentUser.uid;
             clienteData.userId = userId;
-            const clienteExistente = await clienteJaExiste(cpf);
-            if (clienteExistente) {
-                setMensagem('Cliente já cadastrado.');
-                return;
-            }
+            // const clienteExistente = await clienteJaExiste(cpf);
+            // if (clienteExistente) {
+            //     setMensagem('Cliente já cadastrado.');
+            //     return;
+            // }
             const novoClienteRef = await addDoc(collection(db, 'clientes'), clienteData);
             setFormState({
                 nome: '',
@@ -233,10 +305,64 @@ function NovoCliente() {
                 naoEncaminharCliente: '',
                 encaminharCliente: '',
                 servicosRealizados: '',
+                produtosNao: '',
+                produtosSim: '',
+                confirmNao: '',
+                confirmSim: '',
+                informNao: '',
+                informSim: '',
+                pagamentoSim: '',
+                pagamentoNao: '',
+                clienteSim: '',
+                clienteNao: '',
+                envioSim: '',
+                envioNao: '',
+                namesSim: '',
+                namesNao: '',
+                grupoSim: '',
+                grupoNao: '',
+                dataAuditoriaSIm: '',
+                dataAuditoriaNao: '',
+                artigoSim: '',
+                artigoNao: '',
+                compromissoSim: '',
+                compromissoNao: '',
+                fichaCorretaSim: '',
+                fichaCorretaNao: '',
+                nomeAuditoriaSim: '',
+                nomeAuditoriaNao: '',
+                descontosSim: '',
+                descontosNao: '',
+                nomeMonitor: '',
+                ramal: '',
+                googleNao: '',
+                googleSim: '',
+                apresentacaoSim: '',
+                apresentacaoNao: '',
+                dataMonitoria: '',
+                auditor: '',
+                confirmCNPJ: '',
+                obsMonitoria: '',
+                siteNao: '',
+                siteSim: '',
+                concluidoNao: '',
+                concluidoSim: '',
+                dataPagamento: '',
+                simPago: '',
+                naoPago: '',
+                naoEncaminharClienteCobranca: '',
+                encaminharClienteCobranca: '',
+                equipe: '',
+                declaro: '',
+                celular: '',
+                email2: '',
+                qrCode: '',
+
             });
             setMensagem('');
             setSucesso('S');
             console.log('Novo cliente criado com ID:', novoClienteRef.id);
+            // sendSms();
         } catch (error) {
             console.error('Erro ao cadastrar cliente:', error);
             setMensagem('Ocorreu um erro ao cadastrar o cliente. Por favor, tente novamente.');
@@ -266,9 +392,43 @@ function NovoCliente() {
 
         // Adiciona cada elemento selecionado ao documento HTML
         elementos.forEach((elemento) => {
-            docHTML.appendChild(elemento.cloneNode(true));
-        });
+            // Clona o elemento principal
+            const elementoClonado = elemento.cloneNode(true);
 
+            // Busca a div com a classe 'inf' dentro do elemento principal
+            const divArea = elementoClonado.querySelector(".areaqr");
+
+            // Se a div 'areaqr' não for encontrada, pule para o próximo elemento
+            if (!divArea) return;
+
+            elementoClonado.classList.add("pdf-element");
+
+
+            // Cria uma div para conter o QR Code
+            const divElement = document.createElement("div");
+            divElement.className = "qr-code";
+
+            // Gera o QR Code como uma imagem
+            const qrCodeValue = formState.qrCode;
+            qrCode.toDataURL(qrCodeValue, { type: 'image/jpeg' })
+                .then(dataUrl => {
+                    // Cria um elemento de imagem com o QR Code
+                    const img = document.createElement("img");
+                    img.src = dataUrl;
+
+                    // Adiciona o elemento de imagem à div
+                    divElement.appendChild(img);
+
+                    // Insere a div do QR Code dentro da div 'inf'
+                    divArea.appendChild(divElement);
+                })
+                .catch(error => {
+                    console.error('Erro ao gerar QR Code:', error);
+                });
+
+            // Adiciona o elemento principal clonado ao documento HTML
+            docHTML.appendChild(elementoClonado);
+        });
 
         const elementosClonados = docHTML.querySelectorAll(".element");
         elementosClonados.forEach((elementoClonado) => {
@@ -291,43 +451,107 @@ function NovoCliente() {
         // Usa o html2pdf para converter o documento HTML em PDF e fazer o download
         html2pdf().set(options).from(docHTML).save();
     };
+    const handleScan = (data) => {
+        if (data) {
+            setScannedData(data);
+            setCameraActive(false); // Desativar a câmera quando um QR code for escaneado
+
+            setFormState({
+                ...formState,
+                qrCode: data.text,
+            });
+        }
+    };
+
+    const handleError = (err) => {
+        console.error(err);
+    };
+    const [scannedData, setScannedData] = useState(null);
+    const [cameraActive, setCameraActive] = useState(true);
+
+    const [response, setResponse] = useState('');
+
+    // const sendSms = async () => {
+    //     const payload = {
+    //       Sender: "G Marketing Digital", // Pode ser um nome ou número
+    //       Receivers: whats, // Número de telefone do destinatário
+    //       Content: "Mensagem enviada com sucesso" // Conteúdo da mensagem
+    //     };
+    
+    //     const options = {
+    //       method: 'POST',
+    //       url: 'http://localhost:3001/send-sms',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       data: payload
+    //     };
+    
+    //     try {
+    //       console.log('Sending SMS with payload:', payload); // Logando o payload
+    //       const res = await axios(options);
+    //       setResponse(res.data);
+    //     } catch (error) {
+    //       console.error('Error sending SMS:', error);
+    //       setResponse('Error sending SMS');
+    //     }
+    //   };
+
     return <div>
         <div className="background">
             <div className="element contrato container-fluid titulo-2 " id="formId">
                 <div>
-                    <div>
-                        <div className="texto-cima ">
-                            <h1>
-                                <b>AUTORIZAÇÃO PARA ASSESSORIA COM A DIVULGAÇÃO DOS DADOS
-                                    COMERCIAIS NA PLATAFORMA DO GOOGLE MAPS</b>
-                            </h1>
-                        </div>
-                        <div className="logo-street ">
-                            <img src="../../../img/maps--1-.webp" alt="" />
-                        </div>
+                    <div className="logo ">
+                        <img src="../../../img/tag.png" alt="" />
                     </div>
                     <table>
                         <tbody>
                             <tr>
-                                <td className="baixo ">
-                                    <p>CONTRATO:</p>
-                                    <input onChange={(e) => setNumeroContrato(e.target.value)} type="text" id="contrato" className="form-control" placeholder="Nº" required />
+                                <td className="baixo baixo-menor">
+                                    <p><b>CONTRATO Nº</b></p>
+                                    <input className="form-control" onChange={(e) => setNumeroContrato(e.target.value)} type="text" id="contrato" placeholder="Nº" />
                                 </td>
                                 <td className="baixo ">
-                                    <p>DATA:</p>
+                                    <p><b>DATA</b></p>
                                     <input onChange={(e) => setData(e.target.value)} id="date" type="date" className="form-control" />
                                 </td>
                                 <td className="baixo ">
-                                    <p>OPERADOR:</p>
+                                    <p><b>OPERADOR</b></p>
                                     <input onChange={(e) => setOperador(e.target.value)} id="text" type="text" className="form-control" placeholder="Operador" />
+                                </td>
+                                <td className="baixo baixo-medio">
+                                    <p><b>EQUIPE</b></p>
+                                    <input onChange={(e) => setEquipe(e.target.value)} value={equipe} id="text" type="text" className="form-control" placeholder="Equipe" />
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div className="acessoriaNew ">
+                        <div className="input-group">
+                            <h2 className="font-weight-bold frase col-sm-6">
+                                <u>VALIDO POR:</u>
+                            </h2>
+                            <div className="col-sm-4 select-validade">
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setValidade(e.target.value)} id="estado" required>
+                                    <option value="">{validade}</option>
+                                    <option value="Cancelamento">Cancelamento</option>
+                                    <option value="1 mês">1 mês</option>
+                                    <option value="3 meses">3 meses</option>
+                                    <option value="6 meses">6 meses</option>
+                                    <option value="1 ano">1 ano</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="linha3">
+                        <h3 className="">
+                            DADOS DA EMPRESA
+                        </h3>
+                    </div>
                     <form className="caixa2 ">
                         <div className="row">
-                            <div className="col-md-6">
-                                <label htmlFor="razaoSocial">Razão Social:</label>
+                            <div className="col-md-6 ">
+                                <label className="d-flex align-items-center justify-content-center lblInfo" htmlFor="lblInfo"><b>RAZÃO SOCIAL:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
@@ -339,21 +563,7 @@ function NovoCliente() {
                             </div>
 
                             <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Nome Fantasia:</label>
-                                <input
-                                    type="text"
-                                    id="nomeFantasia"
-                                    name="nomeFantasia"
-                                    onChange={(e) => setFantasia(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Nome Fantasia"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-6">
-                                <label htmlFor="razaoSocial">CNPJ/CPF:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>CNPJ/CPF:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
@@ -364,8 +574,23 @@ function NovoCliente() {
                                 />
                             </div>
 
+                        </div>
+
+                        <div className="row">
                             <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Endereço:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>NOME FANTASIA:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setFantasia(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Nome Fantasia"
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>ENDEREÇO COMERCIAL:</b></label>
                                 <input
                                     type="text"
                                     id="nomeFantasia"
@@ -378,18 +603,7 @@ function NovoCliente() {
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <label htmlFor="razaoSocial">Cidade:</label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setCidade(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Cidade"
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Bairro:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>BAIRRO:</b></label>
                                 <input
                                     type="text"
                                     id="nomeFantasia"
@@ -399,11 +613,23 @@ function NovoCliente() {
                                     placeholder="Bairro"
                                 />
                             </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo "><b>CEP:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setCep(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Cep"
+                                />
+                            </div>
+
 
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Estado:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>ESTADO:</b></label>
                                 <input
                                     type="text"
                                     id="nomeFantasia"
@@ -414,31 +640,25 @@ function NovoCliente() {
                                 />
                             </div>
                             <div className="col-md-6">
-                                <label htmlFor="razaoSocial">CEP:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>CIDADE:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
                                     name="razaoSocial"
-                                    onChange={(e) => setCep(e.target.value)}
+                                    onChange={(e) => setCidade(e.target.value)}
                                     className="form-control"
-                                    placeholder="Cep"
+                                    placeholder="Cidade"
                                 />
                             </div>
                         </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>CONTATOS DA EMPRESA;</u></b>
+                            </h2>
+                        </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <label htmlFor="razaoSocial">WhatsApp:</label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setWhats(e.target.value)}
-                                    className="form-control"
-                                    placeholder="WhatsApp"
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Telefone:</label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>TELEFONE FIXO:</b></label>
                                 <input
                                     type="text"
                                     id="nomeFantasia"
@@ -448,10 +668,68 @@ function NovoCliente() {
                                     placeholder="Telefone"
                                 />
                             </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="horario"><b>CELULAR:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setCelular(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Horario de funcionamento"
+                                />
+                            </div>
+
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>WHATSAPP COMERCIAL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setWhats(e.target.value)}
+                                    className="form-control"
+                                    placeholder="WhatsApp"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>E-MAIL PARA RECEBER AS NOTIFICAÇÕES E AVALIAÇÕES DOS CLIENTES;</u></b>
+                            </h2>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>1º E-MAIL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="form-control"
+                                    placeholder="E-mail"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>2º E-MAIL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setEmail2(e.target.value)}
+                                    className="form-control"
+                                    placeholder="E-mail"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>HORARIO DE FUNCIONAMENTO;</u></b>
+                            </h2>
                         </div>
                         <div className="row">
                             <div className="col-md-12">
-                                <label htmlFor="horario">Horario de funcionamento:</label>
                                 <input
                                     type="text"
                                     id="nomeFantasia"
@@ -462,36 +740,43 @@ function NovoCliente() {
                                 />
                             </div>
                         </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>SERVIÇOS ADCIONAIS;</u></b>
+                            </h2>
+                        </div>
                         <div className="row">
-                            <div className="col-md-6">
-                                <label htmlFor="razaoSocial">E-mail:</label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="form-control"
-                                    placeholder="E-mail"
-                                />
+                            <div className=" divAnuncio form-group temSite col-md-5">
+                                <label htmlFor="temSite" className="form-check-label"><b>CRIAÇÃO E DESENVOLVIMENTO DE WEB SITE</b></label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="temSite"
+                                        name="temSite"
+                                        checked={siteSim}
+                                        onChange={(e) => setSiteSim(e.target.checked)}
+                                        className="form-check-input"
+                                    />
+                                </div>
                             </div>
-
-                            <div className="col-md-6">
-                                <label htmlFor="site">Site:</label>
-                                <input
-                                    type="text"
-                                    id="nomeFantasia"
-                                    name="nomeFantasia"
-                                    onChange={(e) => setSite(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Site"
-                                />
+                            <div className="divAnuncio form-group temSite col-md-7.">
+                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANUNCIOS PATROCINADOS FACEBOOK/INSTAGRAM E GOOGLE ADS</b></label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="temLojaFisica"
+                                        name="temLojaFisica"
+                                        checked={siteNao}
+                                        onChange={(e) => setSiteNao(e.target.checked)}
+                                        className="form-check-input"
+                                    />
+                                </div>
                             </div>
                         </div>
-
-
+                        <br />
                         <div className="row">
-                            <div className="col-md-6">
-                                <label htmlFor="razaoSocial">Link da Página:</label>
+                            <div className="col-md-12">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE PARA INSERÇÃO DO SITE:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
@@ -501,47 +786,9 @@ function NovoCliente() {
                                     placeholder="Link"
                                 />
                             </div>
-
-                            <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Autorizante:</label>
-                                <input
-                                    type="text"
-                                    id="nomeFantasia"
-                                    name="nomeFantasia"
-                                    onChange={(e) => setNome(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Autorizante"
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <label htmlFor="nomeFantasia">Cargo:</label>
-                                <input
-                                    type="text"
-                                    id="nomeFantasia"
-                                    name="nomeFantasia"
-                                    onChange={(e) => setCargo(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Cargo"
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label htmlFor="razaoSocial">Redes Sociais:</label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setSociais(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Redes"
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
                             <div className="col-md-12">
-                                <label htmlFor="nomeFantasia">Observações:</label>
-                                <input
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>OBSERVAÇÕES:</b></label>
+                                <textarea
                                     type="text"
                                     id="nomeFantasia"
                                     name="nomeFantasia"
@@ -551,20 +798,95 @@ function NovoCliente() {
                                 />
                             </div>
                         </div>
-                        <div className="row atualizacao">
-                            <div className="custom-control custom-checkbox col-md-1.7 mb-3">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>NOME DO RESPONSÁVEL:</b></label>
                                 <input
-                                    type="checkbox"
-                                    className="custom-control-input"
-                                    id="atualizacao"
-                                    checked={checkboxes.atualizacao}
-                                    onChange={() => handleCheckboxChange("atualizacao")}
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setNome(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Autorizante"
                                 />
-                                <label className="custom-control-label" htmlFor="atualizacao">
-                                    Atualização
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>CARGO:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setCargo(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Cargo"
+                                />
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <div className="escrever2 row ">
+                        <h5>
+                            ASSINATURA DA CONTRATADA:
+                        </h5>
+                        <img src="../../../img/assinatura-maps.jpg" alt="" />
+                    </div>
+                    <div className="logo ">
+                        <img src="../../../img/tag.png" alt="" />
+                    </div>
+                    <div className="cond ">
+                        <p className=" font-weight-bold "><u className="text-primary">CONDIÇÕES</u>; 1º- ESTOU CIENTE QUE PARA CRIAÇÃO OU ATUALIZAÇÃO DA MINHA PAGÍNA DEVO ENCAMINHAR PARA A EMPRESA CONTRATADA QUANDO SOLICITADO POR PARTE DA EQUIPE DE SUPORTE TODAS AS INFORMAÇÕES NECESSARIAS. 2º- ASSUMO TAMBÉM A TOTAL RESPONSABILIDADE E AUTORIZO QUE A EMPRESA CONTRATADA DIVULGUE OS MEUS DADOS COMERCIAIS NO SITE DE BUSCA. 3º- SOBRE AS CONDIÇÕES ASSUMO AS OBRIGAÇÕES COM ESTA PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL REALIZADA PELA EMPRESA G MAPS CONTACT CENTER LTDA CNPJ; 40.407.753/0001-30 TENDO CIÊNCIA DO VALOR DE R$
+                            <input className="txtAcordo txtCond" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />. 4º SABENDO QUE O NÃO PAGAMENTO PODE GERAR A NEGATIVAÇÃO DO CPF/CNPJ JUNTO AOS ORGÃOS COMPETENTES (SERASA/CARTÓRIO) E QUE <u>O ACEITE DOS SERVIÇOS FOI REALIZADA DE FORMA VERBAL CONFORME O ARTIGO 107 DO CODIGO CIVIL LEI 10406 DE 10 DE JANEIRO DE 2002 E QUE A CÓPIA DESTE CONTRATO FOI ENCAMINHADA PARA O E-MAIL PRINCIPAL INFORMADO ACIMA.</u> 5º-TODAS AS SOLICITAÇÕES DEVERÃO SER ENCAMINHADAS PARA O DEPARTAMENTO DE MARKETING ATRAVÉS DO E-MAIL OU WHATSAPP AQUI DISPONIBILIZADOS. 6º- A CONTRATADA ASSUME AS OBRIGAÇÕES JUNTO A CONTRATANTE DE CONCLUIR E ENTREGAR OS SERVIÇOS PRESTADOS DENTRO DO PERIODO DE ATÉ 72HORAS UTEIS.
+                        </p>
+                        <div className="row faixa-arrow">
+                            <div className="flecha-amarela">
+                                <i className="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="linha-verde ">
+                                <a href="https://docs.google.com/document/d/16LfzgC0AeCyj98f4hQftWszwba0_fLSk/edit?usp=sharing&ouid=114492622142866276581&rtpof=true&sd=true">
+                                    <img src="../../../img/Imagem2.jpg" alt="" />
+                                </a>
+                            </div>
+                            <div className="flecha-amarela">
+                                <i className="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="direitos1">
+                                <p className="font-weight-bold">
+                                    <u> CLIQUE NA IMAGEM A CIMA PARA VERIFICAR OS TERMOS</u>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="row d-flex justify-content-center renovacao" >
+                            <div className="form-check col-md-1 mb-3">
+                                <input onChange={(e) => setDeclaro(e.target.checked)} checked={declaro} className="form-check-input" type="checkbox" id="flexCheckDefault" />
+                            </div>
+                            <p className="col-md-11. mb-3">
+                                <b>DECLARO TER LIDO OS TERMOS DE USO ESTANDO EM PLENA E TOTAL CONCORDÂNCIA.</b>
+                            </p>
+                        </div>
+                        <div className="row d-flex justify-content-center renova" >
+                            <p className="col-md-3 mb-3">
+                                <b>Renovação automatica</b>
+                            </p>
+                            <div className="form-check col-md-1 mb-3">
+                                <input onChange={(e) => setRenovSim(e.target.checked)} checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
+                                <label className="form-check-label" htmlFor="flexCheckDefault">
+                                    <b>Sim</b>
                                 </label>
                             </div>
-                            <p className=" mb-3 font-weight-bold"> - </p>
+                            <div className="form-check mb-3">
+                                <input onChange={(e) => setRenovNao(e.target.checked)} checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
+                                <label className="form-check-label" htmlFor="flexCheckChecked">
+                                    <b>Não</b>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="linha3">
+                            <h3 className="">
+                                BÔNUS
+                            </h3>
+                        </div>
+                        <div className="row atualizacao">
 
                             <div className="custom-control custom-checkbox col-md-1.7 mb-3">
                                 <input
@@ -621,225 +943,54 @@ function NovoCliente() {
                                 </label>
                             </div>
                         </div>
-                        <div className="input-group planos">
-                            <div className="input-group-prendend ">
-                                <span className="input-group-text">Plano</span>
-                            </div>
-                            <select className="custom-select d-block " onChange={(e) => setPlano(e.target.value)} id="estado" required>
-                                <option value="">{plano}</option>
-                                <option value="Cancelamento">Cancelamento</option>
-                                <option value="Mensal">Mensal</option>
-                                <option value="Trimestral">Trimestral</option>
-                                <option value="Semestral">Semestral</option>
-                                <option value="Anual">Anual</option>
-                            </select>
-                            <div className="invalid-feedback">
-                                Por favor, insira um estado válido.
-                            </div>
-                            <div className="input-group-prendend ">
-                                <span className="input-group-text">Vencimento</span>
-                            </div>
-                            <div className="pre">
-                                <input onChange={(e) => setVenc2(e.target.value)} id="date" className="form-control " type="date" />
-                            </div>
-
-                        </div>
-                        <div className=" input-group">
-                            <div className="input-group-prendend ">
-                                <span className="input-group-text">Nª</span>
-                            </div>
-                            <select className="custom-select d-block" onChange={(e) => setParcelas(e.target.value)} id="parcelas" required>
-                                <option value="">{parcelas}</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                            </select>
-                            <div className="input-group-prendend  ">
-                                <span className="input-group-text">Parcela(s) de: </span>
-                            </div>
-                            <div className="input-group-prendend  ">
-                                <span className="input-group-text">R$ </span>
-                            </div>
-                            <div className="pre">
-                                <input onChange={(e) => setValor(e.target.value)} type="text" className="form-control " id="contrato" placeholder="Valor" required />
-                            </div>
-                        </div>
-                    </form>
-                    <div className="cond ">
-                        <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
-                            MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
-                            TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
-                            PRESTADO, ESTANDO CIENTE DO VALOR E DATA DE VENCIMENTO CONFORME COMBINADO ENTRE AS PARTES.
-                            APÓS O ACEITE VERBAL A EMPRESA G MAPS CONTACT CENTER EIRELI DARA INICIO AO PROCESSO DE ASSESSORIA A CONTRATANTE.
-                        </p>
-                        <br /><br /><br />
-                        <div className="acessoria ">
-                            <div className="input-group">
-                                <p className="font-weight-bold frase">
-                                    Assessoria dos serviços valido por:
-                                </p>
-                                <select className="custom-select d-block escolha-select " onChange={(e) => setValidade(e.target.value)} id="estado" required>
-                                    <option value="">{validade}</option>
-                                    <option value="Cancelamento">Cancelamento</option>
-                                    <option value="1 mês">1 mês</option>
-                                    <option value="3 meses">3 meses</option>
-                                    <option value="6 meses">6 meses</option>
-                                    <option value="1 ano">1 ano</option>
-                                </select>
-                                <p className="font-weight-bold frase">
-                                    a contar da data de adesão.
-                                </p>
-                            </div>
-                        </div>
-                        <hr className="mb-4" />
-                        <div className="row d-flex justify-content-center renovacao" >
-                            <p className="col-md-3 mb-3">
-                                <b>Renovação automatica</b>
-                            </p>
-                            <div className="form-check col-md-1 mb-3">
-                                <input onChange={(e) => setRenovSim(e.target.checked)} checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
-                                <label className="form-check-label" htmlFor="flexCheckDefault">
-                                    <b>Sim</b>
-                                </label>
-                            </div>
-                            <div className="form-check mb-3">
-                                <input onChange={(e) => setRenovNao(e.target.checked)} checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
-                                <label className="form-check-label" htmlFor="flexCheckChecked">
-                                    <b>Não</b>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="entorno ">
-                        <div className="linha3">
-                            <h3 className="">
-                                SUA EMPRESA PODERÁ CONTAR COM OS SEGUINTES SERVIÇOS:
-                            </h3>
-                        </div>
-                        <div className="direitos">
-                            <p className="font-weight-bold">ATUALIZAÇÃO OU CRIAÇÃO DA PÁGINA GOOGLE <br /><br />
-                                CRIAÇÃO DE CARTÃO DIGITAL INTERATIVO <br /><br />
-                                CRIAÇÃO DE QR CODE DIRECIONADOR <br /><br />
-                                ALTERAÇÃO DE ENDEREÇO E HORÁRIO DE FUNCIONAMENTO <br /><br />
-                                INCLUSÃO DE 30 FOTOS E 5 VIDEOS MENSALMENTE <br /><br />
-                                RESGATE DE DOMINIO GOOGLE MEU NEGÓCIO (Opicional mediante solicitação) <br /><br />
-                                ANIMAÇÃO DE LOGO-TIPO (Opicional mediante solicitação) <br /><br />
-                                INCLUSÃO DE 5 BAIRROS(Opicional mediante solicitação) <br /><br />
-                                VIDEO SLIDE SHOW COM FOTOS(Opicional mediante solicitação) <br /><br />
-                                INCLUSÃO DE LINK DIRECIONADOR PARA WHATSAPP NA PAGINA(Opicional mediante solicitação) <br /><br />
-                                INCLUSÃO DE LINKS DE REDES SOCIAIS(Opicional mediante solicitação) <br /><br />
-                                SEGUIDORES INSTAGRAM(Opicional mediante solicitação) <br /><br />
-                                SUPORTE PARA CRIAÇÃO DE ANUNCIOS COM GESTORES DE TRAFEGO</p>
-                        </div>
-                        <hr className="mb-4" />
-                        <div className="siga-redes">
-                            <ul style={{ listStyle: 'none', padding: 0, display: 'flex' }}>
-                                <li className="so">
-                                    <Link to="https://m.facebook.com/grupomapsempresas/" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-facebook face"></i>
-                                    </Link>
-                                </li>
-                                <li className="so">
-                                    <Link to="https://www.instagram.com/grupomaps/?igsh=OTAxMmV4Y2F2cHp3&utm_source=qr" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-instagram insta"></i>
-                                    </Link>
-                                </li>
-                                <li className="so">
-                                    <Link to="https://www.tiktok.com/@grupomaps?_t=8iXuXTextzR&_r=1" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-tiktok"></i>
-                                    </Link>
-                                </li>
-                                <li className="so">
-                                    <Link to="https://www.youtube.com/watch?v=TdAkLQayZC8" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-youtube youtube"></i>
-                                    </Link>
-                                </li>
-                                <li className="so">
-                                    <Link to="https://api.whatsapp.com/send?phone=5508005802766&text=Ol%C3%A1" className="nav-link text" aria-current="page">
-                                        <i class="fa-brands fa-whatsapp whats"></i>
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <br />
-
                         <div className="direitos1">
                             <p className="font-weight-bold">
-                                <u> Verifique os termos de uso clicando no Link Abaixo;</u>
+                                <u className="u-direito1">
+                                    CONFORME ACORDADO SEGUE O VENCIMENTO DE UMA UNICA PARCELA
+                                    PARA O DIA
+                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} type="date" />
+                                    NO VALOR DE R$
+                                    <input className="txtAcordo" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />
+                                    .
+                                </u>
                             </p>
                         </div>
-                        <div className="row faixa-arrow">
-                            <div className="flecha-amarela">
-                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                        <div className="cond">
+                            <p className=" font-weight-bold ">O PAGAMENTO PODE SER FEITO ATRAVÉS DO BOLETO BANCÁRIO OU PIX QR-CODE DISPONÍVEL NO BOLETO, ENVIADO ATRAVÉS DO E-MAIL E WHATSAPP DO CONTRATANTE.
+                            </p>
+                        </div>
+                        <div className="inf">
+                            <h3><b>ACEITE REALIZADO DE FORMA VERBAL;</b></h3>
+                            <h3><b>PARA VERIFICAR SUA ADESÃO</b></h3>
+                            <h3><b>APONTE A CAMÊRA DO CELULAR PARA O QRCODE ABAIXO;</b></h3>
+                            <div className="areaqr">
+                                {/* Renderizar o componente do QR Code somente se houver dados escaneados */}
+                                {scannedData && (
+                                    <div className="qr-code">
+                                        <QRCode value={formState.qrCode} />
+                                    </div>
+                                )}
                             </div>
-                            <div className="linha-verde ">
-                                <h3>
-                                    <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
-                                </h3>
-                            </div>
-                            <div className="flecha-amarela">
-                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            {/* Renderiza a imagem do QR code, se disponível */}
+                            <h3>
+                                <b>CENTRAL DE ATENDIMENTO
+                                    <br />
+                                    (11) 4200-6110 / 0800 050 0069
+                                    <br />
+                                    <a href="mailto:Marketing@grupomapsempresas.com.br">Marketing@grupomapsempresas.com.br</a>
+                                    <br />
+                                    <a href="mailto:Contato@grupomapsempresas.com.br">Contato@grupomapsempresas.com.br</a>
+                                    <br />
+                                    PARA ATENDIMENTO VIA WHATSAPP BASTA CLICAR NO ICONE ABAIXO;
+                                    <br />
+                                </b>
+                            </h3>
+                            <div className="logo-whats">
+                                <a href="https://wa.link/jqyx3x">
+                                    <img src="../../../img/whats.png" alt="" />
+                                </a>
                             </div>
                         </div>
-                    </div>
-                    <div className="linha3 ">
-                        <h3>
-                            LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
-                        </h3>
-                    </div>
-                    <div className="texto ">
-                        <p>
-                            1. Do direito à privacidade
-                            A Lei 13709/2018 - Lei Geral de Proteção de Dados (LGPD) estabelece como fundamento o respeito à privacidade. Desse modo, o
-                            presente Termo de Privacidade tem o propósito de comunicar de forma simples quais tipos de dados pessoais serão coletados,
-                            quando, de que forma e para quais finalidades serão utilizados.
-                            A privacidade é um direito conferido a todo indivíduo, está protegida pela lei brasileira e consiste na habilidade que este t em de
-                            controlar a exposição de informações sobre sua vida pessoal, sua intimidade, bem como a disponibilidade de dados sobre si mesmo,
-                            de retificar, ratificar ou apagar estes e de proteger a confidencialidade de suas comunicações, seu domicílio, sua imagem, honra e
-                            reputação perante terceiros.
-                            2. Atualização e veracidade dos dados; O titular e/ou seus responsáveis legais são os responsáveis pela atualização, exatidão e
-                            veracidade dos dados que informarem à empresa Grupo Maps. Caso sejam identificados erros de informações cadastradas, o G
-                            Maps Contact Center Eireli solicitará ao Titular correções;
-                            O G Maps Contact Center Eireli não se responsabiliza por dados desatualizados em suas bases de dados.
-                            3. Do prazo e forma de armazenamento; Os dados do usuário serão obtidos por meio da efetivação de seu vínculo com a Instituição,
-                            quando o usuário insere as informações voluntariamente, por meio de ferramentas de coleta de dados de acesso e navegação
-                            existentes em alguns sites e/ou aplicativos.
-                            Os dados coletados são armazenados em ambiente seguro e em servidor próprio ou de terceiro contratado para este fim.
-                            4. Da Segurança e Proteção dos Dados Pessoais
-                            As informações são protegidas com padrões de segurança e confidencialidade, para fornecer aos usuários um ambiente seguro e
-                            confiável através do uso de criptografia, certificações digitais e acessos controlados.
-                            Adicionalmente, o próprio titular deve exercer alguns cuidados para auxiliar na proteção de seus dados.
-                            a) Cuidados com Golpes: Os criminosos cibernéticos se aproveitam dos assuntos do momento para enviar mensagens
-                            fraudulentas com intuito de roubar dados ou instalar vírus e outros softwares maliciosos por meio de links em mensagens falsas.
-                            b) Compartilhamento de senhas: Sua senha é pessoal e intransferível e que deve ser mantida sob sigilo e em ambiente seguro.
-                            Não compartilhe a sua senha, ceder ou utilizar a senha de outra pessoa é tipificado como crime no art. 308, do Código Penal.
-                        </p>
-                    </div>
-                    <div className="escrever2 row ">
-                        <h5>
-                            ASSINATURA DA CONTRATADA:
-                        </h5>
-                        <img src="../../../img/assinatura-maps.jpg" alt="" />
-                    </div>
-                    <div className="inf ">
-                        <h3>
-                            G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
-                            <br />
-                            E-MAIL: CONTATO@MAPSEMPRESAS.COM.BR
-                            <br />
-                            CENTRAL DE ATENDIMENTO
-                            <br />
-                            0800 580 2766
-                        </h3>
                     </div>
                 </div>
                 {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
@@ -850,9 +1001,10 @@ function NovoCliente() {
         <div className="row salvar">
             <Link to="/app/home" className="btn btn-warning btn-acao">Cancelar</Link>
             <button onClick={cadastrarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
-            <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={loader}>
+            {/* <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={loader}>
                 <i className="fa-solid fa-file-pdf"></i>{loader ? <span>Baixando</span> : <span>Baixar PDF</span>}
-            </button>
+            </button> */}
+
         </div>
     </div >
 }

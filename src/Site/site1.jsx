@@ -10,8 +10,8 @@ function Site(){
        <Menu />
        <Banner />
        <Features />
-       <Testemunho />
-       <Precos />
+       {/* <Testemunho /> */}
+       {/* <Precos /> */}
        <Footer />
     </div>
 }

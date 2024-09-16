@@ -1,0 +1,89 @@
+.parte-fora{
+    
+    height: max-content;
+    color: #fff;
+    border: linear-gradient(to top, #464E80, #800020) solid 10px;
+    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
+}
+.text-parte-fora{
+    text-align: center;
+}
+.background-tela-venda{
+    margin-top: 50px;
+    background: #800020;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+    height: max-content;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4),
+    0 -10px 10px rgba(0, 0, 0, 0.4);    display: flex;
+    justify-content: center;
+}
+.bnn{
+    list-style: none;
+}
+.bg-h1{
+    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
+    padding: 20px 0 15px 0 ;
+    font-size: 30px;
+
+}
+.bg-h2{
+    font-size: 40px;
+    text-shadow:  -5px 5px 15px rgba(0, 0, 0, 0.4);
+    padding: 25px 0 5px 0 ;
+}
+.bg-p{
+    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
+    font-size: 30px;
+    padding-bottom: 5px;
+}
+.meia-tela{
+    padding: 0 70px;
+}
+.btn-voltar07{
+    font-size: 20px;
+    padding: 18px 50px;
+    position: relative;
+    border-radius: 5px;
+    transition: 0.5s;
+    top: 40px;
+}
+.btn-voltar08{
+    font-size: 20px;
+    padding: 18px 50px;
+    position: relative;
+    border-radius: 5px;
+    transition: 0.5s;
+    bottom: 40px;
+}
+
+.btn-voltar08:hover{
+    padding: 20px 55px;
+    transition: 0.5s;
+}
+.btn-voltar07:hover{
+    padding: 20px 55px;
+    transition: 0.5s;
+}
+
+.bg-principal{
+    margin-top: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #464E80;
+    height: max-content;
+    color: #fff;
+    border: linear-gradient(to top, #464E80, #800020) solid 10px;
+    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4),
+    0 -10px 10px rgba(0, 0, 0, 0.4);
+    
+}
+
+.sss{
+    justify-content: center;
+    display: flex;
+    padding: 5px;
+}

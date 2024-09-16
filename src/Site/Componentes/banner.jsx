@@ -1,14 +1,19 @@
 import React from "react";
 import './banner.css'
 function Banner(){
-    return <section className="banner" id="banner">
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="goo">
-                    <a href="/app" className="btn btn-light btn-lg btn-banner entrar"><b>Entrar</b></a>
-                </div>
+    return (
+        <div className="banner">
+          <div className="banner-content banner-top-shadow banner-bottom-shadow">
+            <div className="image-container">
+              <img src="../../../img/banner.webp" alt="Banner" className="banner-image" />
             </div>
+            
+            <div className="text-container">
+                    <a href="/app" className="btn btn-light btn-lg btn-banner entrar btn-entrar"><b>Entrar</b></a>
+              <h1 className="first-text">Realize seu acesso aqui!</h1>
+            </div>
+          </div>
         </div>
-    </section>
+      );
 }
 export default Banner;

@@ -1,52 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, Navigate } from 'react-router-dom';
 import '../EditarCliente/editarcliente.css'
 import './fichacliente.css'
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { useParams, Navigate } from 'react-router-dom';
 import 'firebase/firestore'
-import emailjs from 'emailjs-com';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import html2pdf from "html2pdf.js";
+import QRCode from 'qrcode.react';
+import qrCode from 'qrcode'; 
 
 function FichaCliente(props) {
     const [loader, setLoader] = useState(false);
-    const [numeroContrato, setNumeroContrato] = useState('');
-    const [plano, setPlano] = useState('');
-    const [sociais, setSociais] = useState('');
-    const [site, setSite] = useState('');
+    const [formState, setFormState] = useState('');
+    const [plano, setPlano] = useState('Escolha');
     const [data, setData] = useState('');
+    const [numeroContrato, setNumeroContrato] = useState('');
     const [bairro, setBairro] = useState('');
     const [obs, setObs] = useState('');
     const [funcionamento, setFuncionamento] = useState('');
+    const [venc2, setVenc2] = useState('');
     const [valor, setValor] = useState('');
     const [cidade, setCidade] = useState('');
     const [cep, setCep] = useState('');
+    const [operador, setOperador] = useState('');
     const [uf, setUf] = useState('');
+    const [site, setSite] = useState('');
     const [whats, setWhats] = useState('');
     const [endereco, setEndereco] = useState('');
-    const [link, setLink] = useState('');
     const [razao, setRazao] = useState('');
     const [cpf, setCpf] = useState('');
+    const [link, setLink] = useState('');
     const [nome, setNome] = useState('');
-    const [renovSim, setRenovSim] = useState('');
-    const [parcelas, setParcelas] = useState('');
-    const [renovNao, setRenovNao] = useState('');
-    const [validade, setValidade] = useState('');
-    const [sucesso, setSucesso] = useState('');
+    const [sociais, setSociais] = useState('');
     const [fantasia, setFantasia] = useState('');
-    const [representante, setRepresentante] = useState('');
-    const [cargo, setCargo] = useState('');
-    const [operador, setOperador] = useState('');
-    const [venc2, setVenc2] = useState('');
+    const [parcelas, setParcelas] = useState('1');
     const [email, setEmail] = useState('');
     const [fone, setFone] = useState('');
+    const [representante, setRepresentante] = useState('');
+    const [renovSim, setRenovSim] = useState(true);
+    const [renovNao, setRenovNao] = useState(false);
+    const [ramal, setRamal] = useState('')
+    const [siteSim, setSiteSim] = useState(false);
+    const [siteNao, setSiteNao] = useState(false);
+    const [declaro, setDeclaro] = useState(true);
+    const [validade, setValidade] = useState('');
+    const [equipe, setEquipe] = useState('G MARKETING DIGITAL');
     const [mensagem, setMensagem] = useState('');
-    const [isScriptModalVisible, setScriptModalVisible] = useState(false);
-    const handleMostrarScript = () => {
-        setScriptModalVisible(true);
-    };
-    const handleFecharScriptModal = () => {
-        setScriptModalVisible(false);
-    };
+    const [cargo, setCargo] = useState('');
+    const [celular, setCelular] = useState('');
+    const [email2, setEmail2] = useState('');
+    const [sucesso, setSucesso] = useState('');
+    const [imagem, setImagem] = useState('');
     const db = getFirestore();
     const { id } = useParams();
     useEffect(() => {
@@ -90,6 +93,39 @@ function FichaCliente(props) {
                     setSociais(dados.sociais);
                     setSite(dados.site);
                     setParcelas(dados.parcelas);
+                    setRamal(dados.ramal);
+                    setSiteSim(dados.siteSim);
+                    setSiteNao(dados.siteNao);
+                    setCelular(dados.celular);
+                    setEquipe(dados.equipe);
+                    setDeclaro(dados.declaro);
+                    setEmail2(dados.email2);
+                    setImagem(dados.imagem);
+                } else {
+                    setMensagem('Cliente não encontrado');
+                }
+            } catch (error) {
+                setMensagem('Erro ao obter dados do cliente');
+                console.error('Erro ao obter dados do cliente:', error);
+            }
+        };
+        fetchData();
+    }, [db, id]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log('ID do Cliente:', id);
+                const clienteDocRef = doc(db, 'clientes', id);
+                console.log('Referência do Documento:', clienteDocRef);
+                const docSnapshot = await getDoc(clienteDocRef);
+                console.log('Snapshot do Documento:', docSnapshot.data());
+                if (docSnapshot.exists()) {
+                    const dados = docSnapshot.data();
+                    setFormState({
+                        ...formState,
+                        qrCode: dados.qrCode // Defina o campo qrCode
+                    });
                 } else {
                     setMensagem('Cliente não encontrado');
                 }
@@ -107,26 +143,68 @@ function FichaCliente(props) {
         cartaoDigital: true,
         logotipo: true,
     });
-
     const handleCheckboxChange = (checkboxId) => {
         setCheckboxes((prevCheckboxes) => ({
             ...prevCheckboxes,
             [checkboxId]: !prevCheckboxes[checkboxId],
         }));
     };
-
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = async () => {
         // Seleciona os elementos que você deseja incluir no PDF
         const elementos = document.querySelectorAll(".element");
-
+    
         // Cria um novo documento HTML para armazenar o conteúdo
         const docHTML = document.createElement("div");
-
-        // Adiciona cada elemento selecionado ao documento HTML
-        elementos.forEach((elemento) => {
-            docHTML.appendChild(elemento.cloneNode(true));
-        });
-
+    
+        // Função para gerar QR Code e retornar uma Promise
+        const generateQRCode = async (qrCodeValue) => {
+            return new Promise((resolve, reject) => {
+                qrCode.toDataURL(qrCodeValue, { type: 'image/jpeg' })
+                    .then(dataUrl => resolve(dataUrl))
+                    .catch(error => reject(error));
+            });
+        };
+    
+        // Itera sobre os elementos selecionados
+        for (const elemento of elementos) {
+            // Clona o elemento principal
+            const elementoClonado = elemento.cloneNode(true);
+    
+            // Busca a div com a classe 'inf' dentro do elemento principal
+            const divArea = elementoClonado.querySelector(".areaqr");
+    
+            // Se a div 'areaqr' não for encontrada, pule para o próximo elemento
+            if (!divArea) continue;
+    
+            elementoClonado.classList.add("pdf-element");
+    
+            // Cria uma div para conter o QR Code
+            const divElement = document.createElement("div");
+            divElement.className = "qr-code";
+    
+            // Gera o QR Code como uma imagem
+            const qrCodeValue = formState.qrCode;
+            try {
+                // Aguarda a geração do QR Code
+                const dataUrl = await generateQRCode(qrCodeValue);
+    
+                // Cria um elemento de imagem com o QR Code
+                const img = document.createElement("img");
+                img.src = dataUrl;
+    
+                // Adiciona o elemento de imagem à div
+                divElement.appendChild(img);
+    
+                // Insere a div do QR Code dentro da div 'inf'
+                divArea.appendChild(divElement);
+            } catch (error) {
+                console.error('Erro ao gerar QR Code:', error);
+            }
+    
+            // Adiciona o elemento principal clonado ao documento HTML
+            docHTML.appendChild(elementoClonado);
+        }
+    
         const elementosClonados = docHTML.querySelectorAll(".element");
         elementosClonados.forEach((elementoClonado) => {
             elementoClonado.style.textAlign = "center"; // Centraliza o conteúdo
@@ -134,7 +212,7 @@ function FichaCliente(props) {
             elementoClonado.style.lineHeight = "1.2"; // Define a altura da linha para evitar o texto sobreposto
             // Adicione outras propriedades de estilo conforme necessário para reduzir o tamanho das informações
         });
-
+    
         const options = {
             filename: `${razao}.pdf`,
             image: { type: 'jpeg', quality: 1 }, // Melhora a qualidade da imagem
@@ -144,637 +222,544 @@ function FichaCliente(props) {
                 margin: { top: 40, right: 40, bottom: 40, left: 40 } // Define margens em todos os lados
             }
         };
-
+    
         // Usa o html2pdf para converter o documento HTML em PDF e fazer o download
         html2pdf().set(options).from(docHTML).save();
     };
-    const ScriptModal = ({ onClose }) => {
-
-        const [attachment, setAttachment] = useState(null);
-
-        const handleSendEmail = async () => {
-            const serviceID = 'service_9fer5al';
-            const templateID = 'template_omvbb2y';
-            const userID = 'DkZxCeqcBJqtQF_H_';
-            
-            try {
-                await emailjs.send(serviceID, templateID, {
-                    to_email: email,
-                    message: "oioioioioioioio",
-                }, userID, attachment);
-                console.log('E-mail enviado com sucesso!');
-            } catch (error) {
-                console.error('Erro ao enviar e-mail:', error);
-            }
-        };
-        const handleFileChange = (event) => {
-            const file = event.target.files[0];
-            setAttachment(file);
-        };
-        return (
-            <div className="script-modal over">
-                <div className="script-modal-content ">
-                    <span className="close" onClick={onClose}>&times;</span>
-                    <br />
-                    <div className="caixa-modal">
-                        <h5>
-                            <b>ENCAMINHE APENAS PARA OS NOVOS CLIENTES!!!</b>
-                        </h5>
-                        <p>
-                            O e-mail vai com a mensagem automática de bem vindo para os novos clientes. <br />
-                            Só é necessario incluir o arquivo da venda e clicar no icone de enviar.
-                        </p>
-                        <div className="campo-modal">
-                            <input type="file" onChange={handleFileChange} />
-                            <button className="btn btn-danger btn-climodal" onClick={handleSendEmail}><i className="fa-solid fa-share"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const handleScan = (data) => {
+        if (data) {
+            setScannedData(data);
+            setFormState({
+                ...formState,
+                qrCode: data.text,
+            });
+        }
     };
+
+    const handleError = (err) => {
+        console.error(err);
+    };
+    const [scannedData, setScannedData] = useState(null);
+
 
     return <div>
         <div className="background">
-            <div className="element contrato container-fluid titulo-2" id="formId">
+            <div className="element contrato container-fluid titulo-2 " id="formId">
                 <div>
-                    <div className="texto-cima">
-                        <h1>
-                            <b>AUTORIZAÇÃO PARA ASSESSORIA COM A DIVULGAÇÃO DOS DADOS
-                                COMERCIAIS NA PLATAFORMA DO GOOGLE MAPS</b>
-                        </h1>
+                    <div className="logo ">
+                        <img src="../../../img/tag.png" alt="" />
                     </div>
-                    <div className="logo-street">
-                        <img src="../../../img/maps--1-.webp" alt="" />
-                    </div>
-                </div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td className="baixo">
-                                <p>CONTRATO:</p>
-                                <input onChange={(e) => setNumeroContrato(e.target.value)} disabled value={numeroContrato} type="text" id="contrato" className="form-control" placeholder="Nº" required />
-                            </td>
-                            <td className="baixo">
-                                <p>DATA:</p>
-                                <input onChange={(e) => setData(e.target.value)} disabled value={data} id="date" type="date" className="form-control" />
-                            </td>
-                            <td className="baixo">
-                                <p>OPERADOR:</p>
-                                <input onChange={(e) => setOperador(e.target.value)} disabled value={operador} id="text" type="text" className="form-control" placeholder="Operador" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <form className="caixa2">
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">Razão Social:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setRazao(e.target.value)}
-                                className="form-control"
-                                placeholder="Razão social"
-                                disabled value={razao}
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Nome Fantasia:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setFantasia(e.target.value)}
-                                className="form-control"
-                                placeholder="Nome Fantasia"
-                                disabled value={fantasia}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">CNPJ/CPF:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setCpf(e.target.value)}
-                                className="form-control"
-                                placeholder="CNPJ/CPF"
-                                disabled value={cpf}
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Endereço:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setEndereco(e.target.value)}
-                                className="form-control"
-                                placeholder="Endereço"
-                                disabled value={endereco}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">Cidade:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setCidade(e.target.value)}
-                                className="form-control"
-                                placeholder="Cidade"
-                                disabled value={cidade}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Bairro:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setBairro(e.target.value)}
-                                className="form-control"
-                                placeholder="Bairro"
-                                disabled value={bairro}
-                            />
-                        </div>
-
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Estado:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setUf(e.target.value)}
-                                className="form-control"
-                                placeholder="Estado"
-                                disabled value={uf}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">CEP:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setCep(e.target.value)}
-                                className="form-control"
-                                placeholder="Cep"
-                                disabled value={cep}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">WhatsApp:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setWhats(e.target.value)}
-                                className="form-control"
-                                placeholder="WhatsApp"
-                                disabled value={whats}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Telefone:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setFone(e.target.value)}
-                                className="form-control"
-                                placeholder="Telefone"
-                                disabled value={fone}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <label htmlFor="horario">Horario de funcionamento:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setFuncionamento(e.target.value)}
-                                className="form-control"
-                                placeholder="Horario de funcionamento"
-                                disabled value={funcionamento}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">E-mail:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="form-control"
-                                placeholder="E-mail"
-                                disabled value={email}
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <label htmlFor="site">Site:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setSite(e.target.value)}
-                                className="form-control"
-                                placeholder="Site"
-                                disabled value={site}
-                            />
-                        </div>
-                    </div>
-
-
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">Link da Página:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setLink(e.target.value)}
-                                className="form-control"
-                                placeholder="Link"
-                                disabled value={link}
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Autorizante:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setNome(e.target.value)}
-                                className="form-control"
-                                placeholder="Autorizante"
-                                disabled value={nome}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
-                            <label htmlFor="nomeFantasia">Cargo:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setCargo(e.target.value)}
-                                className="form-control"
-                                placeholder="Cargo"
-                                disabled value={cargo}
-                            />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="razaoSocial">Redes Sociais:</label>
-                            <input
-                                type="text"
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                onChange={(e) => setSociais(e.target.value)}
-                                className="form-control"
-                                placeholder="Redes"
-                                disabled value={sociais}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <label htmlFor="nomeFantasia">Observações:</label>
-                            <input
-                                type="text"
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                onChange={(e) => setObs(e.target.value)}
-                                className="form-control"
-                                placeholder="Observações"
-                                disabled value={obs}
-                            />
-                        </div>
-                    </div>
-                    <div className="row atualizacao">
-                        <div className="custom-control custom-checkbox col-md-1.7 mb-3">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="atualizacao"
-                                checked={checkboxes.atualizacao}
-                                onChange={() => handleCheckboxChange("atualizacao")}
-                            />
-                            <label className="custom-control-label" htmlFor="atualizacao">
-                                Atualização
-                            </label>
-                        </div>
-                        <p className=" mb-3 font-weight-bold"> - </p>
-
-                        <div className="custom-control custom-checkbox col-md-1.7 mb-3">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="criacao"
-                                checked={checkboxes.criacao}
-                                onChange={() => handleCheckboxChange("criacao")}
-                            />
-                            <label className="custom-control-label" htmlFor="criacao">
-                                Criação
-                            </label>
-                        </div>
-                        <p className=" mb-3 font-weight-bold">-</p>
-
-                        <div className="custom-control custom-checkbox col-md-1.7 mb-3">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="anuncio"
-                                checked={checkboxes.anuncio}
-                                onChange={() => handleCheckboxChange("anuncio")}
-                            />
-                            <label className="custom-control-label" htmlFor="anuncio">
-                                Anúncio
-                            </label>
-                        </div>
-                        <p className=" mb-3 font-weight-bold">-</p>
-
-                        <div className="custom-control custom-checkbox col-md-1.7 mb-3">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="cartaoDigital"
-                                checked={checkboxes.cartaoDigital}
-                                onChange={() => handleCheckboxChange("cartaoDigital")}
-                            />
-                            <label className="custom-control-label" htmlFor="cartaoDigital">
-                                Cartão Digital
-                            </label>
-                        </div>
-                        <p className=" mb-3 font-weight-bold">-</p>
-
-                        <div className="custom-control custom-checkbox col-md-1.7 mb-3">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="logotipo"
-                                checked={checkboxes.logotipo}
-                                onChange={() => handleCheckboxChange("logotipo")}
-                            />
-                            <label className="custom-control-label" htmlFor="logotipo">
-                                Logotipo
-                            </label>
-                        </div>
-                    </div>
-                    <div className="input-group planos">
-                        <div className="input-group-prendend ">
-                            <span className="input-group-text">Plano</span>
-                        </div>
-                        <select className="custom-select d-block " disabled onChange={(e) => setPlano(e.target.value)} id="estado" required>
-                            <option value="">{plano}</option>
-                            <option value="Cancelamento">Cancelamento</option>
-                            <option value="Mensal">Mensal</option>
-                            <option value="Trimestral">Trimestral</option>
-                            <option value="Semestral">Semestral</option>
-                            <option value="Anual">Anual</option>
-                        </select>
-                        <div className="invalid-feedback">
-                            Por favor, insira um estado válido.
-                        </div>
-                        <div className="input-group-prendend ">
-                            <span className="input-group-text">Vencimento</span>
-                        </div>
-                        <div className="pre">
-                            <input onChange={(e) => setVenc2(e.target.value)} disabled value={venc2} id="date" className="form-control " type="date" />
-                        </div>
-
-                    </div>
-                    <div className=" input-group">
-                        <div className="input-group-prendend ">
-                            <span className="input-group-text">Nª</span>
-                        </div>
-                        <select className="custom-select d-block" onChange={(e) => setParcelas(e.target.value)} disabled id="parcelas" required>
-                            <option value="">{parcelas}</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select>
-                        <div className="input-group-prendend  ">
-                            <span className="input-group-text">Parcela(s) de: </span>
-                        </div>
-                        <div className="input-group-prendend  ">
-                            <span className="input-group-text">R$ </span>
-                        </div>
-                        <div className="pre">
-                            <input onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" className="form-control " id="contrato" placeholder="Valor" required />
-                        </div>
-                    </div>
-                </form>
-                <div className="cond ">
-                    <p className=" font-weight-bold ">AUTORIZO QUE A EMPRESA G MAPS CONTACT CENTER EIRELI CNPJ:40.407.753/0001-30 REALIZE O PROCESSO DE INCLUSÃO E ATUALIZAÇÃO DOS
-                        MEUS DADOS COMERCIAIS JUNTO A PLATAFORMA DE BUSCA DO GOOGLE MAPS.
-                        TENDO COMO GARANTIA DE INTEGRIDADE E AUTENTICIDADE DESTA AUTORIZAÇÃO PARA ASSESSORIA A GRAVAÇÃO DO ATENDIMENTO
-                        PRESTADO, ESTANDO CIENTE DO VALOR E DATA DE VENCIMENTO CONFORME COMBINADO ENTRE AS PARTES.
-                        APÓS O ACEITE VERBAL A EMPRESA G MAPS CONTACT CENTER EIRELI DARA INICIO AO PROCESSO DE ASSESSORIA A CONTRATANTE.
-                    </p>
-                    <br /><br /><br />
-                    <div className="acessoria ">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td className="baixo baixo-menor">
+                                    <p><b>CONTRATO Nº</b></p>
+                                    <input className="form-control" onChange={(e) => setNumeroContrato(e.target.value)} value={numeroContrato} disabled type="text" id="contrato" placeholder="Nº" />
+                                </td>
+                                <td className="baixo ">
+                                    <p><b>DATA</b></p>
+                                    <input onChange={(e) => setData(e.target.value)} value={data} disabled id="date" type="date" className="form-control" />
+                                </td>
+                                <td className="baixo ">
+                                    <p><b>OPERADOR</b></p>
+                                    <input onChange={(e) => setOperador(e.target.value)} value={operador} disabled id="text" type="text" className="form-control" placeholder="Operador" />
+                                </td>
+                                <td className="baixo baixo-medio">
+                                    <p><b>EQUIPE</b></p>
+                                    <input onChange={(e) => setEquipe(e.target.value)} value={equipe} disabled id="text" type="text" className="form-control" placeholder="Equipe" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className="acessoriaNew ">
                         <div className="input-group">
-                            <p className="font-weight-bold frase">
-                                Assessoria dos serviços valido por:
-                            </p>
-                            <select className="custom-select d-block escolha-select " disabled onChange={(e) => setValidade(e.target.value)} id="estado" required>
-                                <option value="">{validade}</option>
-                                <option value="Cancelamento">Cancelamento</option>
-                                <option value="1 mes">1 mês</option>
-                                <option value="3 meses">3 meses</option>
-                                <option value="6 meses">6 meses</option>
-                                <option value="1 ano">1 ano</option>
-                            </select>
-                            <p className="font-weight-bold frase">
-                                a contar da data de adesão.
-                            </p>
+                            <h2 className="font-weight-bold frase col-sm-6">
+                                <u>VALIDO POR:</u>
+                            </h2>
+                            <div className="col-sm-4 select-validade">
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setValidade(e.target.value)} disabled value={validade} id="estado" required>
+                                    <option value="">{validade}</option>
+                                    <option value="Cancelamento">Cancelamento</option>
+                                    <option value="1 mês">1 mês</option>
+                                    <option value="3 meses">3 meses</option>
+                                    <option value="6 meses">6 meses</option>
+                                    <option value="1 ano">1 ano</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <hr className="mb-4" />
-                    <div className="row d-flex justify-content-center renovacao" >
-                        <p className="col-md-3 mb-3">
-                            <b>Renovação automatica</b>
-                        </p>
-                        <div className="form-check col-md-1 mb-3">
-                            <input onChange={(e) => setRenovSim(e.target.checked)} checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
-                            <label className="form-check-label" htmlFor="flexCheckDefault">
-                                <b>Sim</b>
-                            </label>
-                        </div>
-                        <div className="form-check mb-3">
-                            <input onChange={(e) => setRenovNao(e.target.checked)} checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
-                            <label className="form-check-label" htmlFor="flexCheckChecked">
-                                <b>Não</b>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div className="entorno">
                     <div className="linha3">
                         <h3 className="">
-                            SUA EMPRESA PODERÁ CONTAR COM OS SEGUINTES SERVIÇOS:
+                            DADOS DA EMPRESA
                         </h3>
                     </div>
-                    <div className="direitos">
-                        <p className="font-weight-bold">ATUALIZAÇÃO OU CRIAÇÃO DA PÁGINA GOOGLE <br /><br />
-                            CRIAÇÃO DE CARTÃO DIGITAL INTERATIVO <br /><br />
-                            CRIAÇÃO DE QR CODE DIRECIONADOR <br /><br />
-                            ALTERAÇÃO DE ENDEREÇO E HORÁRIO DE FUNCIONAMENTO <br /><br />
-                            INCLUSÃO DE 30 FOTOS E 5 VIDEOS MENSALMENTE <br /><br />
-                            RESGATE DE DOMINIO GOOGLE MEU NEGÓCIO (Opicional mediante solicitação) <br /><br />
-                            ANIMAÇÃO DE LOGO-TIPO (Opicional mediante solicitação) <br /><br />
-                            INCLUSÃO DE 5 BAIRROS(Opicional mediante solicitação) <br /><br />
-                            VIDEO SLIDE SHOW COM FOTOS(Opicional mediante solicitação) <br /><br />
-                            INCLUSÃO DE LINK DIRECIONADOR PARA WHATSAPP NA PAGINA(Opicional mediante solicitação) <br /><br />
-                            INCLUSÃO DE LINKS DE REDES SOCIAIS(Opicional mediante solicitação) <br /><br />
-                            SEGUIDORES INSTAGRAM(Opicional mediante solicitação) <br /><br />
-                            SUPORTE PARA CRIAÇÃO DE ANUNCIOS COM GESTORES DE TRAFEGO</p>
-                    </div>
-                    <hr className="mb-4" />
-                    <div className="siga-redes">
-                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex' }}>
-                            <li className="so">
-                                <Link to="https://m.facebook.com/grupomapsempresas/" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-facebook face"></i>
-                                </Link>
-                            </li>
-                            <li className="so">
-                                <Link to="https://www.instagram.com/grupomaps/?igsh=OTAxMmV4Y2F2cHp3&utm_source=qr" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-instagram insta"></i>
-                                </Link>
-                            </li>
-                            <li className="so">
-                                <Link to="https://www.tiktok.com/@grupomaps?_t=8iXuXTextzR&_r=1" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-tiktok"></i>
-                                </Link>
-                            </li>
-                            <li className="so">
-                                <Link to="https://www.youtube.com/watch?v=TdAkLQayZC8" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-youtube youtube"></i>
-                                </Link>
-                            </li>
-                            <li className="so">
-                                <Link to="https://api.whatsapp.com/send?phone=5508005802766&text=Ol%C3%A1" className="nav-link text" aria-current="page">
-                                    <i class="fa-brands fa-whatsapp whats"></i>
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <br />
+                    <form className="caixa2 ">
+                        <div className="row">
+                            <div className="col-md-6 ">
+                                <label className="d-flex align-items-center justify-content-center lblInfo" htmlFor="lblInfo"><b>RAZÃO SOCIAL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setRazao(e.target.value)}
+                                    disabled value={razao}
+                                    className="form-control"
+                                    placeholder="Razão social"
+                                />
+                            </div>
 
-                    <div className="direitos1">
-                        <p className="font-weight-bold">
-                            <u> Verifique os termos de uso clicando no Link Abaixo;</u>
-                        </p>
-                    </div>
-                    <div className="row faixa-arrow">
-                        <div className="flecha-amarela">
-                            <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>CNPJ/CPF:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setCpf(e.target.value)}
+                                    disabled value={cpf}
+                                    className="form-control"
+                                    placeholder="CNPJ/CPF"
+                                />
+                            </div>
+
                         </div>
-                        <div className="linha-verde ">
-                            <h3>
-                                <a href="https://drive.google.com/file/d/1kvYx8m-0mw2DpqEw-aZtRAgWCNAUxIb3/view"> CLIQUE AQUI PARA VERIFICAR OS TERMOS DE USO</a>
+
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>NOME FANTASIA:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setFantasia(e.target.value)}
+                                    disabled value={fantasia}
+                                    className="form-control"
+                                    placeholder="Nome Fantasia"
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>ENDEREÇO COMERCIAL:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setEndereco(e.target.value)}
+                                    disabled value={endereco}
+                                    className="form-control"
+                                    placeholder="Endereço"
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>BAIRRO:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setBairro(e.target.value)}
+                                    disabled value={bairro}
+                                    className="form-control"
+                                    placeholder="Bairro"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo "><b>CEP:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setCep(e.target.value)}
+                                    disabled value={cep}
+                                    className="form-control"
+                                    placeholder="Cep"
+                                />
+                            </div>
+
+
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>ESTADO:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setUf(e.target.value)}
+                                    disabled value={uf}
+                                    className="form-control"
+                                    placeholder="Estado"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>CIDADE:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setCidade(e.target.value)}
+                                    disabled value={cidade}
+                                    className="form-control"
+                                    placeholder="Cidade"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>CONTATOS DA EMPRESA;</u></b>
+                            </h2>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>TELEFONE FIXO:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setFone(e.target.value)}
+                                    disabled value={fone}
+                                    className="form-control"
+                                    placeholder="Telefone"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="horario"><b>CELULAR:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setCelular(e.target.value)}
+                                    disabled value={celular}
+                                    className="form-control"
+                                    placeholder="Horario de funcionamento"
+                                />
+                            </div>
+
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>WHATSAPP COMERCIAL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setWhats(e.target.value)}
+                                    disabled value={whats}
+                                    className="form-control"
+                                    placeholder="WhatsApp"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>E-MAIL PARA RECEBER AS NOTIFICAÇÕES E AVALIAÇÕES DOS CLIENTES;</u></b>
+                            </h2>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>1º E-MAIL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    disabled value={email}
+                                    className="form-control"
+                                    placeholder="E-mail"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>2º E-MAIL:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setEmail2(e.target.value)}
+                                    disabled value={email2}
+                                    className="form-control"
+                                    placeholder="E-mail"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>HORARIO DE FUNCIONAMENTO;</u></b>
+                            </h2>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setFuncionamento(e.target.value)}
+                                    disabled value={funcionamento}
+                                    className="form-control"
+                                    placeholder="Horario de funcionamento"
+                                />
+                            </div>
+                        </div>
+                        <div className="contact">
+                            <h2 className="d-flex align-items-center justify-content-center">
+                                <b><u>SERVIÇOS ADCIONAIS;</u></b>
+                            </h2>
+                        </div>
+                        <div className="row">
+                            <div className=" divAnuncio form-group temSite col-md-5">
+                                <label htmlFor="temSite" className="form-check-label"><b>CRIAÇÃO E DESENVOLVIMENTO DE WEB SITE</b></label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="temSite"
+                                        name="temSite"
+                                        checked={siteSim}
+                                        onChange={(e) => setSiteSim(e.target.checked)}
+                                        disabled
+                                        className="form-check-input"
+                                    />
+                                </div>
+                            </div>
+                            <div className="divAnuncio form-group temSite col-md-7.">
+                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANUNCIOS PATROCINADOS FACEBOOK/INSTAGRAM E GOOGLE ADS</b></label>
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id="temLojaFisica"
+                                        name="temLojaFisica"
+                                        checked={siteNao}
+                                        onChange={(e) => setSiteNao(e.target.checked)}
+                                        disabled
+                                        className="form-check-input"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div className="row">
+                            <div className="col-md-12">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE PARA INSERÇÃO DO SITE:</b></label>
+                                <input
+                                    type="text"
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    onChange={(e) => setLink(e.target.value)}
+                                    disabled value={link}
+                                    className="form-control"
+                                    placeholder="Link"
+                                />
+                            </div>
+                            <div className="col-md-12">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>OBSERVAÇÕES:</b></label>
+                                <textarea
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setObs(e.target.value)}
+                                    disabled value={obs}
+                                    className="form-control"
+                                    placeholder="Observações"
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>NOME DO RESPONSÁVEL:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setNome(e.target.value)}
+                                    disabled value={nome}
+                                    className="form-control"
+                                    placeholder="Autorizante"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="nomeFantasia"><b>CARGO:</b></label>
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setCargo(e.target.value)}
+                                    disabled value={cargo}
+                                    className="form-control"
+                                    placeholder="Cargo"
+                                />
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <div className="escrever2 row ">
+                        <h5>
+                            ASSINATURA DA CONTRATADA:
+                        </h5>
+                        <img src="../../../img/assinatura-maps.jpg" alt="" />
+                    </div>
+                    <div className="logo ">
+                        <img src="../../../img/tag.png" alt="" />
+                    </div>
+                    <div className="cond ">
+                        <p className=" font-weight-bold "><u className="text-primary">CONDIÇÕES</u>; 1º- ESTOU CIENTE QUE PARA CRIAÇÃO OU ATUALIZAÇÃO DA MINHA PAGÍNA DEVO ENCAMINHAR PARA A EMPRESA CONTRATADA QUANDO SOLICITADO POR PARTE DA EQUIPE DE SUPORTE TODAS AS INFORMAÇÕES NECESSARIAS. 2º- ASSUMO TAMBÉM A TOTAL RESPONSABILIDADE E AUTORIZO QUE A EMPRESA CONTRATADA DIVULGUE OS MEUS DADOS COMERCIAIS NO SITE DE BUSCA. 3º- SOBRE AS CONDIÇÕES ASSUMO AS OBRIGAÇÕES COM ESTA PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL REALIZADA PELA EMPRESA G MAPS CONTACT CENTER LTDA CNPJ; 40.407.753/0001-30 TENDO CIÊNCIA DO VALOR DE R$
+                            <input className="txtAcordo txtCond" onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" placeholder="" />. 4º SABENDO QUE O NÃO PAGAMENTO PODE GERAR A NEGATIVAÇÃO DO CPF/CNPJ JUNTO AOS ORGÃOS COMPETENTES (SERASA/CARTÓRIO) E QUE <u>O ACEITE DOS SERVIÇOS FOI REALIZADA DE FORMA VERBAL CONFORME O ARTIGO 107 DO CODIGO CIVIL LEI 10406 DE 10 DE JANEIRO DE 2002 E QUE A CÓPIA DESTE CONTRATO FOI ENCAMINHADA PARA O E-MAIL PRINCIPAL INFORMADO ACIMA.</u> 5º-TODAS AS SOLICITAÇÕES DEVERÃO SER ENCAMINHADAS PARA O DEPARTAMENTO DE MARKETING ATRAVÉS DO E-MAIL OU WHATSAPP AQUI DISPONIBILIZADOS. 6º- A CONTRATADA ASSUME AS OBRIGAÇÕES JUNTO A CONTRATANTE DE CONCLUIR E ENTREGAR OS SERVIÇOS PRESTADOS DENTRO DO PERIODO DE ATÉ 72HORAS UTEIS.
+                        </p>
+                        <div className="row faixa-arrow">
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-right" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="linha-verde ">
+                                <a href="https://docs.google.com/document/d/16LfzgC0AeCyj98f4hQftWszwba0_fLSk/edit?usp=sharing&ouid=114492622142866276581&rtpof=true&sd=true">
+                                    <img src="../../../img/Imagem2.jpg" alt="" />
+                                </a>
+                            </div>
+                            <div className="flecha-amarela">
+                                <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                            </div>
+                            <div className="direitos1">
+                                <p className="font-weight-bold">
+                                    <u> CLIQUE NA IMAGEM A CIMA PARA VERIFICAR OS TERMOS</u>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="row d-flex justify-content-center renovacao" >
+                            <div className="form-check col-md-1 mb-3">
+                                <input onChange={(e) => setDeclaro(e.target.checked)} disabled checked={declaro} className="form-check-input" type="checkbox" id="flexCheckDefault" />
+                            </div>
+                            <p className="col-md-11. mb-3">
+                                <b>DECLARO TER LIDO OS TERMOS DE USO ESTANDO EM PLENA E TOTAL CONCORDÂNCIA.</b>
+                            </p>
+                        </div>
+                        <div className="row d-flex justify-content-center renova" >
+                            <p className="col-md-3 mb-3">
+                                <b>Renovação automatica</b>
+                            </p>
+                            <div className="form-check col-md-1 mb-3">
+                                <input onChange={(e) => setRenovSim(e.target.checked)} disabled checked={renovSim} className="form-check-input" type="checkbox" id="flexCheckDefault" />
+                                <label className="form-check-label" htmlFor="flexCheckDefault">
+                                    <b>Sim</b>
+                                </label>
+                            </div>
+                            <div className="form-check mb-3">
+                                <input onChange={(e) => setRenovNao(e.target.checked)} disabled checked={renovNao} className="form-check-input" type="checkbox" id="flexCheckChecked" />
+                                <label className="form-check-label" htmlFor="flexCheckChecked">
+                                    <b>Não</b>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="linha3">
+                            <h3 className="">
+                                BÔNUS
                             </h3>
                         </div>
-                        <div className="flecha-amarela">
-                            <i class="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
+                        <div className="row atualizacao">
+
+                            <div className="custom-control custom-checkbox col-md-1.7 mb-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    id="criacao"
+                                    checked={checkboxes.criacao}
+                                    onChange={() => handleCheckboxChange("criacao")}
+                                />
+                                <label className="custom-control-label" htmlFor="criacao">
+                                    Criação
+                                </label>
+                            </div>
+                            <p className=" mb-3 font-weight-bold">-</p>
+
+                            <div className="custom-control custom-checkbox col-md-1.7 mb-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    id="anuncio"
+                                    checked={checkboxes.anuncio}
+                                    onChange={() => handleCheckboxChange("anuncio")}
+                                />
+                                <label className="custom-control-label" htmlFor="anuncio">
+                                    Anúncio
+                                </label>
+                            </div>
+                            <p className=" mb-3 font-weight-bold">-</p>
+
+                            <div className="custom-control custom-checkbox col-md-1.7 mb-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    id="cartaoDigital"
+                                    checked={checkboxes.cartaoDigital}
+                                    onChange={() => handleCheckboxChange("cartaoDigital")}
+                                />
+                                <label className="custom-control-label" htmlFor="cartaoDigital">
+                                    Cartão Digital
+                                </label>
+                            </div>
+                            <p className=" mb-3 font-weight-bold">-</p>
+
+                            <div className="custom-control custom-checkbox col-md-1.7 mb-3">
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    id="logotipo"
+                                    checked={checkboxes.logotipo}
+                                    onChange={() => handleCheckboxChange("logotipo")}
+                                />
+                                <label className="custom-control-label" htmlFor="logotipo">
+                                    Logotipo
+                                </label>
+                            </div>
+                        </div>
+                        <div className="direitos1">
+                            <p className="font-weight-bold">
+                                <u className="u-direito1">
+                                    CONFORME ACORDADO O 1º VENCIMENTO FICA PARA O DIA
+                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} disabled value={venc2} type="date" />
+                                    NO VALOR DE R$
+                                    <input className="txtAcordo" onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" placeholder="" />
+                                    .
+                                </u>
+                            </p>
+                        </div>
+                        <div className="cond">
+                            <p className=" font-weight-bold ">O PAGAMENTO PODE SER FEITO ATRAVÉS DO BOLETO BANCÁRIO OU PIX QR-CODE DISPONÍVEL NO BOLETO, ENVIADO ATRAVÉS DO E-MAIL E WHATSAPP DO CONTRATANTE.
+                            </p>
+                        </div>
+                        <div className="inf">
+                            <h3><b>ACEITE REALIZADO DE FORMA VERBAL;</b></h3>
+                            <h3><b>PARA VERIFICAR SUA ADESÃO</b></h3>
+                            <h3><b>APONTE A CAMÊRA DO CELULAR PARA O QRCODE ABAIXO;</b></h3>
+                            <div className="areaqr">
+                                <div className="qr-code">
+                                    <QRCode value={formState.qrCode} />
+                                </div>
+                            </div>
+                            <h3>
+                                <b>CENTRAL DE ATENDIMENTO
+                                    <br />
+                                    (11) 4200-6110 / 0800 050 0069
+                                    <br />
+                                    <a href="mailto:Marketing@grupomapsempresas.com.br">Marketing@grupomapsempresas.com.br</a>
+                                    <br />
+                                    <a href="mailto:Contato@grupomapsempresas.com.br">Contato@grupomapsempresas.com.br</a>
+                                    <br />
+                                    PARA ATENDIMENTO VIA WHATSAPP BASTA CLICAR NO ICONE ABAIXO;
+                                    <br />
+                                </b>
+                            </h3>
+                            <div className="logo-whats">
+                                <a href="https://wa.link/jqyx3x">
+                                <img src="../../../img/whats.png" alt="" />
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="linha3 ">
-                    <h3>
-                        LEI GERAL DE PROTEÇÃO DE DADOS LEI 13.709/2018
-                    </h3>
-                </div>
-                <div className="texto">
-                    <p>
-                        1. Do direito à privacidade
-                        A Lei 13709/2018 - Lei Geral de Proteção de Dados (LGPD) estabelece como fundamento o respeito à privacidade. Desse modo, o
-                        presente Termo de Privacidade tem o propósito de comunicar de forma simples quais tipos de dados pessoais serão coletados,
-                        quando, de que forma e para quais finalidades serão utilizados.
-                        A privacidade é um direito conferido a todo indivíduo, está protegida pela lei brasileira e consiste na habilidade que este t em de
-                        controlar a exposição de informações sobre sua vida pessoal, sua intimidade, bem como a disponibilidade de dados sobre si mesmo,
-                        de retificar, ratificar ou apagar estes e de proteger a confidencialidade de suas comunicações, seu domicílio, sua imagem, honra e
-                        reputação perante terceiros.
-                        2. Atualização e veracidade dos dados; O titular e/ou seus responsáveis legais são os responsáveis pela atualização, exatidão e
-                        veracidade dos dados que informarem à empresa Grupo Maps. Caso sejam identificados erros de informações cadastradas, o G
-                        Maps Contact Center Eireli solicitará ao Titular correções;
-                        O G Maps Contact Center Eireli não se responsabiliza por dados desatualizados em suas bases de dados.
-                        3. Do prazo e forma de armazenamento; Os dados do usuário serão obtidos por meio da efetivação de seu vínculo com a Instituição,
-                        quando o usuário insere as informações voluntariamente, por meio de ferramentas de coleta de dados de acesso e navegação
-                        existentes em alguns sites e/ou aplicativos.
-                        Os dados coletados são armazenados em ambiente seguro e em servidor próprio ou de terceiro contratado para este fim.
-                        4. Da Segurança e Proteção dos Dados Pessoais
-                        As informações são protegidas com padrões de segurança e confidencialidade, para fornecer aos usuários um ambiente seguro e
-                        confiável através do uso de criptografia, certificações digitais e acessos controlados.
-                        Adicionalmente, o próprio titular deve exercer alguns cuidados para auxiliar na proteção de seus dados.
-                        a) Cuidados com Golpes: Os criminosos cibernéticos se aproveitam dos assuntos do momento para enviar mensagens
-                        fraudulentas com intuito de roubar dados ou instalar vírus e outros softwares maliciosos por meio de links em mensagens falsas.
-                        b) Compartilhamento de senhas: Sua senha é pessoal e intransferível e que deve ser mantida sob sigilo e em ambiente seguro.
-                        Não compartilhe a sua senha, ceder ou utilizar a senha de outra pessoa é tipificado como crime no art. 308, do Código Penal.
-                    </p>
-                </div>
-                <div className="escrever2 row">
-                    <h5>
-                        ASSINATURA DA CONTRATADA:
-                    </h5>
-                    <img src="../../../img/assinatura-maps.jpg" alt="" />
-                </div>
-                <div className="inf">
-                    <h3>
-                        G MAPS CONTACT CENTER LTDA – CNPJ 40.407.753/0001-30
-                        <br />
-                        E-MAIL: CONTATO@MAPSEMPRESAS.COM.BR
-                        <br />
-                        CENTRAL DE ATENDIMENTO
-                        <br />
-                        0800 580 2766
-                    </h3>
                 </div>
                 {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
                 {sucesso === 'S' ? <Navigate to='/app/home' /> : null}
             </div>
             <div className="row salvar">
-                {/* <Link to="/app/home" className="btn btn-warning btn-acao">Voltar</Link> */}
-                <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={!(loader === false)}>
-                <i className="fa-solid fa-file-pdf"></i> {loader ? (<span>Baixando  </span>) : (<span>Baixar PDF  </span>)}
+                <button className="btn btn-danger btn-cli" onClick={handleDownloadPDF} disabled={loader}>
+                    <i className="fa-solid fa-file-pdf"></i>{loader ? <span>Baixando</span> : <span>Baixar PDF</span>}
                 </button>
-                {/* <button onClick={handleMostrarScript} className="btn btn-primary btn-cli" type="button" id="button-addon2">
-                    <i class="fa-solid fa-envelope"></i> E-mail
-                </button>
-                {isScriptModalVisible && (
-                    <ScriptModal onClose={handleFecharScriptModal} />
-                )} */}
             </div>
         </div>
     </div>

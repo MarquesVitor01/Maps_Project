@@ -1,96 +1,101 @@
-import React, { useEffect, useState } from "react";
-import { Doughnut } from 'react-chartjs-2';
-import '../Graficos/graficos.css';
-
-const Dashboard = ({ clientes }) => {
-    const [valorTotalTodasParcelasPagas, setValorTotalTodasParcelasPagas] = useState(0);
-
-    useEffect(() => {
-        const calcularValorTotalTodasParcelasPagas = () => {
-            // Recuperar dados do localStorage
-            const storedValues = localStorage.getItem('valoresPagos');
-            if (storedValues) {
-                const valoresPagos = JSON.parse(storedValues);
-                // Calcular o valor total de todas as parcelas pagas
-                let total = 0;
-                Object.values(valoresPagos).forEach(cliente => {
-                    Object.values(cliente).forEach(valor => {
-                        total += valor;
-                    });
-                });
-                setValorTotalTodasParcelasPagas(total);
-            }
-        };
-
-        calcularValorTotalTodasParcelasPagas();
-    }, []);
-
-    const calcularSituacaoFinanceira = () => {
-        const hoje = new Date();
-        const totalClientes = clientes.length;  
-        const clientesPagos = clientes.filter(cliente => cliente.pago);
-        const valorTotalPagos = clientes.reduce((total, cliente) => {
-            const valor = parseFloat(cliente.pago ? cliente.valor : 0);
-            return isNaN(valor) ? total : total + valor;
-        }, 0);
-        const valorTotalAReceber = clientes.reduce((total, cliente) => {
-            const valor = parseFloat(!cliente.pago ? cliente.valor : 0);
-            const dataVencimento = new Date(cliente.venc2);
-            if (!cliente.pago && dataVencimento >= hoje) {
-                return isNaN(valor) ? total : total + valor;
-            }
-            return total;
-        }, 0);
-        const valorTotalInadimplente = clientes.reduce((total, cliente) => {
-            const valor = parseFloat(!cliente.pago ? cliente.valor : 0);
-            const dataVencimento = new Date(cliente.venc2);
-            if (!cliente.pago && dataVencimento < hoje) {
-                return isNaN(valor) ? total : total + valor;
-            }
-            return total;
-        }, 0);
-        return {
-            totalClientes,
-            clientesPagos: clientesPagos.length,
-            clientesNaoPagos: totalClientes - clientesPagos.length,
-            valorTotalPagos: valorTotalPagos.toFixed(2),
-            valorTotalAReceber: valorTotalAReceber.toFixed(2),
-            valorTotalInadimplente: valorTotalInadimplente.toFixed(2),
-            valorTotalTodasParcelasPagas: valorTotalTodasParcelasPagas.toFixed(2), // Nova propriedade
-        };
+import React, { useState, useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
+import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import 'firebase/firestore';
+import './graficos.css';
+import "animate.css/animate.min.css"; 
+const Dashboard = () => {
+  const [clientes, setClientes] = useState([]);
+  const [totalPago, setTotalPago] = useState(0);
+  const [totalNaoPago, setTotalNaoPago] = useState(0);
+  const [clientesPagos, setClientesPagos] = useState(0);
+  const [clientesNaoPagos, setClientesNaoPagos] = useState(0);
+  const pieChartRef = useRef(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const db = getFirestore();
+        const q = query(collection(db, 'clientes'));
+        const querySnapshot = await getDocs(q);
+        const listaCli = [];
+        let clientesPagosCount = 0;
+        let clientesNaoPagosCount = 0;
+        querySnapshot.forEach((doc) => {
+          listaCli.push({
+            id: doc.id,
+            cpf: doc.data().cpf,
+            nome: doc.data().nome,
+            email: doc.data().email,
+            uf: doc.data().uf,
+            fone: doc.data().fone,
+            valor: doc.data().valor,
+            data: doc.data().data,
+            venc2: doc.data().venc2,
+            cobrador: doc.data().cobrador,
+            parcelas: doc.data().parcelas,
+            encaminharClienteFinanceiro: doc.data().encaminharClienteFinanceiro,
+            simPago: doc.data().simPago,
+            dataPagamento: doc.data().dataPagamento,
+          });
+          if (doc.data().simPago) {
+            clientesPagosCount++;
+          } else {
+            clientesNaoPagosCount++;
+          }
+        });
+        setClientes(listaCli);
+        setClientesPagos(clientesPagosCount);
+        setClientesNaoPagos(clientesNaoPagosCount);
+      } catch (error) {
+        console.error('Erro ao obter dados:', error);
+      }
     };
-
-    const situacaoFinanceira = calcularSituacaoFinanceira();
-    const data = {
-        labels: ['Pagos', 'Não Pagos'],
-        datasets: [
-            {
-                data: [situacaoFinanceira.clientesPagos, situacaoFinanceira.clientesNaoPagos],
-                backgroundColor: ['#36A2EB', '#FF6384'],
-                hoverBackgroundColor: ['#36A2EB', '#FF6384'],
-            },
-        ],
-    };
-
-    return (
-        <div>
-            <h2>Situação Financeira - Resumo</h2>
-            <div className="row valores">
-                <div className="pagos font-weight-bold">
-                    <p>Valor a receber: {situacaoFinanceira.valorTotalAReceber}</p>
-                </div>
-                <div className="pagos font-weight-bold">
-                    <p>Valor Pago: {situacaoFinanceira.valorTotalTodasParcelasPagas}</p>
-                </div>
-                <div className="pagos font-weight-bold">
-                    <p>Valor Inadimplente: {situacaoFinanceira.valorTotalInadimplente}</p>
-                </div>
-            </div>
-            <div style={{ width: '70%', margin: 'auto' }} className="doug">
-                <Doughnut data={data} />
-            </div>
-        </div>
-    );
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const pago = clientes.reduce((acc, cliente) => {
+      return cliente.simPago ? acc + parseFloat(cliente.valor) : acc;
+    }, 0);
+    const naoPago = clientes.reduce((acc, cliente) => {
+      return cliente.simPago ? acc : acc + parseFloat(cliente.valor);
+    }, 0);
+    setTotalPago(pago);
+    setTotalNaoPago(naoPago);
+    if (pieChartRef.current !== null) {
+      pieChartRef.current.destroy();
+    }
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Pago', 'Não Pago'],
+        datasets: [{
+          data: [pago, naoPago],
+          backgroundColor: ['#36A2EB', '#FF6384'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true
+      }
+    });
+    pieChartRef.current = chart;
+  }, [clientes]);
+  return (
+    <div className="dashboard-container">
+      <div className="chart-container">
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div className="info">
+        <p>Total Pago: {clientesPagos}, sendo equivalente a R${totalPago.toFixed(2)} pagos.</p>
+        <p>Total Não Pago: {clientesNaoPagos}, sendo equivalente a R${totalNaoPago.toFixed(2)} não pago.</p>
+        <p>Total de Clientes: {clientes.length}</p>
+      </div>
+      <div className="button-container">
+        <Link to="/app/financeiromapsempresas" className="btn btn-warning btn-acao">Voltar</Link>
+      </div>
+    </div>
+  )
 };
-
 export default Dashboard;

@@ -1,0 +1,29 @@
+.backgroundPagamento {
+    background: linear-gradient(to right, #366894, #b44248);
+    height: 900px;
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column; 
+}
+.box {
+    border: 2px solid black;
+    background-color: #ffffffff;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 50%;
+    padding: 15px;
+}
+.title {
+    text-align: center;
+}
+.voltar {
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+.caixa-cobrador{
+    padding: 5px;
+}

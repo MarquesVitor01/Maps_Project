@@ -2,85 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from 'sweetalert2';
-import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
-function ListaCliente3(props) {
-    const [pagoStatus, setPagoStatus] = useState(() => {
-        const storedStatus = localStorage.getItem('pagoStatus');
-        return storedStatus ? JSON.parse(storedStatus) : {};
-    });
-    const [paymentDates, setPaymentDates] = useState(() => {
-        const storedDates = localStorage.getItem('paymentDates');
-        return storedDates ? JSON.parse(storedDates) : {};
-    });
-    const [acordoStatus, setAcordoStatus] = useState(() => {
-        const storedStatus = localStorage.getItem('acordoStatus');
-        return storedStatus ? JSON.parse(storedStatus) : {};
-    });
-    const [acordoDates, setAcordoDates] = useState(() => {
-        const storedDates = localStorage.getItem('acordoDates');
-        return storedDates ? JSON.parse(storedDates) : {};
-    });
-    useEffect(() => {
-        const fetchPagoStatus = async () => {
-            const db = getFirestore();
-            for (const cliente of props.arrayClientes) {
-                const clienteRef = doc(db, 'clientes', cliente.id);
-                const clienteDoc = await getDoc(clienteRef);
-                if (clienteDoc.exists()) {
-                    const data = clienteDoc.data();
-                    setPagoStatus((prevStatus) => ({
-                        ...prevStatus,
-                        [cliente.id]: data.pago || false,
-                    }));
-                }
-            }
-        };
-        fetchPagoStatus();
-    }, [props.arrayClientes]);
-    useEffect(() => {
-        const fetchAcordoStatus = async () => {
-            const db = getFirestore();
-            for (const cliente of props.arrayClientes) {
-                const clienteRef = doc(db, 'clientes', cliente.id);
-                const clienteDoc = await getDoc(clienteRef);
-                if (clienteDoc.exists()) {
-                    const data = clienteDoc.data();
-                    setAcordoStatus((prevStatus) => ({
-                        ...prevStatus,
-                        [cliente.id]: data.acordo || false,
-                    }));
-                }
-            }
-        };
-        fetchAcordoStatus();
-    }, [props.arrayClientes]);
-    const handlePagoChange = async (clienteId, newValue) => {
-        const currentDate = new Date().toISOString();
-        const newData = newValue ? { pago: true, dataPagamento: currentDate } : { pago: false, dataPagamento: null };
-        Swal.fire({
-            title: 'Confirmação',
-            text: `O valor em aberto ${newValue ? 'está pago' : 'não está pago'}? Clique aqui para ${newValue ? 'marcar' : 'desmarcar'}!`,
-            icon: 'question',
-            showCancelButton: false,
-            confirmButtonText: 'Sim',
-            cancelButtonText: 'Não',
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                setPagoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: newValue }));
-                setPaymentDates((prevDates) => ({ ...prevDates, [clienteId]: currentDate }));
-                const db = getFirestore();
-                const clienteRef = doc(db, 'clientes', clienteId);
-                await updateDoc(clienteRef, newData);
-                localStorage.setItem('paymentDates', JSON.stringify({ ...paymentDates, [clienteId]: currentDate }));
-                console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
-            } else {
-                setPagoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: false }));
-                setPaymentDates((prevDates) => ({ ...prevDates, [clienteId]: null }));
-                localStorage.setItem('paymentDates', JSON.stringify({ ...paymentDates, [clienteId]: null }));
-                console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
-            }
-        });
-    };
+import { getAuth } from 'firebase/auth';
+function ListaCobranca(props) {
+
     const [additionalInfo, setAdditionalInfo] = useState(() => {
         const storedInfo = localStorage.getItem('additionalInfo');
         return storedInfo ? JSON.parse(storedInfo) : {};
@@ -143,117 +67,124 @@ function ListaCliente3(props) {
             localStorage.setItem('additionalInfo', JSON.stringify({ ...additionalInfo, [clienteId]: { info, name } }));
         }
     };
+
+    // const sortedClientes = props.arrayClientes.sort((b, a) => new Date(b.venc2) - new Date(a.venc2));
+    // const formatarData = (venc2) => {
+    //     const partes = venc2.split("-");
+    //     return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    // };
+    function formatarData(dataEncaminhamento) {
+        if (typeof dataEncaminhamento === 'string' && dataEncaminhamento.includes('-')) {
+          const partes = dataEncaminhamento.split('-');
+          console.log(partes); // Adicionando este console.log para depurar
+          return `${partes[2]}-${partes[1]}-${partes[0]}`;
+        } else {
+          console.log('Data inválida:', dataEncaminhamento); // Adicionando este console.log para depurar
+          return 'N/A';
+        }
+      }
+    const [filteredClientes, setFilteredClientes] = useState([]);
+    const auth = getAuth();
+    const user = auth.currentUser;
     useEffect(() => {
-        const fetchAcordoStatus = async () => {
-            const db = getFirestore();
-            const storedAcordoDates = {};
-            for (const cliente of props.arrayClientes) {
-                const clienteRef = doc(db, 'clientes', cliente.id);
-                const clienteDoc = await getDoc(clienteRef);
-                if (clienteDoc.exists()) {
-                    const data = clienteDoc.data();
-                    setAcordoStatus((prevStatus) => ({
-                        ...prevStatus,
-                        [cliente.id]: data.acordo || false,
-                    }));
-                    const storedDate = localStorage.getItem(`acordoDates_${cliente.id}`);
-                    storedAcordoDates[cliente.id] = storedDate ? JSON.parse(storedDate) : null;
-                }
+        console.log("Usuário atual:", user && user.uid);
+        console.log("Filtrando clientes...");
+
+        const filterClientes = async () => {
+            try {
+                console.log("Iniciando filtro de clientes");
+                const filtered = await Promise.all(
+                    props.arrayClientes.map(async (cliente) => {
+                        try {
+                            const allVisu = user && user.uid === "yezea9eucLS9O1Pyl1LDzGXNTkE2";
+                            const allNames = ((cliente.cobrador === "Andressa Oliveira") || (cliente.cobrador === "Isabela Eugenio") || (cliente.cobrador === "Edson Miguel") || (cliente.cobrador === "Giovana Blandino") || (cliente.cobrador === "Adriana") || (cliente.cobrador === "Yasmin Gomes") || (cliente.cobrador === "Nataniele") || (cliente.cobrador === "Ana Clara") || (cliente.cobrador === "Miriam") || (cliente.cobrador === "Jonathan") || (cliente.cobrador === "Evilly") || (cliente.cobrador === "Luana") || (cliente.cobrador === "Joyce") || (cliente.cobrador === "Miguel"));
+                            if ((allNames && allVisu) ||
+                                (cliente.cobrador === "Andressa Oliveira" && (user && user.uid === "SJNnkq9yx4a64AUfzId7TXZnGOE3")) ||
+                                (cliente.cobrador === "Isabela Eugenio" && (user && user.uid === "qgKQYxHPs0R4MvaMQKABegz2UPE3")) ||
+                                (cliente.cobrador === "Edson Miguel" && (user && user.uid === "8nzKamPt9HMqMPpIXewFat89NzG3")) ||
+                                (cliente.cobrador === "Giovana Blandino" && (user && user.uid === "bj2TZt85t8ZU2aVinPyIJCyqwPW2")) ||
+                                (cliente.cobrador === "Andrieli Marques" && (user && user.uid === "e3ionoDTIXP5IUhK54urZEQFky33")) ||
+                                (cliente.cobrador === "Yasmin Gomes" && (user && user.uid === "jCuENjaYvQSgv2QIHVCICpzLSXd2")) ||
+                                (cliente.cobrador === "Nataniele" && (user && user.uid === "fe1LqLOgfzMsk77EABwg8NfpxKZ2")) ||
+                                (cliente.cobrador === "Ana Clara" && (user && user.uid === "PpEKfJH0IvcAhzWsdRkiR9FGOlF2")) ||
+                                (cliente.cobrador === "Matheus" && (user && user.uid === "nLszG0sv41Q1ALw3Vtv4ettIxyB3")) ||
+                                (cliente.cobrador === "Jonathan" && (user && user.uid === "mbv3nq6bFlcbayOQa20Vz9lLMxn2")) ||
+                                (cliente.cobrador === "Adriana" && (user && user.uid === "phqIE6UzJAghlSaqb6TZm0g7pkU2")) ||
+                                (cliente.cobrador === "Luana" && (user && user.uid === "toyWbrZgqDN4OLIPvzwOMaM49Z53")) ||
+                                (cliente.cobrador === "Evilly" && (user && user.uid === "p3sGy6hLewSCLmhuhPl2wJLoHcj1")) ||
+                                (cliente.cobrador === "Miguel" && (user && user.uid === "8nzKamPt9HMqMPpIXewFat89NzG3"))
+                            ) {
+                                return cliente;
+                            } else {
+                                return null;
+                            }
+                        } catch (error) {
+                            console.error(`Erro ao verificar arquivos do cliente ${cliente}:`, error);
+                            return null;
+                        }
+                    })
+                );
+                console.log("Clientes filtrados:", filtered);
+                setFilteredClientes(filtered.filter(Boolean));
+            } catch (error) {
+                console.error("Erro geral ao filtrar clientes:", error);
             }
-            setAcordoDates(storedAcordoDates);
         };
-        fetchAcordoStatus();
-    }, [props.arrayClientes]);
-    const sortedClientes = props.arrayClientes.sort((b, a) => new Date(b.venc2) - new Date(a.venc2));
-    const formatarData = (venc2) => {
-        const partes = venc2.split("-");
-        return `${partes[2]}/${partes[1]}/${partes[0]}`;
-      };
-    const handleAcordoChange = async (clienteId, newValue) => {
-        const currentDate = new Date().toISOString();
-        const newData = newValue
-            ? { acordo: true, dataAcordo: currentDate }
-            : { acordo: false, dataAcordo: null };
-        Swal.fire({
-            title: 'Confirmação',
-            text: `Uma nova data para pagamento ${newValue ? 'foi acordada' : 'não foi acordada'
-                }? Clique aqui para ${newValue ? 'marcar' : 'desmarcar'}!`,
-            icon: 'question',
-            showCancelButton: false,
-            confirmButtonText: 'Sim',
-            cancelButtonText: 'Não',
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                setAcordoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: newValue }));
-                if (newValue) {
-                    localStorage.setItem(`acordoDates_${clienteId}`, JSON.stringify(newData.dataAcordo));
-                    console.log(`Saved acordo date for cliente ID ${clienteId}: ${newData.dataAcordo}`);
-                } else {
-                    localStorage.removeItem(`acordoDates_${clienteId}`);
-                }
-                const db = getFirestore();
-                const clienteRef = doc(db, 'clientes', clienteId);
-                await updateDoc(clienteRef, newData);
-                console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
-            } else {
-                setAcordoStatus((prevStatus) => ({ ...prevStatus, [clienteId]: false }));
-                setAcordoDates((prevDates) => ({ ...prevDates, [clienteId]: null }));
-                localStorage.removeItem(`acordoDates_${clienteId}`);
-                console.log(`Status pago para o cliente ID ${clienteId} atualizado para ${newValue}`);
-            }
-        });
-    };
-    return (
+        filterClientes();
+    }, [props.arrayClientes, user]);
+    
+    const [filtroDataVenda, setFiltroDataVenda] = useState(""); // Estado para armazenar a data de filtro
+
+    return (<>
+        <div className="row divAss">
+        <div className="divDate">
+            <p className="text-center">DATA DE ENCAMINHAMENTO:</p>
+            <input
+              type="date"
+              value={filtroDataVenda}
+              onChange={(e) => setFiltroDataVenda(e.target.value)}
+              className="form-control date date-config"
+            />
+          </div>
+        </div>
         <table className="table table-hover table-bordered">
             <thead>
-                <tr className="table-secondary">
-                    <th scope="col">CNPJ/CPF</th>
-                    <th scope="col">Cobrador</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">UF</th>
-                    <th scope="col">Telefone</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Vencimento</th>
-                    <th scope="col">Acordo</th>
-                    <th scope="col">Informações do acordo</th>
+                <tr className="table-primari text-light">
+                    <th scope="col" className="text-center col-acao">CNPJ/CPF</th>
+                    <th scope="col" className="text-center col-acao">COBRADOR</th>
+                    <th scope="col" className="text-center col-acao">NOME</th>
+                    <th scope="col" className="text-center col-acao">E-MAIL</th>
+                    <th scope="col" className="text-center col-acao">UF</th>
+                    <th scope="col" className="text-center col-acao">TELEFONE</th>
+                    <th scope="col" className="text-center col-acao">VALOR</th>
+                    <th scope="col" className="text-center col-acao">DATA</th>
+                    <th scope="col" className="text-center col-acao">ACORDO</th>
                 </tr>
             </thead>
             <tbody>
-                {sortedClientes.map((cliente) => {
-                    const isPago = pagoStatus[cliente.id] || false;
-                    const paymentDate = paymentDates[cliente.id] || null;
-                    const isAcordo = acordoStatus[cliente.id] || false;
-                    const acordoDate = acordoDates[cliente.id] || null;
+                {filteredClientes.filter((cliente) => !filtroDataVenda || cliente.dataEncaminhamento == filtroDataVenda).map((cliente) => {
                     const additionalInfoData = additionalInfo[cliente.id] || {};
-                    const vencimento = new Date(cliente.venc2);
-                    const hoje = new Date();
-                    if (props.exibirPagos && !isPago) {
-                        return null;
-                    }
-                    if (vencimento < hoje) {
                     return (
                         <tr key={cliente.id} className="table-light" >
                             <th scope="row" className="align-middle">
                                 <Link to={`/app/home/fichacliente/${cliente.id}`}><i className="fa-solid fa-list icone-acao1"></i></Link>
                                 {cliente.cpf}
                             </th>
-                            <td className="align-middle">{cliente.cobrador}</td>
-                            <td className="align-middle">{cliente.nome || 'N/A'}</td>
-                            <td className="align-middle">{cliente.email || 'N/A'}</td>
-                            <td className="align-middle">{cliente.uf || 'N/A'}</td>
-                            <td className="align-middle">{cliente.fone || 'N/A'}</td>
-                            <td className="align-middle">{cliente.valor || 'N/A'}</td>
-                            <td className="align-middle">{formatarData(cliente.venc2)}</td>
-                            <td className="align-middle">
-                                <input
-                                    type="checkbox"
-                                    checked={isAcordo}
-                                    onChange={(e) => handleAcordoChange(cliente.id, e.target.checked)}
-                                />
-                            </td>
-                            <td>
-                            <Link to={`/app/home/fichacobrancamapsempresas/${cliente.id}`}><i className="fa-solid fa-money-check-dollar green"></i></Link>
+                            <td className="align-middle text-center">{cliente.cobrador}</td>
+                            <td className="align-middle text-center">{cliente.nome || 'N/A'}</td>
+                            <td className="align-middle text-center">{cliente.email || 'N/A'}</td>
+                            <td className="align-middle text-center">{cliente.uf || 'N/A'}</td>
+                            <td className="align-middle text-center">{cliente.fone || 'N/A'}</td>
+                            <td className="align-middle text-center">{cliente.valor || 'N/A'}</td>
+                            <td className="align-middle text-center">{formatarData(cliente.dataEncaminhamento)}</td>
+
+                            <td className="align-middle text-center">
+                                <Link to={`/app/home/fichacobrancamapsempresas/${cliente.id}`}> <i className="fa-solid fa-money-check-dollar green"> </i> </Link>
+  
+                                <Link to={`/app/fichaalterar/${cliente.id}`}> <i className="fa-solid fa-share"> </i> </Link>
+                                <Link to={`/app/comprovantes/${cliente.id}`}> <i className="fa-solid fa-file-invoice icone-acao"> </i> </Link>
+
+{/* 
                                 <button onClick={() => addInfoManually(cliente.id)}>
                                     Adicionar Informações
                                 </button>
@@ -267,16 +198,15 @@ function ListaCliente3(props) {
                                             Excluir Informações
                                         </button>
                                     </div>
-                                )}
+                                )} */}
                             </td>
+
                         </tr>
                     );
-                } else {
-                    return null; 
-                }
                 })}
             </tbody>
         </table>
+        </>
     );
 }
-export default ListaCliente3;
+export default ListaCobranca;

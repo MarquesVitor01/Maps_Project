@@ -8,6 +8,7 @@ function FichaCobranca() {
     const [cobrador, setCobrador] = useState('');
     const [vencimentoCobranca, setVencimentoCobranca] = useState('');
     const [dataCobranca, setDataCobranca] = useState('');
+    const [valor, setValor] = useState('');
     const [senha, setSenha] = useState('');
     const [mensagem, setMensagem] = useState('');
     const [sucesso, setSucesso] = useState('');
@@ -26,6 +27,7 @@ function FichaCobranca() {
                     setDataCobranca(dados.dataCobranca);
                     setVencimentoCobranca(dados.vencimentoCobranca);
                     setCobrador(dados.cobrador);
+                    setValor(dados.valor);
                 } else {
                     setMensagem('Cliente não encontrado');
                 }
@@ -41,11 +43,12 @@ function FichaCobranca() {
         try {
             // Solicitar senha
             const senhaDigitada = prompt("Digite sua senha:");
-            if (senhaDigitada === 'Financeiro150717Fc@') { // Verifica se a senha está correta
+            if (senhaDigitada === '@') { // Verifica se a senha está correta
                 await updateDoc(doc(db, 'clientes', id), {
                     cobrador: cobrador,
                     vencimentoCobranca: vencimentoCobranca,
-                    dataCobranca: dataCobranca
+                    dataCobranca: dataCobranca,
+                    valor: valor
                 });
                 setMensagem('');
                 setSucesso('S');
@@ -76,12 +79,26 @@ function FichaCobranca() {
                             </div>
                             <select className="custom-select d-block" onChange={(e) => setCobrador(e.target.value)} value={cobrador} id="estado" required>
                                 <option value="">Escolha</option>
+                                <option value="Jonathan">Jonathan</option>
+                                <option value="Ana Clara">Ana Clara</option>
+                                <option value="Karolina Salgado">Karolina Salgado</option>
+                                <option value="Adriana">Adriana</option>
+                                <option value="Allan Bruno">Allan Bruno</option>
+                                <option value="Bruno Santos">Bruno Santos</option>
+                                <option value="Matheus">Matheus</option>
+                                <option value="Evilly">Evilly</option>
                                 <option value="Isabela Eugenio">Isabela Eugenio</option>
-                                <option value="Edson Miguel">Edson Miguel</option>
-                                <option value="Giovana Blandino">Giovana Blandino</option>
-                                <option value="Andressa Oliveira">Andressa Oliveira</option>
-                                <option value="Andrieli Marques">Andrieli Marques</option>
-                                <option value="Yasmin Gomes">Yasmin Gomes</option>
+                                <option value="Nataniele">Nataniele</option>
+                                <option value="Jonathan Pg">Jonathan Pg</option>
+                                <option value="Ana Clara Pg">Ana Clara Pg</option>
+                                <option value="Karolina Salgado Pg">Karolina Salgado Pg</option>
+                                <option value="Adriana Pg">Adriana Pg</option>
+                                <option value="Allan Bruno Pg">Allan Bruno Pg</option>
+                                <option value="Bruno Santos Pg">Bruno Santos Pg</option>
+                                <option value="Matheus Pg">Matheus Pg</option>
+                                <option value="Evilly Pg">Evilly Pg</option>
+                                <option value="Isabela Eugenio Pg">Isabela Eugenio Pg</option>
+                                <option value="Nataniele Pg">Nataniele Pg</option>
                             </select>
                         </div>
                         <div className="caixa-cobrador">
@@ -95,6 +112,12 @@ function FichaCobranca() {
                                 <span className="input-group-text">Data de Vencimento:</span>
                             </div>
                             <input onChange={(e) => setVencimentoCobranca(e.target.value)} value={vencimentoCobranca} id="date" type="date" className="form-control" />
+                        </div>
+                        <div className="caixa-cobrador">
+                            <div className="input-group-prendend">
+                                <span className="input-group-text">Data de Vencimento:</span>
+                            </div>
+                            <input onChange={(e) => setValor(e.target.value)} value={valor} id="date" type="date" className="form-control" />
                         </div>
                     </div>
                     {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}

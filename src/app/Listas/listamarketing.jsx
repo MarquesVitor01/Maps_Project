@@ -5,123 +5,6 @@ import "./listamarketing.css";
 import Swal from 'sweetalert2';
 function ListaClienteMarketing(props) {
   const [filtroDataVenda, setFiltroDataVenda] = useState("");
-  const ScriptModal = ({ onClose, clientId, onCheckAll }) => {
-    const [checkboxes, setCheckboxes] = useState(() => {
-      const savedCheckboxes = localStorage.getItem(
-        `savedCheckboxes_${clientId}`
-      );
-      return savedCheckboxes
-        ? JSON.parse(savedCheckboxes)
-        : {
-          checkbox1: false,
-          checkbox2: false,
-          checkbox3: false,
-          checkbox4: false,
-        };
-    });
-    const handleCheckboxChange = (checkboxName) => {
-      setCheckboxes((prevCheckboxes) => {
-        const newCheckboxes = {
-          ...prevCheckboxes,
-          [checkboxName]: !prevCheckboxes[checkboxName],
-        };
-        localStorage.setItem(
-          `savedCheckboxes_${clientId}`,
-          JSON.stringify(newCheckboxes)
-        );
-        return newCheckboxes;
-      });
-    };
-    const updateFirestoreDocument = (clientId, data) => {
-      const db = getFirestore();
-      const docRef = doc(db, 'clientes', clientId);
-      return updateDoc(docRef, data);
-    };
-    const handleSalvar = () => {
-      localStorage.setItem(
-        `savedCheckboxes_${clientId}`,
-        JSON.stringify(checkboxes)
-      );
-      const concluido = areAllCheckboxesChecked();
-      updateFirestoreDocument(clientId, { concluido });
-      onCheckAll(clientId, concluido);
-      onClose();
-    };
-    const areAllCheckboxesChecked = () =>
-      Object.values(checkboxes).every(Boolean);
-    return (
-      <div className="script-modal over">
-        <div className="script-modal-content">
-          <span className="close" onClick={onClose}>
-            &times;
-          </span>
-          <br />
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={checkboxes.checkbox1}
-                onChange={() => handleCheckboxChange("checkbox1")}
-              />
-              Logomarca
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={checkboxes.checkbox2}
-                onChange={() => handleCheckboxChange("checkbox2")}
-              />
-              Cartão Digital
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={checkboxes.checkbox3}
-                onChange={() => handleCheckboxChange("checkbox3")}
-              />
-              Página da Google
-            </label>
-          </div>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                checked={checkboxes.checkbox4}
-                onChange={() => handleCheckboxChange("checkbox4")}
-              />
-              QrCode
-            </label>
-          </div>
-          <button onClick={handleSalvar}>Salvar</button>
-          {areAllCheckboxesChecked() && <div className="checkmark-icon">✓</div>}
-        </div>
-      </div>
-    );
-  };
-  const [isScriptModalVisible, setScriptModalVisible] = useState(false);
-  const [selectedClientId, setSelectedClientId] = useState(null);
-  const [allCheckboxesChecked, setAllCheckboxesChecked] = useState(() => {
-    const savedStates = localStorage.getItem("allCheckboxesChecked");
-    return savedStates ? JSON.parse(savedStates) : {};
-  });
-  const handleMostrarScript = (clientId) => {
-    setSelectedClientId(clientId);
-    setScriptModalVisible(true);
-  };
-  const handleFecharScriptModal = () => {
-    setSelectedClientId(null);
-    setScriptModalVisible(false);
-  };
-  const handleCheckAll = (clientId, checked) => {
-    setAllCheckboxesChecked((prev) => ({ ...prev, [clientId]: checked }));
-  };
-  useEffect(() => {
-    localStorage.setItem("allCheckboxesChecked", JSON.stringify(allCheckboxesChecked));
-  }, [allCheckboxesChecked]);
   const [additionalInfo, setAdditionalInfo] = useState(() => {
     const storedInfo = localStorage.getItem('additionalInfo');
     return storedInfo ? JSON.parse(storedInfo) : {};
@@ -191,26 +74,28 @@ function ListaClienteMarketing(props) {
   };
   return (
     <div>
-      <input
-        type="date"
-        value={filtroDataVenda}
-        onChange={(e) => setFiltroDataVenda(e.target.value)}
-        className="form-control date"
-      />
+      <div className="row divAss">
+        <div className="divDate">
+        <p className="text-center">DATA DA VENDA:</p>
+          <input
+            type="date"
+            value={filtroDataVenda}
+            onChange={(e) => setFiltroDataVenda(e.target.value)}
+            className="form-control date date-config"
+          />
+        </div>
+      </div>
       <table className="table table-hover table-bordered">
         <thead>
-          <tr className="table-secondary">
-            <th scope="col">CNPJ/CPF</th>
-            <th scope="col">Encaminhar</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Email</th>
-            <th scope="col">UF</th>
-            <th scope="col">Telefone</th>
-            <th scope="col">Valor</th>
-            <th scope="col">Data de venda</th>
-            <th scope="col" className=""></th>
-            <th scope="col">Informações do acordo</th>
-
+          <tr className="table-primari text-light">
+            <th scope="col" className="col-acao text-center">CNPJ/CPF</th>
+            <th scope="col" className="col-acao text-center">ENCAMINHAR</th>
+            <th scope="col" className="col-acao text-center">NOME</th>
+            <th scope="col" className="col-acao text-center">UF</th>
+            <th scope="col" className="col-acao text-center">TELEFONE</th>
+            <th scope="col" className="col-acao text-center">VALOR</th>
+            <th scope="col" className="col-acao text-center">DATA DA VENDA</th>
+            <th scope="col" className="col-acao text-center">INFORMAÇÕES</th>
           </tr>
         </thead>
         <tbody>
@@ -225,26 +110,18 @@ function ListaClienteMarketing(props) {
                   ></Link>
                   {cliente.cpf || "N/A"}
                 </th>
-                <td className="align-middle">{cliente.encaminharCliente ? 'Sim' : 'Não'}</td>
-                <td className="align-middle">{cliente.nome || 'N/A'}</td>
-                <td className="align-middle">{cliente.email || 'N/A'}</td>
-                <td className="align-middle">{cliente.uf || 'N/A'}</td>
-                <td className="align-middle">{cliente.fone || 'N/A'}</td>
-                <td className="align-middle">{cliente.valor || 'N/A'}</td>
-                <td className="align-middle">{cliente.data || 'N/A'}</td>
-                <td>
-                  <button onClick={() => handleMostrarScript(cliente.id)}>
-                    <i
-                      className={`fa-solid ${allCheckboxesChecked[cliente.id]
-                        ? "fa-check icone-verde"
-                        : "fa-paperclip"
-                        }`}
-                    ></i>
-                  </button>
-                </td>
-                <td>
-                  <button onClick={() => addInfoManually(cliente.id)}>
-                    Adicionar Informações
+                <td className="align-middle text-center">{cliente.encaminharCliente ? 'Sim' : 'Não'}</td>
+                <td className="align-middle text-center">{cliente.nome || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.uf || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.fone || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.valor || 'N/A'}</td>
+                <td className="align-middle text-center">{cliente.data || 'N/A'}</td>
+ 
+                <td className="align-middle text-center">
+                <Link to={`/app/fichamarketing/${cliente.id}`}><i className="fa-solid fa-clipboard icon-u"></i></Link>
+<br />
+                <button onClick={() => addInfoManually(cliente.id)} className="btn btn-danger btn-cliG" type="button" id="button-addon2">
+                    Adicionais
                   </button>
                   {additionalInfo[cliente.id] && (
                     <div>
@@ -262,13 +139,7 @@ function ListaClienteMarketing(props) {
             ))}
         </tbody>
       </table>
-      {isScriptModalVisible && selectedClientId && (
-          <ScriptModal
-            onClose={handleFecharScriptModal}
-            clientId={selectedClientId}
-            onCheckAll={handleCheckAll}
-          />
-        )}
+
     </div>
   );
 }

@@ -1,7 +1,7 @@
 .background {
   border-top: 2px solid rgb(100, 29, 29);
   border-bottom: 2px solid rgb(100, 29, 29);
-  background: linear-gradient(to right, #366894, #b44248);
+  background: linear-gradient(to right, #464E80, #800020);
   padding: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -14,24 +14,15 @@ body {
   overflow-x: hidden;
   font-family: Arial, Helvetica, sans-serif;
 }
-.renovacao{
-  margin-top: -15px;
-}
+
 .titulo-2 {
   background-color: white;
-  width: 790px;
+  width: 795px;
   margin-top: 15px;
   border: 5px solid black;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
-
-.texto-cima h1 {
-  text-align: center;
-  display: inline-block;
-  font-size: large;
-}
 
 .escolha-select {
   margin-top: -4px;
@@ -39,7 +30,11 @@ body {
 }
 
 .frase {
-  padding: 5px;
+  padding: 5px ;
+}
+.frase u{
+justify-content: end;
+display: flex;
 }
 
 .salvar {
@@ -63,40 +58,43 @@ body {
   margin: 0 auto;
 }
 
-.logo-street {
+.logo{
   justify-content: center;
   display: flex;
-  padding: 10px;
-  margin-top: -15px;
-  margin-bottom: -15px;
+  padding: 20px;
 }
-
-.logo-street img {
-  height: 100px !important;
-  border-radius: 100px;
+.logo img{
+  width: 600px;
+  height: auto;
 }
-
-/* .table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  justify-content: center;
-  display: flex;
-} */
 
 .cima,
 .baixo {
-  font-size: large;
-  text-align: left;
+  font-size: small;
+  text-align: center;
+}
+
+.baixo input{
+  margin-top: -15px;
+}
+
+.baixo-menor{
+  width: 20%;
+}
+.baixo-medio{
+  width: 27%;
+}
+.form-control{
+  text-align: center;
 }
 
 .th {
-  font-size: medium;
+  font-size: small;
   background-color: #f2f2f2;
 }
 
 .caixa {
-  font-size: small;
+  font-size: large;
 }
 
 .linha1 {
@@ -143,7 +141,9 @@ body {
 .linha2 h3 {
   font-size: 14px;
 }
-
+label[htmlFor="lblInfo"]{
+  text-align: center;
+}
 .siga-redes {
   margin-top: -25px;
   display: flex;
@@ -168,12 +168,7 @@ body {
 
 .caixa2 {
   font-size: small;
-  border: 1px solid black;
 }
-.caixa2 input{
-  margin-top: -8px;
-}
-
 .entorno {
   border: 1px solid black;
   margin-bottom: 5px;
@@ -182,12 +177,23 @@ body {
 .caixa2 input {
   width: 100%;
   box-sizing: border-box;
+  margin-top: -5px;
+}
+.caixa2 label{
+  padding: 5px 0 0 0;
+}
+.divAnuncio input{
+  margin-top: 5px
 }
 
 
+.temSite input{
+}
 
 
-
+.renovacao input{
+  margin-left: 20px;
+}
 
 .atualizacao {
   padding-top: 7px;
@@ -228,67 +234,68 @@ body {
 
 
 .escrever2 {
-  padding: 5px;
+  padding: 30px 0 0 0;
   justify-content: center;
 }
 
 .escrever2 hr {
   color: black;
-  height: 1px;
 }
 
 .escrever2 h3 {
   text-align: center;
   font-size: 13px;
 }
+.escrever2 h5 {
+  margin-top: -5px;
+  text-align: center;
+  font-size: medium;
+}
+.escrever2 img{
+  margin-top: -12px;
+  height: 32px;
+}
 
 .linha3 {
-  color: #ffffff;
-  height: 20px;
+  height: 40px;
+  width: 100%;
   background-color: rgb(87, 87, 207);
-  margin-top: 1px;
-  text-align: center;
   border: 1px solid black;
   border-radius: 5px;
+  margin: auto;
+  padding: 10px;
 }
 
 .linha3 h3 {
+  color: #ffffff;
   font-size: medium;
+  text-align: center;
 }
 
 .linha-verde {
-  color: #ffffff;
-  height: 40px;   
-  background-color: rgb(55, 189, 55);
-  margin-top: 1px;
-  width: 55%;
-  text-align: center;
-  border: 1px solid black;
-  border-radius: 5px;
+  height: auto;
   margin-bottom: 5px;
-  text-decoration: none;
 }
 
-.linha-verde h3 {
-  font-size: medium;
-  margin-top: 10px;
-
+.linha-verde img {
+  height: 60px;
 }
 
-.faixa-arrow{
+.faixa-arrow{   
   justify-content: space-around;
 }
 
 .flecha-amarela i{
-  font-size: 80px;
-  margin-top: -20px ;
-  margin-bottom: -10px;
+  font-size: 90px;
+  margin-top: -15px ;
 }
 
 .linha-verde a {
   text-decoration: none;
   color: #ffffff;
 }
+
+
 
 .face{
   color: #366894;
@@ -297,17 +304,29 @@ body {
   color: rgb(196, 20, 93);
 }
 .cond {
-  margin-top: 10px;
+  margin-top: -10px;
   padding: 5px;
-  border: 1px solid black;
-  text-align: center;
+  text-align: justify;
+  font-size: small;
+}
+.txtCond{
+  margin: 0 5px 0 5px;
+}
+.cond p{
+
   font-size: small;
 }
 
-.acessoria {
-  justify-content: space-around;
-  margin-top: -25px;
-
+.acessoriaNew {
+  padding: 8px;
+  justify-content: center;
+  
+}
+.acessoriaNew h2 {
+font-size: small;
+}
+.acessoriaNew select{
+  width: 50%;
 }
 
 .youtube{
@@ -325,16 +344,72 @@ body {
 }
 
 .direitos1 {
-  margin-top: -30px;
-  margin-bottom: -10px;
   text-align: center;
   font-size: small;
 }
+.direitos1 input{
+  margin: 0 5px 7.5px 5px;
+  width: 150px;
+}
+.u-direito1 input{
+  align-items: center;
+}
+.txtAcordo {
+  vertical-align: middle; /* Alinha verticalmente a input com o restante do texto */
+}
+.u-direito1 {
+  line-height: 1; /* Define a altura da linha para o valor padrão */
+}   
 .inf h3 {
   font-size: small;
   text-align: center;
 }
 
+.inf img{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
 .pre{
   margin-top: 8px;
 }
+
+.contact h2{
+  font-size: small;
+  padding: 10px 0 0 0;
+}
+
+.qr-code {
+  width: 100%; /* Garante que o QR Code tenha a largura total do contêiner pai */
+  text-align: center; /* Centraliza o conteúdo horizontalmente */
+  margin-bottom: 10px; /* Adiciona um espaço entre o QR Code e o conteúdo abaixo */
+  justify-content: center;
+  display: flex;
+  padding: 0;
+}
+
+.areaqr {
+  margin: 0 auto;
+  padding: 0;
+}
+.pdf-element .qr-code {
+  margin-top: -72px; /* Reduz a margem superior para 0 */
+  margin-bottom: -12px; /* Reduz a margem superior para 0 */
+}
+
+.txtAcordo{
+  border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
+  border-top: none; /* Remove qualquer borda na parte superior */
+  border-left: none; /* Remove qualquer borda na parte esquerda */
+  border-right: none; /* Remove qualquer borda na parte direita */
+  text-align: center;
+}
+
+.txtAcordo:hover{
+  border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
+  border-top: none; /* Remove qualquer borda na parte superior */
+  border-left: none; /* Remove qualquer borda na parte esquerda */
+  border-right: none; /* Remove qualquer borda na parte direita */
+}
+

@@ -1,0 +1,66 @@
+
+
+.sct-background{
+    background: linear-gradient(to right, #464E80, #800020);
+    height: 100vh;
+    background-size: cover;
+    align-items: center;
+    text-shadow: 8px 8px 8px rgba(0, 0, 0, 0.7);
+
+}
+.sct-background h1{
+    color: #fff;
+    text-align: center;
+    padding: 30px 0 0 0;
+}
+.boxes1{
+    padding: 35px;
+    display: flex;
+    justify-content: center;
+}
+.box0 h1, .box-venda{
+    text-shadow: 8px 8px 8px rgba(0, 0, 0, 0.7);
+}
+.box0 p{
+    padding: 15px;
+}
+.box0{
+    padding: 20px ;
+    margin: 0 25px;
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    align-items: center;
+    border: none;
+    width: 500px;
+    align-items: center;
+    text-align: center;
+    animation-duration: 1s;
+}
+.btn-modify{
+    background-color: rgba(104, 134, 255, 0.7);
+    padding: 10px 40px;
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.btn-modify:hover{
+    background-color: rgba(56, 96, 255, 0.7);
+    color: #fff;
+    
+}
+.btn-modify2{
+    background-color: #800020;
+    padding: 10px 40px;
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.btn-modify2:hover{
+    background-color: #600018;
+    color: #fff;
+    
+}
+
+.btn-space{
+    margin: 0 5px;
+}

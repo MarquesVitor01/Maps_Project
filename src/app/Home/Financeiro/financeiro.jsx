@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Navbar2 from "../../Componentes/Navbar/navbar2";
-import ListaPagos from "../../Listas/listapagos";
+import ListaCliente2 from "../../Listas/listapagos";
 import './financeiro.css';
 import Dashboard from "../../Componentes/Graficos/graficos";
 import { collection, getFirestore, getDocs, query, where } from 'firebase/firestore';
@@ -8,9 +8,8 @@ import 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useReactToPrint } from "react-to-print";
 import 'chart.js/auto';
-import { Collapse, Card } from 'react-bootstrap';
 
-function Financeiro() {
+function Pagos() {
   const [loader, setLoader] = useState(false);
   const [clientes, setClientes] = useState([]);
   const [busca, setBusca] = useState('');
@@ -33,12 +32,7 @@ function Financeiro() {
         const user = auth.currentUser;
         const db = getFirestore();
         const clientesRef = collection(db, 'clientes');
-        let q;
-        if (exibirPagos) {
-          q = query(clientesRef, where("pago", "==", true));
-        } else {
-          q = query(clientesRef);
-        }
+        const q = query(clientesRef);
         const snapshot = await getDocs(q);
         const listaCli = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -52,17 +46,17 @@ function Financeiro() {
           pago: doc.data().pago || false,
           cobrador: doc.data().cobrador || 'Sem cobrança',
           data: doc.data().data,
-          parcelas: doc.data().parcelas
+          parcelas: doc.data().parcelas,
+          encaminharClienteFinanceiro: doc.data().encaminharClienteFinanceiro,
+          simPago: doc.data().simPago,
+          dataPagamento: doc.data().dataPagamento,
         }));
-
-        // Contar a frequência e calcular o valor total para cada cobrador dos clientes pagos
+        const clientesPagos = listaCli.filter(cliente => cliente.pago);
         const info = {};
         const pagamentosPorDia = {};
         const pagamentosPorMes = {};
         const pagamentosPorAno = {};
-
-        listaCli.forEach(cliente => {
-          // Contagem por cobrador
+        clientesPagos.forEach(cliente => {
           if (!info[cliente.cobrador]) {
             info[cliente.cobrador] = {
               quantidade: 0,
@@ -70,9 +64,7 @@ function Financeiro() {
             };
           }
           info[cliente.cobrador].quantidade++;
-          info[cliente.cobrador].valorTotal += parseFloat(cliente.valor); // Converter para número e somar
-
-          // Contagem por dia
+          info[cliente.cobrador].valorTotal += parseFloat(cliente.valor);
           const dataPagamento = new Date(cliente.data);
           const dia = dataPagamento.getDate();
           const chaveDia = `${dia}/${dataPagamento.getMonth() + 1}/${dataPagamento.getFullYear()}`;
@@ -80,45 +72,31 @@ function Financeiro() {
             pagamentosPorDia[chaveDia] = 0;
           }
           pagamentosPorDia[chaveDia]++;
-
-          // Contagem por mês
           const chaveMes = `${dataPagamento.getMonth() + 1}/${dataPagamento.getFullYear()}`;
           if (!pagamentosPorMes[chaveMes]) {
             pagamentosPorMes[chaveMes] = 0;
           }
           pagamentosPorMes[chaveMes]++;
-
-          // Contagem por ano
           const chaveAno = `${dataPagamento.getFullYear()}`;
           if (!pagamentosPorAno[chaveAno]) {
             pagamentosPorAno[chaveAno] = 0;
           }
           pagamentosPorAno[chaveAno]++;
         });
-
-        // Definir os estados com as informações calculadas
         setCobradoresInfo(info);
         setPagamentosPorDia(pagamentosPorDia);
         setPagamentosPorMes(pagamentosPorMes);
         setPagamentosPorAno(pagamentosPorAno);
-
-        // Calcular o valor total apenas para os clientes marcados como pagos
-        const totalValor = listaCli.reduce((total, cliente) => total + parseFloat(cliente.valor), 0); // Converter para número e somar
+        const totalValor = clientesPagos.reduce((total, cliente) => total + parseFloat(cliente.valor), 0);
         setTotalValor(totalValor);
-
-        // Definir a lista de clientes
         setClientes(listaCli);
-
-        // Armazenar os clientes no localStorage
         localStorage.setItem('clientes', JSON.stringify(listaCli));
       } catch (error) {
         console.error('Erro ao obter dados:', error);
       }
     };
-
     fetchData();
-  }, [busca, exibirPagos]);
-
+  }, [busca]);
   useEffect(() => {
     const storedClientes = localStorage.getItem('clientes');
     if (storedClientes) {
@@ -126,42 +104,47 @@ function Financeiro() {
       setLoading(false);
     }
   }, []);
-
   useEffect(() => {
     setShowDashboard(false);
   }, []);
-
   const handleExibirPagos = () => {
     setExibirPagos(!exibirPagos);
   };
-
   const [showDashboard, setShowDashboard] = useState(false);
-
   const handleShowDashboard = () => {
     setShowDashboard(!showDashboard);
   };
+  const [showConcluidos, setShowConcluidos] = useState(false);
+  const [quantidadeClientes, setQuantidadeClientes] = useState(0);
 
   useEffect(() => {
     const storedClientes = localStorage.getItem('clientes');
     if (storedClientes) {
+      setQuantidadeClientes(JSON.parse(storedClientes).length);
       setClientes(JSON.parse(storedClientes));
       setLoading(false);
     }
-
     const fetchData = async () => {
       try {
         const db = getFirestore();
         let q;
-        q = query(collection(db, 'clientes'));
+        if (showConcluidos) {
+          q = query(collection(db, 'clientes'), where('simPago', '==', true));
+        } else {
+          q = query(collection(db, 'clientes'));
+        }
         if (q) {
           const querySnapshot = await getDocs(q);
           const listaCli = [];
           querySnapshot.forEach((doc) => {
-            const lowercaseBusca = busca.toLowerCase(); // Convertendo a busca para minúsculas
-            const lowercaseNome = doc.data().nome.toLowerCase(); // Convertendo o nome do documento para minúsculas
-            const lowercaseEmail = doc.data().email.toLowerCase(); // Convertendo o email do documento para minúsculas
-            const lowercaseCPF = doc.data().cpf.toLowerCase(); // Convertendo o CPF do documento para minúsculas
-            const lowercaseRazao = doc.data().razao.toLowerCase();
+            const data = doc.data(); // Obtenha os dados do documento
+
+            if (data) { // Verifique se os dados existem
+              const lowercaseBusca = busca.toLowerCase();
+              const lowercaseNome = (data.nome || '').toLowerCase(); // Verifique e converta para minúsculas
+              const lowercaseEmail = (data.email || '').toLowerCase();
+              const lowercaseCPF = (data.cpf || '').toLowerCase();
+              const lowercaseRazao = (data.razao || '').toLowerCase();
             if (
               lowercaseNome.indexOf(lowercaseBusca) >= 0 ||
               lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
@@ -180,13 +163,14 @@ function Financeiro() {
                 venc2: doc.data().venc2,
                 cobrador: doc.data().cobrador,
                 parcelas: doc.data().parcelas,
-                allCheckboxesChecked: doc.data().allCheckboxesChecked,
-                encaminharCliente: doc.data().encaminharCliente,
+                encaminharClienteFinanceiro: doc.data().encaminharClienteFinanceiro,
+                simPago: doc.data().simPago,
+                dataPagamento: doc.data().dataPagamento,
+                operador: doc.data().operador,
+                simPago: doc.data().simPago
               });
             }
-          });
-
-          // Contar a frequência e calcular o valor total para cada cobrador
+          }});
           const info = {};
           listaCli.forEach(cliente => {
             if (!info[cliente.cobrador]) {
@@ -196,14 +180,12 @@ function Financeiro() {
               };
             }
             info[cliente.cobrador].quantidade++;
-            info[cliente.cobrador].valorTotal += parseFloat(cliente.valor); // Converter para número e somar
+            info[cliente.cobrador].valorTotal += parseFloat(cliente.valor);
           });
           setCobradoresInfo(info);
-
-          // Definir a lista de clientes
           setClientes(listaCli);
+          setQuantidadeClientes(listaCli.length);
 
-          // Armazenar os clientes no localStorage
           localStorage.setItem('clientes', JSON.stringify(listaCli));
         }
       } catch (error) {
@@ -215,118 +197,136 @@ function Financeiro() {
     if (user) {
       fetchData();
     }
-  }, [busca, user]);
-
+  }, [busca, showConcluidos, user]);
+  
+  useEffect(() => {
+    const storedClientes = localStorage.getItem('clientes');
+    if (storedClientes) {
+        setClientes(JSON.parse(storedClientes));
+        setQuantidadeClientes(JSON.parse(storedClientes).length);
+        setLoading(false);
+    }
+}, []);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const contentDocument = useRef();
   const handlePrint = useReactToPrint({
     content: () => contentDocument.current,
   });
-
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setBusca(texto);
+    }
+  };
+  const handleShowConcluidos = () => {
+    setShowConcluidos(!showConcluidos);
+  };
+  function formatarData(data) {
+    if (typeof data === 'string' && data.includes('-')) {
+      const partes = data.split('-');
+      return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    } else {
+      return 'Data inválida';
+    }
+  }
+  const handleDownloadXML = () => {
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+      <clientes>
+        ${clientes.map(cliente => `
+          <cliente>
+            <cpf>${cliente.cpf}</cpf>
+            <telefone>${cliente.fone}</telefone>
+            <operador>${cliente.operador}</operador>
+            <valor>${cliente.valor}</valor>
+            <data>${formatarData(cliente.data)}</data>
+            <vencimento>${formatarData(cliente.venc2)}</vencimento>
+            <cobrador>${cliente.cobrador}</cobrador>
+            <pago>${cliente.simPago ? 'Sim' : 'Não'}</pago>
+            <dataPagamento>${formatarData(cliente.dataPagamento)}</dataPagamento>
+          </cliente>
+        `).join('')}
+      </clientes>`;
+    const blob = new Blob([xmlContent], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'relatório.xml';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
   return (
     <div>
       <Navbar2 />
-      <div className="background8">
-        <div className="container-fluid titulo">
-          <h1>Situação Financeira</h1>
-          <div className="row">
-            <div className="col-4">
-              <button onClick={handleExibirPagos} className="btn btn-success btn-cli" type="button" id="button-addon2">
-                <i className="fa-solid fa-dollar-sign"></i> {exibirPagos ? 'Ocultar Pagos' : 'Visualizar Pagos'}
-              </button>
-              <button onClick={handleShowDashboard} className="btn btn-warning btn-cli" type="button" id="button-addon2">
-                {showDashboard ? 'Ocultar Dashboard' : 'Exibir Dashboard'}
-              </button>
-              <button
-                onClick={() => setOpen(!open)}
-                aria-controls="cobradores-info"
-                aria-expanded={open}
-                className="btn btn-primary btn-cli"
-              >
-                {open ? 'Fechar' : 'Cobrança'}
-              </button>
-              <button
-                onClick={() => setOpen2(!open2)}
-                aria-controls="cobradores-info"
-                aria-expanded={open2}
-                className="btn btn-danger btn-cli"
-              >
-                {open2 ? <i class="fa-solid fa-calendar-days"></i> : <i class="fa-solid fa-calendar-days"></i>}
-              </button>
-            </div>
-            <div className="col-8">
-              <div className="input-group mb-3">
-                <input onChange={(e) => setTexto(e.target.value)} type="text" className="form-control" placeholder="Perguntar por nome" aria-describedby="button-addon2" />
-                <button onClick={() => setBusca(texto)} className="btn btn-primary" type="button" id="button-addon2">
-                  <i className="fa-solid fa-magnifying-glass"></i> Pesquisar
+      <div className="container-fluid titulo">
+        <div className="row lista-vendas">
+          <h1><b>FINANCEIRO</b></h1>
+          <div className="col-5 pesquisa">
+            <div className="input-group mb-3 ">
+              <input
+                onChange={(e) => setTexto(e.target.value)}
+                onKeyDown={handleKeyDown}
+                type="text"
+                className="form-control barra"
+                placeholder="Pesquisar por descrição"
+                aria-describedby="button-addon2"
+              />
+              <div className="botao-pesquisa-container ">
+                <button
+                  onClick={() => setBusca(texto)}
+                  className="btn  btn-pesquisa"
+                  type="button"
+                  id="button-addon2"
+                >
+                  <b className="text-light"><i className="fa-solid fa-magnifying-glass "></i> Pesquisa</b>
                 </button>
               </div>
             </div>
           </div>
-          <div>
-            <Collapse in={open2}>
-              <div ref={contentDocument}>
-                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
-                  {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
-                </button>
-
-                {Object.entries(pagamentosPorMes).map(([mes, quantidade]) => (
-                  <Card key={`mes_${mes}`} style={{ margin: '10px', padding: '10px' }}>
-                    <Card.Body>
-                      <Card.Title>Pagamentos em {mes}</Card.Title>
-                      <Card.Text>
-                        Quantidade de pagamentos: {quantidade}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-
-                {Object.entries(pagamentosPorAno).map(([ano, quantidade]) => (
-                  <Card key={`ano_${ano}`} style={{ margin: '10px', padding: '10px' }}>
-                    <Card.Body>
-                      <Card.Title>Pagamentos em {ano}</Card.Title>
-                      <Card.Text>
-                        Quantidade de pagamentos: {quantidade}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </div>
-            </Collapse>
-          </div>
-          <div >
-            <Collapse in={open}>
-              <div ref={contentDocument}>
-                <button className="btn btn-danger btn-cli" onClick={handlePrint} disabled={loader}>
-                  {loader ? <span>Baixando</span> : <span>Baixar PDF</span>}<i className="fa-solid fa-file-pdf"></i>
-                </button>
-                {Object.entries(cobradoresInfo).map(([cobrador, info]) => (
-                  <Card key={cobrador} style={{ margin: '10px', padding: '10px' }}>
-                    <Card.Body>
-                      <Card.Title>{cobrador}</Card.Title>
-                      <Card.Text>
-                        Vendas pagas: {info.quantidade}
-                        <br />
-                        Valor total: {parseFloat(info.valorTotal).toFixed(2)}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </div>
-            </Collapse>
-          </div>
-          {showDashboard ? (
-            <>
-              <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
-            </>
-          ) : (
-            <ListaPagos arrayClientes={clientes} exibirPagos={exibirPagos} />
-          )}
         </div>
       </div>
-    </div >
+      <div className="background01 div-baixo">
+        <div className="container-fluid titulo ">
+          <div className="row">
+            <div className="col-4 buttons">
+            <button onClick={handleShowConcluidos} className="btn  btn-new2 btn-success" type="button" id="button-addon2">
+                <i className="fa-solid fa-dollar-sign"></i> {showConcluidos ? 'TODOS' : 'PAGOS'}
+              </button>
+              <a href="/app/financeirodash">
+                <button className="btn  btn-new2 btn-warning" type="button">
+                <i className="fa-solid fa-chart-pie"></i>                </button>
+              </a>
+              <button onClick={handleDownloadXML} className="btn  btn-new2 btn-danger" type="button" id="button-addon2">
+              <i className="fa-solid fa-file-pdf"></i>
+              </button>
+              <a href="/app/home/novocob">
+                <button className="btn  btn-new2 btn-primary" type="button">
+                  <i className="fa-solid fa-plus"></i>
+                </button>
+              </a>
+            </div>
+            <div className="row exibicao5">
+              <h4 >
+                <i className="fa-solid fa-user "></i><b> CLIENTES: {quantidadeClientes}</b>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+          <div className="background7">
+            <div className="container-fluid titulo">
+              {showDashboard ? (
+                <>
+                  <Dashboard clientes={clientes} exibirPagos={exibirPagos} totalValor={totalValor} />
+                </>
+              ) : (
+                <ListaCliente2 arrayClientes={clientes} exibirPagos={exibirPagos} />
+              )}
+            </div>
+          </div>
+        </div>
+
   );
 }
 
-export default Financeiro;
+export default Pagos;

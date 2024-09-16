@@ -4,7 +4,7 @@ import '../Login/login.css'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { AuthContext } from "../Context/auth.jsx";
 import 'firebase/auth';
-import firebase from '../Config/firebase';
+import firebase from '../Config/firebase.js';
 function Login() {
     const auth = getAuth();
     const [email, setEmail] = useState('');
@@ -19,12 +19,17 @@ function Login() {
                 localStorage.setItem("logado", "S");
                 setLogado(true);
                 setSucesso('S');
-                let redirectPath = '/app/home';
-                if (email === 'karoline.alves@grupomapscartaodigital.com.br' || email === 'eryck.vinicius@grupomapscartaodigital.com.br' || email === 'gabriel.pinheiro@grupomapscartaodigital.com.br' || email === 'andressa.anastacia@grupomapscartaodigital.com.br' ) {
+                let redirectPath = '/app/paginadeescolhavendasgrupomapsempresas';
+                if (email === 'karoline.alves@grupomapscartaodigital.com.br' || email === 'daiany.v@grupomapscartaodigital.com.br' || email === 'gabriel.pinheiro@grupomapscartaodigital.com.br' || email === 'andressa.anastacia@grupomapscartaodigital.com.br' ) {
                     redirectPath = '/app/marketingmapsempresas';
-                } else if (email === 'andrieli@grupomapscartaodigital.com.br' || email === 'yasmin@grupomapscartaodigital.com.br' || email === 'andressa@grupomapscartaodigital.com.br' || email === 'isabela@grupomapscartaodigital.com.br' || email === 'edson@grupomapscartaodigital.com.br' || email === 'giovana@grupomapscartaodigital.com.br' ) {
+                } else if (email === 'nataniele@grupomapscartaodigital.com.br' || email === 'jonathan@grupomapscartaodigital.com.br' || email === 'evilly@grupomapscartaodigital.com.br' || email === 'matheus@grupomapscartaodigital.com.br' || email === 'isabela@grupomapscartaodigital.com.br' || email === 'adriana@grupomapscartaodigital.com' || email === 'edson@grupomapscartaodigital.com.br')  {
                     redirectPath = '/app/cobrancamapsempresas';
-                } 
+                } else if(email === 'grazielli@grupomapscartaodigital.com.br' || email === 'robert.b@grupomapscartaodigital.com.br'){
+                    redirectPath = '/app/monitoriamapsempresas';
+                } else if(email === 'felipe@grupomapscartaodigital.com.br' || email === 'fabiane@grupomapscartaodigital.com.br' || email === 'robson.silva@grupomapscartaodigital.com.br' || email === 'talita@grupomapscartaodigital.com.br' || email === 'alef.thadeu@grupomapscartaodigital.com.br'){
+                    redirectPath = '/app/paginadeescolhagrupomapsempresas';
+                }
+
                 setRedirectToHome(true); 
                 setRedirectPath(redirectPath);
             })
@@ -49,7 +54,7 @@ function Login() {
     return (
         <div className="d-flex align-items-centes text-center form-container">
             <form className="form-signin formulari">
-                <img className="mb-4 icon" src="../../../img/mps.jpg" alt="" height="" width="75" />
+                <img className="mb-4 icon" src="../../../img/mps.jpg" alt="" height="" width="90" />
                 <h1 className="h3 mb-3 fw-normal">Login</h1>
                 <div className="form-floating">
                     <input onChange={alterarEmail} type="email" className="form-control" id="floatingInput" placeholder="E-mail" />

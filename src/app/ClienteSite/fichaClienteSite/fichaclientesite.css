@@ -1,0 +1,527 @@
+.background {
+    border-top: 2px solid rgb(100, 29, 29);
+    border-bottom: 2px solid rgb(100, 29, 29);
+    background: linear-gradient(to right, #464E80, #800020);
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+body {
+    font-size: small;
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.titulo-03 {
+    background-color: white;
+    width: 795px;
+    margin-top: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.select-validade1{
+    width: 105px;
+    padding:0 3px 0 3px;
+    margin-top: -5px;
+}
+.select-validade2{
+    padding:0 3px 0 3px;
+    margin-top: -5px;
+}
+.escolha-select1 {
+    margin-top: -4px;
+}
+
+.frase {
+    padding: 5px ;
+}
+.XX{
+    text-align: center;
+}
+.frase{
+    justify-content: end;
+    display: flex;
+    }
+.salvar {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+.btn-acao {
+    margin: 20px 20px 0px 20px;
+    min-width: 100px;
+}
+
+.btn-cli {
+    margin-left: 5px;
+}
+
+.contrato {
+    background-color: white;
+    margin: 0 auto;
+}
+
+.logo-site{
+    justify-content: start;
+    display: flex;
+    padding: 20px 20px 0 20px;
+}
+.logo-site img{
+    width: 150px;
+    height: auto;
+}
+.logo-site2{
+    justify-content: end;
+    display: flex;
+}
+.logo-site2 img{
+    width: 300px;
+    height: auto;
+}
+.divLogo{
+    display: flex;
+    justify-content: space-between;
+}
+
+.cima,
+.baixo {
+    font-size: small;
+    text-align: center;
+}
+
+.baixo input{
+    margin-top: -10px;
+}
+
+.baixo-menor{
+    width: 20%;
+}
+.baixo-medio{
+    width: 27%;
+}
+.form-control{
+    text-align: center;
+}
+
+.th {
+    font-size: small;
+    background-color: #f2f2f2;
+}
+
+.caixa {
+    font-size: large;
+}
+
+.linha1 {
+    color: #ffffffff;
+    height: 23px;
+    background-color: rgb(87, 87, 207);
+    font-size: 14px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.linha1 h3 {
+    font-size: 14px;
+}
+
+.assinante {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.assinante h3 {
+    font-size: 15px;
+}
+
+.escrever {
+    width: 100%;
+}
+
+.escrever hr {
+    color: black;
+    height: 1px;
+}
+
+.linha2 {
+    color: #ffffff;
+    height: 24px;
+    background-color: rgb(87, 87, 207);
+    font-size: 14px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+.linha2 h3 {
+    font-size: 14px;
+}
+label[htmlFor="lblInfo"]{
+    text-align: center;
+}
+.siga-redes {
+    margin-top: -25px;
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+}
+
+.siga-redes ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.siga-redes li {
+    margin-right: 10px;
+    /* ou qualquer valor que desejar */
+}
+
+.so {
+    font-size: medium;
+}
+
+.caixa2 {
+    font-size: small;
+}
+.entorno {
+    border: 1px solid black;
+    margin-bottom: 5px;
+}
+
+.caixa2 input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: -5px;
+}
+.caixa2 label{
+    padding: 5px 0 0 0;
+}
+.divAnuncio input{
+    margin-top: 5px
+}
+
+.divDir{
+    margin-right: -90px;
+}
+.divDir2{
+    margin-right: -110px;
+}
+.divDir3{
+    margin-right: -157px;
+}
+.divDir5{
+    margin-right: 15px;
+}
+.divEsq {
+    margin-right: -75px;
+}
+.divEsq3 {
+    margin-right: -110px;
+}
+
+.renovacao input{
+    margin-left: 20px;
+}
+
+.atualizacao {
+    padding-top: 7px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.condicoes {
+    border: 1px solid black;
+    height: 19px;
+}
+
+.condicoes h3 {
+    font-size: 13px !important;
+    text-align: center;
+}
+
+.regras {
+    color: #ffffff;
+    background-color: rgb(87, 87, 207);
+    height: 18px;
+}
+
+.regras h2 {
+    font-size: 15px;
+    text-align: center;
+}
+
+.texto {
+    margin-top: 5px;
+    border: 1px solid black;
+    
+}
+
+.texto p {
+    font-size: 14px !important;
+}
+
+
+.escrever2 {
+    padding: 30px 0 0 0;
+    justify-content: center;
+}
+
+.escrever2 hr {
+    color: black;
+}
+
+.escrever2 h3 {
+    text-align: center;
+    font-size: 13px;
+}
+.escrever2 h5 {
+    margin-top: -5px;
+    text-align: center;
+    font-size: medium;
+}
+.escrever2 img{
+    margin-top: -12px;
+    height: 32px;
+}
+
+.linha3-site {
+    height: 25px;
+    width: 100%;
+    background-color: #9DC3E6;
+    border-radius: 5px;
+    margin: auto;
+    padding: 10px;
+}
+
+.linha3-site h3 {
+    color: #000000;
+    font-size: medium;
+    text-align: center;
+    margin-top: -6px;
+
+}
+
+.linha4-site {
+    height: 25px;
+    width: 100%;
+    background-color: #9DC3E6;
+    border-radius: 5px;
+    margin: 7px 0 13px 0 ;
+    padding: 10px;
+}
+
+.linha4-site h3 {
+    color: #000000;
+    font-size: medium;
+    text-align: center;
+    margin-top: -6px;
+
+}
+.linha5-site {
+    height: 25px;
+    width: 100%;
+    background-color: #9DC3E6;
+    border-radius: 5px;
+    margin: 7px 0 13px 0 ;
+    margin-bottom: -20px;
+    padding: 10px;
+}
+
+.linha5-site h3 {
+    color: #000000;
+    font-size: medium;
+    text-align: center;
+    margin-top: -6px;
+
+}
+.linha-verde {
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.linha-verde img {
+    height: 60px;
+}
+.linha-verde3 {
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.linha-verde3 img {
+    height: 60px;
+}
+
+
+
+
+.flecha-amarela i{
+    font-size: 90px;
+    margin-top: -15px ;
+}
+
+.linha-verde a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+
+
+.face{
+    color: #366894;
+}
+.insta{
+    color: rgb(196, 20, 93);
+}
+.cond {
+    margin-top: -10px;
+    padding: 5px;
+    text-align: justify;
+    font-size: small;
+}
+.txtCond{
+    margin: 0 5px 0 5px;
+}
+.cond p{
+
+    font-size: small;
+}
+
+.acessoriaNew {
+    padding: 8px;
+    justify-content: center;
+    
+}
+.acessoriaNew h2 {
+font-size: small;
+}
+.acessoriaNew select{
+    width: 50%;
+}
+.text-multi{
+    padding-top: 20px;
+    justify-content: center;
+}
+
+
+
+
+.youtube{
+    color: red;
+}
+.whats{
+    color: green;
+}
+
+
+.direitos {
+    padding: 4px;
+    text-align: center;
+    font-size: small;
+}
+
+.direitos1 {
+    text-align: center;
+    font-size: small;
+}
+.direitos1 input{
+    margin: 0 5px 7.5px 5px;
+    width: 150px;
+}
+.u-direito1 input{
+    align-items: center;
+}
+.txtAcordo {
+    vertical-align: middle; /* Alinha verticalmente a input com o restante do texto */
+}
+.u-direito1 {
+    line-height: 1; /* Define a altura da linha para o valor padrão */
+}   
+.inf h3 {
+    font-size: small;
+    text-align: center;
+}
+
+.inf img{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.pre{
+    margin-top: 8px;
+}
+
+.contact h2{
+    font-size: small;
+    padding: 10px 0 0 0;
+}
+
+.qr-code {
+    width: 100%; /* Garante que o QR Code tenha a largura total do contêiner pai */
+    text-align: center; /* Centraliza o conteúdo horizontalmente */
+    margin-bottom: 10px; /* Adiciona um espaço entre o QR Code e o conteúdo abaixo */
+    justify-content: center;
+    display: flex;
+    padding: 0;
+}
+
+.areaqr {
+    margin: 0 auto;
+    padding: 0;
+}
+.pdf-element .qr-code {
+    margin-top: -72px; /* Reduz a margem superior para 0 */
+    margin-bottom: -12px; /* Reduz a margem superior para 0 */
+}
+
+.txtAcordo{
+    border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
+    border-top: none; /* Remove qualquer borda na parte superior */
+    border-left: none; /* Remove qualquer borda na parte esquerda */
+    border-right: none; /* Remove qualquer borda na parte direita */
+    text-align: center;
+}
+
+.txtAcordo:hover{
+    border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
+    border-top: none; /* Remove qualquer borda na parte superior */
+    border-left: none; /* Remove qualquer borda na parte esquerda */
+    border-right: none; /* Remove qualquer borda na parte direita */
+}
+
+.inf img{
+margin: auto;
+width: 30%;
+height: auto;
+cursor: pointer;
+}
+
+.img-planos{
+    justify-content: center;
+    display: flex;
+    padding: 40px 0 20px 0;
+}
+.imgFooter{
+    padding-top: 30px;
+    width: 100%;
+    margin: 0 0 -20px -15px;
+}
+.imgFooter img{
+    width: 795.6px;
+    height: 50px;
+}
+.divDir2, .divDir3, .divDir5, .divDirLogo, .divDir label{
+    margin-top: 5px;
+}
+.divDirLogo{
+    margin-right: -120px;
+}
+
+.divEsq8{
+    margin: 0 -15px 0 -60px;
+}

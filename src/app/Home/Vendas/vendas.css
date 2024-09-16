@@ -1,21 +1,50 @@
-.pesquisa{
+
+.pesquisa {
     position: relative;
 }
-.titulo h1{
-    color: #fff;
-    margin-top: 30px;
-}
-.btn-cli{
-    margin-top: 10px;
-    margin-right: 5px ;
+.lista-vendas h1 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 605px;
     padding: 5px;
+    color: #464E80;
+    padding: 10px 0 15px 0;
+    font-size: x-large;
+    text-shadow:  -5px 5px 15px rgba(0, 0, 0, 0.4);
 }
-.nota{
+.btn-cliA {
+    margin-right: 5px;
+    padding: 5px;
+    height: 35px;
+    width: 140px;
+    align-items: center;
+    text-align: center;
+    color: #ffff;
+    font-size: small;
+}
+.btn-cli2B {
+    margin-right: 5px;
+    padding: 5px;
+    height: 35px;
+    width: 140px;
+    align-items: center;
+    text-align: center;
+    color: #ffff;
+    font-size: small;
+}
+.btn-cli2A {
+    margin-right: 5px;
+    padding: 5px;
+    height: 35px;
+    width: 80px;
+    align-items: center;
+    text-align: center;
+    color: black;
+    font-size: small;
+}
+.nota {
     margin-top: 10px;
 }
-.buttons{
-    margin-top: -8px;
-}
+
 .over {
     z-index: 1000;
     position: fixed;
@@ -23,7 +52,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,7 +64,7 @@
     position: relative;
     width: 90%;
     max-width: 600px;
-    animation: fadeInUp 0.5s ease; 
+    animation: fadeInUp 0.5s ease;
 }
 .close {
     position: absolute;
@@ -69,20 +98,113 @@
     }
 }
 .background7 {
-    border-top: 2px solid rgb(100, 29, 29);
-    border-bottom: 2px solid rgb(100, 29, 29);
-    background: linear-gradient(to right, #366894, #b44248);   padding: 20px; 
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
-    position: relative; 
-    overflow: hidden; 
-}.background7::before {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-repeat: repeat; 
-      opacity: 0.1; 
-      z-index: -1; 
+    border-top: 2px solid #ffff;
+    border-bottom: 2px solid rgb(165, 155, 155);
+    background: linear-gradient(to right, #464E80, #800020);
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
-.script-modal-content{
-    padding: 7px;
+.background7::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat;
+    opacity: 0.1;
+    z-index: -1;
+}
+.background01 {
+    border-top: 2px solid #ffff;
+    border-bottom: 2px solid rgb(165, 155, 155);
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+.background01::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat;
+    opacity: 0.1;
+    z-index: -1;
+}
+.botao-pesquisa-container {
+    overflow: hidden;
+    border-top-right-radius: 70px;
+    border-bottom-right-radius: 70px;
+}
+.btn-pesquisa {
+    border-radius: 0!important;
+    height: 50px;
+    background-color: #464E80;
+}
+.lista-vendas {
+    width: 100%;
+    background-color: #ffff;
+    padding: 40px 40px 20px;
+}
+.barra {
+    border-radius: 70px;
+    height: 50px;
+}
+.btn-new2{
+    color: #fff;
+    height: 50px;
+    width: max-content;
+    margin-right: 15px;
+    font-size: x-large;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+
+}
+.btn-new2:hover{
+    color: #ffffff;
+    height: 50px;
+    width: max-content;
+    margin-right: 15px;
+    font-size: x-large;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.bg{
+    background-color: #464E80;
+}
+
+.div-baixo{
+    background-color: #fff;
+}
+.divAgenciados i{
+    color: #000000;
+}
+
+.exibicao{  
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-shadow:  -5px 5px 15px rgba(0, 0, 0, 0.4);
+    color: #464E80;
+    display: flex;
+    justify-content: end;
+    padding-left: 370px;
+}
+
+.qtdClientesAss{
+    margin-right: 50px;
+}
+.back-to-top{
+    position: fixed;
+    padding: 20px;
+    background-color: #28A745;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 5px;
+    color: #fff ;
+}
+.back-to-top:hover{
+    position: fixed;
+    padding: 20px;
+    background-color: #218838;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 5px;
+    color: #fff ;
 }

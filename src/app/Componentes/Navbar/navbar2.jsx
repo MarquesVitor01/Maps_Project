@@ -16,7 +16,8 @@ function Navbar2() {
           const db = getFirestore();
           const userId = user.uid;
           let q;
-          if ((userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') ||  (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') ) {
+          const userAllViwer = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') ||  (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'));
+          if (userAllViwer) {
             setIsAdmUser(true);
           } else {
             setIsAdmUser(false);
@@ -44,24 +45,22 @@ function Navbar2() {
         </button>
         <div className="collapse navbar-collapse  d-lg-flex justify-content-end" id="navbarNavDropdown">
           <ul className="navbar-nav active">
-            <li className="nav-item ">
-              <Link to="https://app2.pontomais.com.br/login" className="nav-link text-success" aria-current="page">
-                <b><i className="fa-solid fa-clock icon-hora"></i> Ponto Mais</b>
+          <li className="nav-item ">
+            <Link to={'https://app2.pontomais.com.br/login'} aria-current="page" className="btn  btn-nav btn-nav-ct0 btn-success" type="button" id="button-addon2">
+                <i className="fa-solid fa-check"></i><b> PONTO MAIS</b>
               </Link>
             </li>
-            <li className="nav-item bar"> | </li>
             {isAdmUser && (
               <>
                 <li className="nav-item ">
-                  <Link to="/app/home" className="nav-link text-primary" aria-current="page">
-                    <b><i class="fa-solid fa-rotate-right"></i> Voltar</b>
+                  <Link to="/app/home" aria-current="page" className="btn  btn-nav btn-nav-ct" type="button" id="button-addon2">
+                  <i className="fa-solid fa-arrow-rotate-left"></i><b> VOLTAR</b>
                   </Link>
                 </li>
-                <li className="nav-item bar"> | </li>
               </>
             )}
             <li className="nav-item">
-              <Link to="/app" onClick={Logout} className="nav-link text-danger" aria-current="page"><b>Sair</b></Link>
+              <Link to="/app" onClick={Logout} className="btn btn-danger btn-nav" aria-current="page"><b><i className="fa-solid fa-right-from-bracket"></i> SAIR </b></Link>
             </li>
           </ul>
         </div>
