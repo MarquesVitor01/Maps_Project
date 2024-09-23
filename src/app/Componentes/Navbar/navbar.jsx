@@ -114,7 +114,7 @@ function Navbar() {
               <>
                 <li className="nav-item ">
                   <Link to={'/app/home/relatoriototal'} aria-current="page" className=" btn   btn-nav btn-nav-ct" type="button" id="button-addon2">
-                  <i className="fa-solid fa-table"></i> <b> RELAÓTRIO</b>
+                  <i className="fa-solid fa-table"></i> <b> RELATÓRIO</b>
                   </Link>
                 </li>
                 <li className="nav-item ">

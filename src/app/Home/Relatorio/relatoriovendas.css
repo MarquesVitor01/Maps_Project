@@ -1,89 +1,278 @@
-.parte-fora{
-    
-    height: max-content;
-    color: #fff;
-    border: linear-gradient(to top, #464E80, #800020) solid 10px;
-    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
-}
-.text-parte-fora{
-    text-align: center;
-}
-.background-tela-venda{
-    margin-top: 50px;
-    background: #800020;
-    color: #fff;
-    text-align: center;
-    line-height: 40px;
-    height: max-content;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4),
-    0 -10px 10px rgba(0, 0, 0, 0.4);    display: flex;
-    justify-content: center;
-}
-.bnn{
-    list-style: none;
-}
-.bg-h1{
-    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
-    padding: 20px 0 15px 0 ;
-    font-size: 30px;
-
-}
-.bg-h2{
-    font-size: 40px;
-    text-shadow:  -5px 5px 15px rgba(0, 0, 0, 0.4);
-    padding: 25px 0 5px 0 ;
-}
-.bg-p{
-    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
-    font-size: 30px;
-    padding-bottom: 5px;
-}
-.meia-tela{
-    padding: 0 70px;
-}
-.btn-voltar07{
-    font-size: 20px;
-    padding: 18px 50px;
-    position: relative;
-    border-radius: 5px;
-    transition: 0.5s;
-    top: 40px;
-}
-.btn-voltar08{
-    font-size: 20px;
-    padding: 18px 50px;
-    position: relative;
-    border-radius: 5px;
-    transition: 0.5s;
-    bottom: 40px;
+.dashboard {
+  display: flex;
+  justify-content: space-evenly; /* Mantém espaçamento uniforme */
+  align-items: flex-start;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-image: url(../../../../public/img/logo_bg_relatorio-removebg-preview.png);
+  background-color: rgb(0, 0, 0); 
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.btn-voltar08:hover{
-    padding: 20px 55px;
-    transition: 0.5s;
-}
-.btn-voltar07:hover{
-    padding: 20px 55px;
-    transition: 0.5s;
-}
-
-.bg-principal{
-    margin-top: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #464E80;
-    height: max-content;
-    color: #fff;
-    border: linear-gradient(to top, #464E80, #800020) solid 10px;
-    text-shadow: -5px 5px 15px rgba(0, 0, 0, 0.4);
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4),
-    0 -10px 10px rgba(0, 0, 0, 0.4);
-    
+.dashboard .voltar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: #007bff;
+  padding: 12px;
+  height: 40px;
+  color: #fff;
+  transition: all .3s ease-in-out;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 50px;
 }
 
-.sss{
-    justify-content: center;
-    display: flex;
-    padding: 5px;
+.dashboard .voltar:hover {
+  background-color: #0054ad;
+  text-decoration: none;
 }
+
+.dashboard .esquerda,
+.dashboard .direita {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinhar o conteúdo no topo */
+  padding: 20px;
+}
+
+.podio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 20px;
+  padding-top: 50px;
+}
+
+.podio h3{
+  margin-top: -50px;
+  margin-bottom: 60px;
+}
+
+.podio-total {
+  display: flex;
+  width: 100%;
+  max-width: 800px; 
+  justify-content: center; /* Centraliza os itens */
+  align-items: flex-end;
+}
+
+.total-vendas {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background-color: #f8faf9;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.podio-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  background: #fff; /* Ajuste se necessário */
+  border-radius: 15px 15px 0 0; /* Aplica bordas arredondadas ao fundo */
+}
+
+.podio-item img {
+  position: absolute;
+  top: -60px; 
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  z-index: 1; /* Garante que a imagem fique acima do fundo */
+}
+
+.podio-item h1,
+.podio-item h2 {
+  margin: 0;
+}
+
+.podio-item h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.podio-item h2 {
+  font-size: 26px;
+}
+
+.bronze {
+  background: #c71010;
+  height: 200px;
+  order: 1;
+}
+
+.ouro {
+  background: #2f971a;
+  height: 350px;
+  order: 2;
+}
+
+.prata {
+  background: #e7bd00;
+  height: 300px;
+  order: 3;
+}
+
+.ranking {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0 0 10px 10px;
+  padding-top: 50px;
+}
+
+.ranking h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000;
+  text-align: center;
+  font-weight: 600;
+}
+
+.tabela-ranking {
+  border: 2px solid #ddd;
+  border-radius: 0 0 10px 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.tabela-ranking ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tabela-ranking li {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  list-style: none;
+  margin-block: 5px;
+  padding: 0 10px;
+  position: relative;
+}
+
+.tabela-ranking li .nome-operador {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 30px;
+}
+
+.tabela-ranking li .vendas-operador {
+  font-weight: bold;
+  color: #007bff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  position: relative; /* Remover absolute para alinhamento ao lado esquerdo */
+  margin-left: 10px; /* Adicionar margem para espaçamento do texto */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  text-align: center; /* Certifique-se de que o texto fique centralizado dentro do botão */
+}
+
+.foto-ranking {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.dashboard .esquerda,
+.dashboard .direita {
+  flex: 1;
+}
+
+.dashboard .esquerda {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard .direita {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.podio{
+  margin-inline: 100px;
+}
+
+.podio h3{
+  background-color: #fefefe;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.podio-renovacao {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.ranking-renovacao {
+  width: 100%;
+}
+
+.podio-base {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.ranking-base {
+  width: 100%;
+} 

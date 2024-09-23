@@ -344,6 +344,7 @@ font-size: small;
 }
 
 .direitos1 {
+    text-transform: uppercase;
     text-align: center;
     font-size: small;
 }

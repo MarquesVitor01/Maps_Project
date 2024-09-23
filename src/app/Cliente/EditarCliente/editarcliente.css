@@ -346,6 +346,7 @@ font-size: small;
 .direitos1 {
   text-align: center;
   font-size: small;
+  text-transform: uppercase;
 }
 .direitos1 input{
   margin: 0 5px 7.5px 5px;
@@ -413,3 +414,6 @@ font-size: small;
   border-right: none; /* Remove qualquer borda na parte direita */
 }
 
+.select_acordo{
+  margin: -7px 5px 0 5px;
+}

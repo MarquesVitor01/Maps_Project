@@ -1,0 +1,26 @@
+const operadores = {
+  NICOLLY: "https://grupomapscartaodigital.com.br/operadores/nicolly.jpg",
+  Nicolly: "https://grupomapscartaodigital.com.br/operadores/nicolly.jpg",
+  Igor: "https://grupomapscartaodigital.com.br/operadores/igor.jpg",
+  Marcio: "https://grupomapscartaodigital.com.br/operadores/marcio.jpg",
+  kauane: "https://grupomapscartaodigital.com.br/operadores/kauane.jpg",
+  Kauane: "https://grupomapscartaodigital.com.br/operadores/kauane.jpg",
+  GiovanaBlandino: "https://grupomapscartaodigital.com.br/operadores/giovanaBlandino.jpg",
+  Giovana: "https://grupomapscartaodigital.com.br/operadores/giovanaBlandino.jpg",
+  Andrew: "https://grupomapscartaodigital.com.br/operadores/andrew.jpg",
+  YASMIM: "https://grupomapscartaodigital.com.br/operadores/yasmim.jpg",
+  FRANCIELE: "https://grupomapscartaodigital.com.br/operadores/franciele.jpg",
+  Kaike: "https://grupomapscartaodigital.com.br/operadores/kaike.jpg",
+  KaioFerreira: "https://grupomapscartaodigital.com.br/operadores/kaioFerreira.jpg",
+  Kaio: "https://grupomapscartaodigital.com.br/img/logo.png",
+  Ricardo03: "https://grupomapscartaodigital.com.br/operadores/ricardo.jpg",
+  Ricardo: "https://grupomapscartaodigital.com.br/operadores/ricardo.jpg",
+  Evelly: "https://grupomapscartaodigital.com.br/operadores/evelly.jpg",
+  Fernanda: "https://grupomapscartaodigital.com.br/operadores/fernanda.jpg",
+  Luiz: "https://grupomapscartaodigital.com.br/operadores/luizAlberto.jpg",
+  LuizAlberto: "https://grupomapscartaodigital.com.br/operadores/luizAlberto.jpg",
+  giovannacristina: "https://grupomapscartaodigital.com.br/operadores/giovannaCristina.jpg",
+  giovanna: "https://grupomapscartaodigital.com.br/operadores/giovannaCristina.jpg",
+};
+
+export default operadores;

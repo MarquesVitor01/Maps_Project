@@ -108,7 +108,10 @@ function NovoCliente() {
     const [nota, setNOta] = useState(100);
     const [cargo, setCargo] = useState('');
     const [celular, setCelular] = useState('');
+    const [modelo, setModelo] = useState('');
     const [email2, setEmail2] = useState('');
+    const [formaPagamento, setFormaPagamento] = useState('');
+
     const [sucesso, setSucesso] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
@@ -150,6 +153,10 @@ function NovoCliente() {
             }
             else if (email.length === 0) {
                 setMensagem('Informe o email do cliente 😤');
+                return;
+            }
+            else if (modelo.length === 0) {
+                setMensagem('Informe o modelo de venda 😤');
                 return;
             }
             const clienteData = {
@@ -249,6 +256,8 @@ function NovoCliente() {
                 declaro,
                 celular,
                 email2,
+                modelo,
+                formaPagamento,
                 qrCode: formState.qrCode, // Adicione o campo do QR Code aqui
 
             };
@@ -356,8 +365,9 @@ function NovoCliente() {
                 declaro: '',
                 celular: '',
                 email2: '',
+                modelo: '',
+                formaPagamento: '',
                 qrCode: '',
-
             });
             setMensagem('');
             setSucesso('S');
@@ -477,7 +487,7 @@ function NovoCliente() {
     //       Receivers: whats, // Número de telefone do destinatário
     //       Content: "Mensagem enviada com sucesso" // Conteúdo da mensagem
     //     };
-    
+
     //     const options = {
     //       method: 'POST',
     //       url: 'http://localhost:3001/send-sms',
@@ -486,7 +496,7 @@ function NovoCliente() {
     //       },
     //       data: payload
     //     };
-    
+
     //     try {
     //       console.log('Sending SMS with payload:', payload); // Logando o payload
     //       const res = await axios(options);
@@ -527,7 +537,7 @@ function NovoCliente() {
                         </tbody>
                     </table>
                     <div className="acessoriaNew ">
-                        <div className="input-group">
+                        <div className="input-group row">
                             <h2 className="font-weight-bold frase col-sm-6">
                                 <u>VALIDO POR:</u>
                             </h2>
@@ -539,6 +549,13 @@ function NovoCliente() {
                                     <option value="3 meses">3 meses</option>
                                     <option value="6 meses">6 meses</option>
                                     <option value="1 ano">1 ano</option>
+                                </select>
+                            </div>
+                            <div className="col-sm-4">
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setModelo(e.target.value)} id="estado" required>
+                                    <option value="">{modelo}</option>
+                                    <option value="renovacao">Renovação</option>
+                                    <option value="base">Base</option>
                                 </select>
                             </div>
                         </div>
@@ -847,6 +864,7 @@ function NovoCliente() {
                                     <img src="../../../img/Imagem2.jpg" alt="" />
                                 </a>
                             </div>
+
                             <div className="flecha-amarela">
                                 <i className="fa-solid fa-arrow-left" style={{ color: "#FFD43B" }}></i>
                             </div>
@@ -946,11 +964,34 @@ function NovoCliente() {
                         <div className="direitos1">
                             <p className="font-weight-bold">
                                 <u className="u-direito1">
-                                    CONFORME ACORDADO SEGUE O VENCIMENTO DE UMA UNICA PARCELA
-                                    PARA O DIA
-                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} type="date" />
-                                    NO VALOR DE R$
+                                    como acordado segue o plano no valor de
                                     <input className="txtAcordo" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />
+                                    a ser pago em  
+                                    <select className="txtAcordo select_acordo form-select-sm" onChange={(e) => setParcelas(e.target.value)} id="estado" required>
+                                        <option value="">{parcelas}</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+
+                                    </select>
+                                    parcelas via <select className=" txtAcordo select_acordo form-select-sm" onChange={(e) => setFormaPagamento(e.target.value)} id="estado" required>
+                                        <option value="">{formaPagamento}</option>
+                                        <option value="pix">pix</option>
+                                        <option value="boleto">boleto</option>
+                                        <option value="credito">crédito</option>
+
+                                    </select>
+                                    com o vencimento para o dia
+                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} type="date" />
                                     .
                                 </u>
                             </p>

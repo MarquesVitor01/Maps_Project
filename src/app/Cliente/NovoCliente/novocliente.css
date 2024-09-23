@@ -318,14 +318,10 @@ label[htmlFor="lblInfo"]{
 
 .acessoriaNew {
     padding: 8px;
-    justify-content: center;
     
 }
 .acessoriaNew h2 {
 font-size: small;
-}
-.acessoriaNew select{
-    width: 50%;
 }
 
 .youtube{
@@ -345,6 +341,7 @@ font-size: small;
 .direitos1 {
     text-align: center;
     font-size: small;
+    text-transform: uppercase;
 }
 .direitos1 input{
     margin: 0 5px 7.5px 5px;
@@ -417,4 +414,8 @@ margin: auto;
 width: 30%;
 height: auto;
 cursor: pointer;
+}
+
+.select_acordo{
+    margin: -7px 5px 0 5px;
 }

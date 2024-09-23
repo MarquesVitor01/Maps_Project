@@ -43,9 +43,11 @@ function EditarCliente(props) {
     const [equipe, setEquipe] = useState('G MARKETING DIGITAL');
     const [celular, setCelular] = useState('');
     const [email2, setEmail2] = useState('');
+    const [modelo, setModelo] = useState('');
     const [siteSim, setSiteSim] = useState(false);
     const [siteNao, setSiteNao] = useState(false);
     const [declaro, setDeclaro] = useState(true);
+    const [formaPagamento, setFormaPagamento] = useState('');
 
 
     const db = getFirestore();
@@ -97,6 +99,8 @@ function EditarCliente(props) {
                     setEquipe(dados.equipe);
                     setDeclaro(dados.declaro);
                     setEmail2(dados.email2);
+                    setModelo(dados.modelo);
+                    setFormaPagamento(dados.formaPagamento);
                 } else {
                     setMensagem('Cliente não encontrado');
                 }
@@ -151,6 +155,8 @@ function EditarCliente(props) {
                     equipe: equipe,
                     declaro: declaro,
                     email2: email2,
+                    modelo: modelo,
+                    formaPagamento: formaPagamento,
                     qrCode: formState.qrCode, // Adicione o campo do QR Code aqui
                 });
                 setMensagem('');
@@ -225,18 +231,25 @@ function EditarCliente(props) {
                         </tbody>
                     </table>
                     <div className="acessoriaNew ">
-                        <div className="input-group">
+                        <div className="input-group row">
                             <h2 className="font-weight-bold frase col-sm-6">
                                 <u>VALIDO POR:</u>
                             </h2>
                             <div className="col-sm-4 select-validade">
-                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setValidade(e.target.value)} value={validade} id="estado" required>
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setValidade(e.target.value)} id="estado" required>
                                     <option value="">{validade}</option>
                                     <option value="Cancelamento">Cancelamento</option>
                                     <option value="1 mês">1 mês</option>
                                     <option value="3 meses">3 meses</option>
                                     <option value="6 meses">6 meses</option>
                                     <option value="1 ano">1 ano</option>
+                                </select>
+                            </div>
+                            <div className="col-sm-4">
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setModelo(e.target.value)} id="estado" required>
+                                    <option value="">{modelo}</option>
+                                    <option value="renovacao">Renovação</option>
+                                    <option value="base">Base</option>
                                 </select>
                             </div>
                         </div>
@@ -662,10 +675,34 @@ function EditarCliente(props) {
                         <div className="direitos1">
                             <p className="font-weight-bold">
                                 <u className="u-direito1">
-                                    CONFORME ACORDADO O 1º VENCIMENTO FICA PARA O DIA
-                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} value={venc2} type="date" />
-                                    NO VALOR DE R$
+                                    como acordado segue o plano no valor de
                                     <input className="txtAcordo" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />
+                                    a ser pago em  
+                                    <select className="txtAcordo select_acordo form-select-sm" onChange={(e) => setParcelas(e.target.value)} id="estado" required>
+                                        <option value="">{parcelas}</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+
+                                    </select>
+                                    parcelas via <select className=" txtAcordo select_acordo form-select-sm" onChange={(e) => setFormaPagamento(e.target.value)} id="estado" required>
+                                        <option value="">{formaPagamento}</option>
+                                        <option value="pix">pix</option>
+                                        <option value="boleto">boleto</option>
+                                        <option value="credito">crédito</option>
+
+                                    </select>
+                                    com o vencimento para o dia
+                                    <input className="txtAcordo" onChange={(e) => setVenc2(e.target.value)} type="date" value={venc2}/>
                                     .
                                 </u>
                             </p>

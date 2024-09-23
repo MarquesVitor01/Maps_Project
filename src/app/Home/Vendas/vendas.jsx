@@ -170,7 +170,8 @@ function Vendas() {
                         const data = doc.data(); // Obtenha os dados do documento
                         if (data) { // Verifique se os dados existem
                             const lowercaseBusca = busca.toLowerCase();
-                            const lowercaseNome = (data.nome || '').toLowerCase(); // Verifique e converta para minúsculas
+                            const lowercaseNome = (data.nome || '').toLowerCase();
+                            const lowercaseOperador = (data.operador || '').toLowerCase();
                             const lowercaseEmail = (data.email || '').toLowerCase();
                             const lowercaseCPF = (data.cpf || '').toLowerCase();
                             const lowercaseRazao = (data.razao || '').toLowerCase();
@@ -179,7 +180,8 @@ function Vendas() {
                                 lowercaseNome.indexOf(lowercaseBusca) >= 0 ||
                                 lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
                                 lowercaseCPF.indexOf(lowercaseBusca) >= 0 ||
-                                lowercaseRazao.indexOf(lowercaseBusca) >= 0
+                                lowercaseRazao.indexOf(lowercaseBusca) >= 0 || 
+                                lowercaseOperador.indexOf(lowercaseBusca) >= 0
                             ) {
                                 listaCli.push({
                                     id: doc.id,
