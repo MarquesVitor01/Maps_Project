@@ -25,7 +25,6 @@ body {
 
 
 .escolha-select {
-    margin-top: -4px;
     padding: 2px;
 }
 
@@ -64,8 +63,8 @@ display: flex;
     padding: 20px;
 }
 .logo img{
-    width: 600px;
-    height: auto;
+    width: 900px!important;
+    height: 120px!important;
 }
 
 .cima,
@@ -74,9 +73,7 @@ display: flex;
     text-align: center;
 }
 
-.baixo input{
-    margin-top: -15px;
-}
+
 
 .baixo-menor{
     width: 20%;
@@ -145,7 +142,6 @@ label[htmlFor="lblInfo"]{
     text-align: center;
 }
 .siga-redes {
-    margin-top: -25px;
     display: flex;
     justify-content: space-around;
     list-style: none;
@@ -177,7 +173,6 @@ label[htmlFor="lblInfo"]{
 .caixa2 input {
     width: 100%;
     box-sizing: border-box;
-    margin-top: -5px;
 }
 .caixa2 label{
     padding: 5px 0 0 0;
@@ -247,23 +242,21 @@ label[htmlFor="lblInfo"]{
     font-size: 13px;
 }
 .escrever2 h5 {
-    margin-top: -5px;
     text-align: center;
     font-size: medium;
 }
 .escrever2 img{
-    margin-top: -12px;
     height: 32px;
 }
 
 .linha3 {
-    height: 40px;
+    height: 35px!important;
     width: 100%;
-    background-color: rgb(87, 87, 207);
+    background-color: #00a1f1!important;
     border: 1px solid black;
     border-radius: 5px;
     margin: auto;
-    padding: 10px;
+    padding: 7px!important;
 }
 
 .linha3 h3 {
@@ -287,7 +280,6 @@ label[htmlFor="lblInfo"]{
 
 .flecha-amarela i{
     font-size: 90px;
-    margin-top: -15px ;
 }
 
 .linha-verde a {
@@ -304,7 +296,7 @@ label[htmlFor="lblInfo"]{
     color: rgb(196, 20, 93);
 }
 .cond {
-    margin-top: -10px;
+    margin-top: 30px!important;
     padding: 5px;
     text-align: justify;
     font-size: small;
@@ -355,9 +347,7 @@ font-size: small;
 .u-direito1 input{
     align-items: center;
 }
-.txtAcordo {
-    vertical-align: middle; /* Alinha verticalmente a input com o restante do texto */
-}
+
 .u-direito1 {
     line-height: 1; /* Define a altura da linha para o valor padrão */
 }   
@@ -378,7 +368,7 @@ font-size: small;
 
 .contact h2{
     font-size: small;
-    padding: 10px 0 0 0;
+    padding: 13px!important ;
 }
 
 .qr-code {
@@ -404,17 +394,11 @@ font-size: small;
 }
 
 .txtAcordo{
+    vertical-align: middle; /* Alinha verticalmente a input com o restante do texto */
     border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
     border-top: none; /* Remove qualquer borda na parte superior */
     border-left: none; /* Remove qualquer borda na parte esquerda */
     border-right: none; /* Remove qualquer borda na parte direita */
     text-align: center;
+    margin-top: -7px;
 }
-
-.txtAcordo:hover{
-    border-bottom: 1px solid black; /* Define a borda preta de 1 pixel na parte inferior */
-    border-top: none; /* Remove qualquer borda na parte superior */
-    border-left: none; /* Remove qualquer borda na parte esquerda */
-    border-right: none; /* Remove qualquer borda na parte direita */
-}
-

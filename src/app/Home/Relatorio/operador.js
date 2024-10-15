@@ -21,6 +21,14 @@ const operadores = {
   LuizAlberto: "https://grupomapscartaodigital.com.br/operadores/luizAlberto.jpg",
   giovannacristina: "https://grupomapscartaodigital.com.br/operadores/giovannaCristina.jpg",
   giovanna: "https://grupomapscartaodigital.com.br/operadores/giovannaCristina.jpg",
+  filipe: "https://grupomapscartaodigital.com.br/operadores/filipe.jpg",
+  Filipe: "https://grupomapscartaodigital.com.br/operadores/filipe.jpg",
+  Nicoli: "https://grupomapscartaodigital.com.br/operadores/nicoli.jpg",
+  nicoli: "https://grupomapscartaodigital.com.br/operadores/nicoli.jpg",
+  NICOLI: "https://grupomapscartaodigital.com.br/operadores/nicoli.jpg",
+  matheus: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
+  Matheus: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
+  MATHEUS: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
 };
 
 export default operadores;

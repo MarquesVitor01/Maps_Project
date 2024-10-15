@@ -40,7 +40,8 @@ function Login() {
         } else if (
           email === "grazielli@grupomapscartaodigital.com.br" ||
           email === "gabriela.cristina@grupomapscartaodigital.com.br" ||
-          email === "robert.b@grupomapscartaodigital.com.br"
+          email === "robert.b@grupomapscartaodigital.com.br" || 
+          email === "andrew.marques@grupomapscartaodigital.com.br"
         ) {
           redirectPath = "/app/monitoriamapsempresas";
         } else if (

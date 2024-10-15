@@ -106,7 +106,7 @@ function ListaCliente2(props) {
               <tr key={cliente.id} className="table-light text-center">
                 <th scope="row" >
                   <Link to={`/app/home/fichacliente/${cliente.id}`} className="fa-solid fa-list icone-acao1"></Link>
-                  {cliente.cpf}
+                  {cliente.cpf || cliente.cnpj}
                 </th>
                 <td className="align-middle text-center">{cliente.nome || 'N/A'} </td>
                 <td className="align-middle text-center">{cliente.uf || 'N/A'}</td>

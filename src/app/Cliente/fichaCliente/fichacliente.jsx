@@ -28,6 +28,8 @@ function FichaCliente(props) {
     const [endereco, setEndereco] = useState('');
     const [razao, setRazao] = useState('');
     const [cpf, setCpf] = useState('');
+    const [cnpj, setCnpj] = useState('');
+
     const [link, setLink] = useState('');
     const [nome, setNome] = useState('');
     const [sociais, setSociais] = useState('');
@@ -68,6 +70,7 @@ function FichaCliente(props) {
                     setNumeroContrato(dados.numeroContrato);
                     setRazao(dados.razao);
                     setCpf(dados.cpf);
+                    setCnpj(dados.cnpj);
                     setLink(dados.link);
                     setBairro(dados.bairro);
                     setCep(dados.cep);
@@ -253,7 +256,7 @@ function FichaCliente(props) {
             <div className="element contrato container-fluid titulo-2 " id="formId">
                 <div>
                     <div className="logo ">
-                        <img src="../../../img/tag.png" alt="" />
+                        <img src="../../../img/logo_contrato_maps.jpg" alt="" />
                     </div>
                     <table>
                         <tbody>
@@ -292,13 +295,13 @@ function FichaCliente(props) {
                                     <option value="1 ano">1 ano</option>
                                 </select>
                             </div>
-                            <div className="col-sm-4">
+                            {/* <div className="col-sm-4">
                                 <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setModelo(e.target.value)} id="estado" disabled value={modelo}>
                                     <option value="">{modelo}</option>
                                     <option value="renovacao">Renovação</option>
                                     <option value="base">Base</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="linha3">
@@ -328,7 +331,7 @@ function FichaCliente(props) {
                                     id="razaoSocial"
                                     name="razaoSocial"
                                     onChange={(e) => setCpf(e.target.value)}
-                                    disabled value={cpf}
+                                    disabled value={cpf || cnpj}
                                     className="form-control"
                                     placeholder="CNPJ/CPF"
                                 />
@@ -419,7 +422,7 @@ function FichaCliente(props) {
                         </div>
                         <div className="contact">
                             <h2 className="d-flex align-items-center justify-content-center">
-                                <b><u>CONTATOS DA EMPRESA;</u></b>
+                                <b><u>CONTATOS E HORÁRIO DE FUNCIONAMENTO DA EMPRESA;</u></b>
                             </h2>
                         </div>
                         <div className="row">
@@ -462,6 +465,20 @@ function FichaCliente(props) {
                                     placeholder="WhatsApp"
                                 />
                             </div>
+                            
+                            <div className="col-md-6">
+                            <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>HORÁRIO DE FUNCIONAMENTO:</b></label>
+
+                                <input
+                                    type="text"
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    onChange={(e) => setFuncionamento(e.target.value)}
+                                    disabled value={funcionamento}
+                                    className="form-control"
+                                    placeholder="Horario de funcionamento"
+                                />
+                            </div>
                         </div>
                         <div className="contact">
                             <h2 className="d-flex align-items-center justify-content-center">
@@ -494,29 +511,20 @@ function FichaCliente(props) {
                                 />
                             </div>
                         </div>
-                        <div className="contact">
+                        {/* <div className="contact">
                             <h2 className="d-flex align-items-center justify-content-center">
                                 <b><u>HORARIO DE FUNCIONAMENTO;</u></b>
                             </h2>
-                        </div>
+                        </div> */}
+                        <br />
                         <div className="row">
-                            <div className="col-md-12">
-                                <input
-                                    type="text"
-                                    id="nomeFantasia"
-                                    name="nomeFantasia"
-                                    onChange={(e) => setFuncionamento(e.target.value)}
-                                    disabled value={funcionamento}
-                                    className="form-control"
-                                    placeholder="Horario de funcionamento"
-                                />
-                            </div>
+
                         </div>
-                        <div className="contact">
+                        {/* <div className="contact">
                             <h2 className="d-flex align-items-center justify-content-center">
                                 <b><u>SERVIÇOS ADCIONAIS;</u></b>
                             </h2>
-                        </div>
+                        </div> */}
                         <div className="row">
                             <div className=" divAnuncio form-group temSite col-md-5">
                                 <label htmlFor="temSite" className="form-check-label"><b>CRIAÇÃO E DESENVOLVIMENTO DE WEB SITE</b></label>
@@ -533,7 +541,7 @@ function FichaCliente(props) {
                                 </div>
                             </div>
                             <div className="divAnuncio form-group temSite col-md-7.">
-                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANUNCIOS PATROCINADOS FACEBOOK/INSTAGRAM E GOOGLE ADS</b></label>
+                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANÚNCIO PATROCINADO GOOGLE ADS</b></label>
                                 <div className="form-check">
                                     <input
                                         type="checkbox"
@@ -550,7 +558,7 @@ function FichaCliente(props) {
                         <br />
                         <div className="row">
                             <div className="col-md-12">
-                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE PARA INSERÇÃO DO SITE:</b></label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
@@ -603,15 +611,15 @@ function FichaCliente(props) {
                         </div>
                     </form>
 
-                    <div className="escrever2 row ">
+                    {/* <div className="escrever2 row ">
                         <h5>
                             ASSINATURA DA CONTRATADA:
                         </h5>
                         <img src="../../../img/assinatura-maps.jpg" alt="" />
-                    </div>
-                    <div className="logo ">
+                    </div> */}
+                    {/* <div className="logo ">
                         <img src="../../../img/tag.png" alt="" />
-                    </div>
+                    </div> */}
                     <div className="cond ">
                         <p className=" font-weight-bold "><u className="text-primary">CONDIÇÕES</u>; 1º- ESTOU CIENTE QUE PARA CRIAÇÃO OU ATUALIZAÇÃO DA MINHA PAGÍNA DEVO ENCAMINHAR PARA A EMPRESA CONTRATADA QUANDO SOLICITADO POR PARTE DA EQUIPE DE SUPORTE TODAS AS INFORMAÇÕES NECESSARIAS. 2º- ASSUMO TAMBÉM A TOTAL RESPONSABILIDADE E AUTORIZO QUE A EMPRESA CONTRATADA DIVULGUE OS MEUS DADOS COMERCIAIS NO SITE DE BUSCA. 3º- SOBRE AS CONDIÇÕES ASSUMO AS OBRIGAÇÕES COM ESTA PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL REALIZADA PELA EMPRESA G MAPS CONTACT CENTER LTDA CNPJ; 40.407.753/0001-30 TENDO CIÊNCIA DO VALOR DE R$
                             <input className="txtAcordo txtCond" onChange={(e) => setValor(e.target.value)} disabled value={valor} type="text" placeholder="" />. 4º SABENDO QUE O NÃO PAGAMENTO PODE GERAR A NEGATIVAÇÃO DO CPF/CNPJ JUNTO AOS ORGÃOS COMPETENTES (SERASA/CARTÓRIO) E QUE <u>O ACEITE DOS SERVIÇOS FOI REALIZADA DE FORMA VERBAL CONFORME O ARTIGO 107 DO CODIGO CIVIL LEI 10406 DE 10 DE JANEIRO DE 2002 E QUE A CÓPIA DESTE CONTRATO FOI ENCAMINHADA PARA O E-MAIL PRINCIPAL INFORMADO ACIMA.</u> 5º-TODAS AS SOLICITAÇÕES DEVERÃO SER ENCAMINHADAS PARA O DEPARTAMENTO DE MARKETING ATRAVÉS DO E-MAIL OU WHATSAPP AQUI DISPONIBILIZADOS. 6º- A CONTRATADA ASSUME AS OBRIGAÇÕES JUNTO A CONTRATANTE DE CONCLUIR E ENTREGAR OS SERVIÇOS PRESTADOS DENTRO DO PERIODO DE ATÉ 72HORAS UTEIS.
@@ -773,11 +781,11 @@ function FichaCliente(props) {
                                 <b>CENTRAL DE ATENDIMENTO
                                     <br />
                                     (11) 4200-6110 / 0800 050 0069
+                                    <br /> <br />
+                                    <a href="mailto:Marketing@grupomapsempresas.com.br">MARKETING@GRUPOMAPSEMPRESAS.com.br</a>
                                     <br />
-                                    <a href="mailto:Marketing@grupomapsempresas.com.br">Marketing@grupomapsempresas.com.br</a>
-                                    <br />
-                                    <a href="mailto:Contato@grupomapsempresas.com.br">Contato@grupomapsempresas.com.br</a>
-                                    <br />
+                                    <a href="mailto:Contato@grupomapsempresas.com.br">CONTATO@GRUPOMAPSEMPRESAS.com.br</a>
+                                    <br /><br />
                                     PARA ATENDIMENTO VIA WHATSAPP BASTA CLICAR NO ICONE ABAIXO;
                                     <br />
                                 </b>

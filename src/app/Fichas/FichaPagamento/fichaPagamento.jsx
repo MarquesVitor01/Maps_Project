@@ -117,6 +117,10 @@ function FichaPagamento() {
                                     <input checked={cliente.naoPago} onChange={(e) => setCliente({ ...cliente, naoPago: e.target.checked })} className="form-check-input" type="checkbox" id="flexCheckChecked" />
                                     <label className="form-check-label" htmlFor="flexCheckChecked"><b>Não</b></label>
                                 </div>
+                                <div className="form-check mb-3">
+                                    <input checked={cliente.cancelado} onChange={(e) => setCliente({ ...cliente, cancelado: e.target.checked })} className="form-check-input" type="checkbox" id="flexCheckChecked" />
+                                    <label className="form-check-label" htmlFor="flexCheckChecked"><b>Cancelado</b></label>
+                                </div>
                             </div>
                             <div className="caixa-cobrador">
                                 <div className="input-group-prendend">

@@ -76,8 +76,6 @@ function Vendas() {
     const { setLogado } = useContext(AuthContext);
     const [isAdmUser, setIsAdmUser] = useState(false);
     const [quantidadePagos, setQuantidadePagos] = useState('');
-
-
     const auth = getAuth();
     const user = auth.currentUser;
     const deleteUser = (id) => {
@@ -123,17 +121,15 @@ function Vendas() {
             return acc;
         }, 0);
         const media = clientes.length > 0 ? totalNotas / clientes.length : 0;
-        localStorage.setItem('mediaNotas', media.toString()); // Armazenar a média das notas em localStorage
+        localStorage.setItem('mediaNotas', media.toString());
         return media;
     };
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                // console.log('ID do usuário:', user.uid);
                 setLogado(true);
-                // Verificar se o usuário é um administrador
                 if (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') {
-                    setIsAdmUser(true); // Definir a variável de administrador como true
+                    setIsAdmUser(true);
                 }
 
             } else {
@@ -143,7 +139,6 @@ function Vendas() {
         });
         return () => unsubscribe();
     }, [auth, setLogado]);
-
     useEffect(() => {
         const storedClientes = localStorage.getItem('clientes');
         if (storedClientes) {
@@ -155,9 +150,7 @@ function Vendas() {
             try {
                 const db = getFirestore();
                 let q;
-
-                const userSuper = ((user.uid === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2'));
-
+                const userSuper = ((user.uid === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (user.uid === 'lHV5U7SX9BgNcnh6ISjoEi6KcJg1') || (user.uid === 'zxp9xAphVlSYGtjQcRuzRYbAyDV2' ) );
                 if (userSuper) {
                     q = query(collection(db, 'clientes'));
                 } else if (user) {
@@ -167,8 +160,8 @@ function Vendas() {
                     const querySnapshot = await getDocs(q);
                     const listaCli = [];
                     querySnapshot.forEach((doc) => {
-                        const data = doc.data(); // Obtenha os dados do documento
-                        if (data) { // Verifique se os dados existem
+                        const data = doc.data(); 
+                        if (data) {
                             const lowercaseBusca = busca.toLowerCase();
                             const lowercaseNome = (data.nome || '').toLowerCase();
                             const lowercaseOperador = (data.operador || '').toLowerCase();
@@ -202,6 +195,9 @@ function Vendas() {
                                     whats: doc.data().whats,
                                     plano: doc.data().plano,
                                     fantasia: doc.data().fantasia,
+                                    parcelas: doc.data().parcelas,
+                                    cnpj: doc.data().cnpj,
+                                    modelo: doc.data().modelo
                                 });
                             }
                         }
@@ -212,17 +208,11 @@ function Vendas() {
                             await addDoc(collection(db, 'clientes'), { id: cliente.id, nota: '100%' });
                         }
                     });
-
-                    // Calcular a média das notas
                     const media = calcularMediaNotas(listaCli);
                     setMediaNotas(media);
-
-                    // Contar o número de clientes pagos
                     const contadorPagos = listaCli.filter(cliente => cliente.simPago).length;
                     setQuantidadeClientes(listaCli.length);
                     setQuantidadePagos(contadorPagos);
-
-                    // Armazenar clientes no localStorage
                     localStorage.setItem('clientes', JSON.stringify(listaCli));
 
                 }
@@ -286,7 +276,7 @@ function Vendas() {
     }
     const escapeXML = (unsafe) => {
         if (typeof unsafe !== 'string') {
-            return ''; // Retorna uma string vazia se o valor for undefined ou não for uma string
+            return '';
         }
         return unsafe
             .replace(/&/g, "&amp;")
@@ -295,15 +285,12 @@ function Vendas() {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&apos;");
     };
-    
-    
     const handleDownloadXML = () => {
-        // Criar o conteúdo do XML com base nos dados dos clientes
         const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
           <clientes>
             ${clientes.map(cliente => `
               <cliente>
-                <cpf>${escapeXML(cliente.cpf)}</cpf>
+                <cpf>${escapeXML(cliente.cpf || cliente.cnpj )}</cpf>
                 <razao>${escapeXML(cliente.razao)}</razao>
                 <nome>${escapeXML(cliente.nome)}</nome>
                 <email>${escapeXML(cliente.email)}</email>
@@ -311,6 +298,7 @@ function Vendas() {
                 <whats>${escapeXML(cliente.whats)}</whats>
                 <operador>${escapeXML(cliente.operador)}</operador>
                 <valor>${escapeXML(cliente.valor)}</valor>
+                <parcelas>${escapeXML(cliente.parcelas)}</parcelas>
                 <data>${escapeXML(formatarData(cliente.data))}</data>
                 <validade>${escapeXML(cliente.validade)}</validade>
                 <pago>${escapeXML(cliente.simPago ? "sim" : "não")}</pago>
@@ -319,22 +307,12 @@ function Vendas() {
                 <cobrador>${escapeXML(cliente.cobrador)}</cobrador>
               </cliente>`).join('')}
           </clientes>`;
-    
-        // Converter o XML em Blob
-        const blob = new Blob([xmlContent], { type: 'application/xml' });
-    
-        // Criar o URL do Blob
+            const blob = new Blob([xmlContent], { type: 'application/xml' });
         const url = URL.createObjectURL(blob);
-    
-        // Criar um link para download
         const link = document.createElement('a');
         link.href = url;
         link.download = 'clientes.xml';
-    
-        // Simular o clique no link para iniciar o download    
         link.click();
-    
-        // Limpar o URL do Blob após o download
         URL.revokeObjectURL(url);
     };
     
@@ -373,7 +351,6 @@ function Vendas() {
         return () => unsubscribe();
     }, [auth, setLogado]);
     useEffect(() => {
-        // console.log('Média de notas:', mediaNotas);
     }, [mediaNotas]);
     
     return (
@@ -392,7 +369,7 @@ function Vendas() {
 
             <div className="container-fluid titulo">
                 <div className="row lista-vendas">
-                    <h1><b>LISTA DE VENDAS</b></h1>
+                    <h1><b>LISTA DE VENDAS</b> <img src="https://grupomapscartaodigital.com.br/img/baixados.png" width={'70px'} alt="" /></h1>
                     <div className="col-5 pesquisa">
                         <div className="input-group mb-3">
                             <input
@@ -453,7 +430,6 @@ function Vendas() {
                                 <i className="fa-solid fa-user "></i><b> CLIENTES: {quantidadeClientes}</b>
                             </h4>
                             <h4>
-                                <i className="fa-solid fa-dollar-sign"></i><b>PAGOS: {quantidadePagos}</b>
                             </h4>
                         </div>
                         <div className="txtAss row">

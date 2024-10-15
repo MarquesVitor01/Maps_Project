@@ -18,7 +18,7 @@ function Navbar4() {
             if (user) {
                 // console.log('ID do usuário:', user.uid);
                 setLogado(true);
-                setIsAdmUser((user.uid === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (user.uid === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (user.uid === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'));
+                setIsAdmUser((user.uid === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (user.uid === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (user.uid === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (user.uid === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (user.uid === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (user.uid === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (user.uid === 'zxp9xAphVlSYGtjQcRuzRYbAyDV2'));
             } else {
                 console.log('Nenhum usuário autenticado.');
                 setLogado(false);

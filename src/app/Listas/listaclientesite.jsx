@@ -61,7 +61,7 @@ function ListaClienteSite(props) {
         setExclusiveUser(true)
       }
       let q;
-      const userAllViwer = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === 'JiQlIYtqE6X4cuhAefF655384L42') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'))
+      const userAllViwer = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === 'JiQlIYtqE6X4cuhAefF655384L42') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (userId === 'zxp9xAphVlSYGtjQcRuzRYbAyDV2'))
       if (userAllViwer) {
         q = query(collection(db, 'clientessite'));
       } else {

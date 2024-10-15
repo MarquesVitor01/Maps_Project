@@ -24,8 +24,8 @@ function Navbar() {
     try {
       const db = getFirestore();
       const userId = auth.currentUser?.uid;
-      const userAllViwer = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === "JiQlIYtqE6X4cuhAefF655384L42") || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'));
-      const userMaster = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62'));
+      const userAllViwer = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'W4OmQKw6gWTnWioUENmEpPjwb4m1') || (userId === "JiQlIYtqE6X4cuhAefF655384L42") || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === 'aWFWUvSEOxYmBBsJiTZR7KLD2X23') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (userId === 'zxp9xAphVlSYGtjQcRuzRYbAyDV2'));
+      const userMaster = ((userId === 'JErLzWpMaDhnK7FQCNyWxovFGF92') || (userId === 'Hk5ute6UesQM6R438MyBu6Cc9TF2') || (userId === 'yezea9eucLS9O1Pyl1LDzGXNTkE2') || (userId === '3RmT5lBN8bhHt6pdHyOq9oBW6yD3') || (userId === 'fzPJ8yp4OJPAvGcBXP0aVD0TYe62') || (userId === 'zxp9xAphVlSYGtjQcRuzRYbAyDV2'));
       if (userMaster) {
         setIsAdmUser(true)
       }
@@ -110,36 +110,43 @@ function Navbar() {
                 <i className="fa-solid fa-check"></i><b> PONTO MAIS</b>
               </Link>
             </li>
+
             {isAdmUser && (
               <>
                 <li className="nav-item ">
                   <Link to={'/app/home/relatoriototal'} aria-current="page" className=" btn   btn-nav btn-nav-ct" type="button" id="button-addon2">
-                  <i className="fa-solid fa-table"></i> <b> RELATÓRIO</b>
+                  <i className="fa-solid fa-table"></i>
+                   {/* <b> RELATÓRIO</b> */}
                   </Link>
                 </li>
                 <li className="nav-item ">
                   <Link to={'/app/monitoriamapsempresas'} aria-current="page" className=" btn   btn-nav btn-nav-ct" type="button" id="button-addon2">
-                    <i className="fa-regular fa-clipboard"></i><b> MONITORIA</b>
+                    <i className="fa-regular fa-clipboard"></i>
+                    {/* <b> MONITORIA</b> */}
                   </Link>
                 </li>
                 <li className="nav-item ">
                   <Link to={'/app/marketingmapsempresas'} aria-current="page" className=" btn   btn-nav btn-nav-ct" type="button" id="button-addon2">
-                    <i className="fa-regular fa-folder"></i><b> MARKETING</b>
+                    <i className="fa-regular fa-folder"></i>
+                    {/* <b> MARKETING</b> */}
                   </Link>
                 </li>
                 <li className="nav-item ">
                   <Link to={'/app/financeiromapsempresas'} aria-current="page" className="btn  btn-nav btn-nav-ct" type="button" id="button-addon2">
-                    <i className="fa-solid fa-dollar-sign"></i><b> FINANCEIRO</b>
+                    <i className="fa-solid fa-dollar-sign"></i>
+                    {/* <b> FINANCEIRO</b> */}
                   </Link>
                 </li>
                 <li className="nav-item ">
                   <Link to={'/app/gestaomapsempresas'} aria-current="page" className=" btn   btn-nav btn-nav-ct" type="button" id="button-addon2">
-                    <i className="fa-solid fa-lock"></i><b> GESTÃO</b>
+                    <i className="fa-solid fa-lock"></i>
+                    {/* <b> GESTÃO</b> */}
                   </Link>
                 </li>
                 <li className="nav-item ">
                   <Link to={'/app/cobrancamapsempresas'} aria-current="page" className="btn  btn-nav btn-nav-ct" type="button" id="button-addon2">
-                    <i className="fa-solid fa-comments-dollar"></i><b> COBRANÇA </b>
+                    <i className="fa-solid fa-comments-dollar"></i>
+                    {/* <b> COBRANÇA </b> */}
                   </Link>
                 </li>
               </>

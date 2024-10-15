@@ -22,6 +22,9 @@ function EditarCliente(props) {
     const [endereco, setEndereco] = useState('');
     const [razao, setRazao] = useState('');
     const [cpf, setCpf] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [isCnpj, setIsCnpj] = useState(true);
+
     const [nome, setNome] = useState('');
     const [renovSim, setRenovSim] = useState('');
     const [renovNao, setRenovNao] = useState('');
@@ -69,6 +72,7 @@ function EditarCliente(props) {
                     setLink(dados.link);
                     setRazao(dados.razao);
                     setCpf(dados.cpf);
+                    setCnpj(dados.cnpj);
                     setBairro(dados.bairro);
                     setCep(dados.cep);
                     setCidade(dados.cidade);
@@ -129,6 +133,7 @@ function EditarCliente(props) {
                     numeroContrato: numeroContrato,
                     razao: razao,
                     cpf: cpf,
+                    cnpj: cnpj,
                     fantasia: fantasia,
                     endereco: endereco,
                     bairro: bairro,
@@ -157,7 +162,7 @@ function EditarCliente(props) {
                     email2: email2,
                     modelo: modelo,
                     formaPagamento: formaPagamento,
-                    qrCode: formState.qrCode, // Adicione o campo do QR Code aqui
+                    qrCode: formState.qrCode, 
                 });
                 setMensagem('');
                 setSucesso('S');
@@ -186,8 +191,7 @@ function EditarCliente(props) {
     const handleScan = (data) => {
         if (data) {
             setScannedData(data);
-            setCameraActive(false); // Desativar a câmera quando um QR code for escaneado
-
+            setCameraActive(false);
             setFormState({
                 ...formState,
                 qrCode: data.text,
@@ -200,7 +204,29 @@ function EditarCliente(props) {
     };
     const [scannedData, setScannedData] = useState(null);
     const [cameraActive, setCameraActive] = useState(true);
+    const handleCnpj = () => {
+        setIsCnpj(prevState => !prevState);
+    };
+    const formatCNPJ = (value) => {
+        value = value.replace(/\D/g, '');
 
+        value = value.replace(/(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+
+        return value;
+    };
+
+    const formatCPF = (value) => {
+        value = value.replace(/\D/g, '');
+
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+        return value;
+    };
     return <div>
         <div className="background">
         <div className="element contrato container-fluid titulo-2 " id="formId">
@@ -252,6 +278,7 @@ function EditarCliente(props) {
                                     <option value="base">Base</option>
                                 </select>
                             </div>
+                            <button className="btn" onClick={handleCnpj}>{!isCnpj && "CNPJ"} {isCnpj && "CPF"}</button>
                         </div>
                     </div>
                     <div className="linha3">
@@ -274,18 +301,43 @@ function EditarCliente(props) {
                                 />
                             </div>
 
-                            <div className="col-md-6">
-                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>CNPJ/CPF:</b></label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setCpf(e.target.value)}
-                                    value={cpf}
-                                    className="form-control"
-                                    placeholder="CNPJ/CPF"
-                                />
-                            </div>
+                            {!isCnpj ? (
+                                <div className="col-md-6">
+                                    <label className="d-flex align-items-center justify-content-center" htmlFor="cnpj"><b>CNPJ:</b></label>
+                                    <input
+                                        type="text"
+                                        id="cnpj"
+                                        name="cnpj"
+                                        value={cnpj} // Use o estado para controlar o valor do input
+                                        onChange={(e) => {
+                                            const formattedCnpj = formatCNPJ(e.target.value);
+                                            setCnpj(formattedCnpj); // Atualiza o estado com o CNPJ formatado
+                                        }}
+                                        className="form-control"
+                                        placeholder="Insira o CNPJ"
+                                        maxLength="18" // O comprimento máximo deve ser 18 para o formato completo
+                                    />
+
+                                </div>
+                            ) : (
+                                <div className="col-md-6">
+                                    <label className="d-flex align-items-center justify-content-center" htmlFor="cpf"><b>CPF:</b></label>
+                                    <input
+                                        type="text"
+                                        id="cpf"
+                                        name="cpf"
+                                        value={cpf} // Use the value from the state
+                                        onChange={(e) => {
+                                            const formattedCpf = formatCPF(e.target.value);
+                                            setCpf(formattedCpf); // Set the formatted CPF in the state
+                                        }}
+                                        className="form-control"
+                                        placeholder="Insira o CPF"
+                                        maxLength="14"
+                                    />
+                                </div>
+                            )}
+
 
                         </div>
 
@@ -485,7 +537,7 @@ function EditarCliente(props) {
                                 </div>
                             </div>
                             <div className="divAnuncio form-group temSite col-md-7.">
-                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANUNCIOS PATROCINADOS FACEBOOK/INSTAGRAM E GOOGLE ADS</b></label>
+                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANÚNCIO PATROCINADO GOOGLE ADS</b></label>
                                 <div className="form-check">
                                     <input
                                         type="checkbox"
@@ -501,7 +553,7 @@ function EditarCliente(props) {
                         <br />
                         <div className="row">
                             <div className="col-md-12">
-                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE PARA INSERÇÃO DO SITE:</b></label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"

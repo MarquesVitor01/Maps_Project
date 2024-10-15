@@ -18,6 +18,8 @@ function NovoCliente() {
     const [data, setData] = useState('');
     const [naoPago, setNaoPago] = useState('');
     const [simPago, setSimPago] = useState('');
+    const [cancelado, setCancelado] = useState('');
+
     const [concluidoNao, setConcluidoNao] = useState('');
     const [concluidoSim, setConcluidoSim] = useState('');
     const [dataPagamento, setDataPagamento] = useState('');
@@ -45,6 +47,8 @@ function NovoCliente() {
     const [venc, setVenc] = useState('');
     const [importanteDado, setImportanteDado] = useState('');
     const [cpf, setCpf] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [isCnpj, setIsCnpj] = useState(true);
     const [link, setLink] = useState('');
     const [nome, setNome] = useState('');
     const [sociais, setSociais] = useState('');
@@ -112,6 +116,7 @@ function NovoCliente() {
     const [email2, setEmail2] = useState('');
     const [formaPagamento, setFormaPagamento] = useState('');
 
+
     const [sucesso, setSucesso] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
@@ -147,9 +152,6 @@ function NovoCliente() {
             } else if (operador.length === 0) {
                 setMensagem('Informe o nome do operador 😤');
                 return;
-            } else if (cpf.length === 0) {
-                setMensagem('Informe o CNPJ ou CPF do cliente 😤');
-                return;
             }
             else if (email.length === 0) {
                 setMensagem('Informe o email do cliente 😤');
@@ -169,6 +171,7 @@ function NovoCliente() {
                 numeroContrato,
                 razao,
                 cpf,
+                cnpj,
                 fantasia,
                 endereco,
                 bairro,
@@ -250,6 +253,7 @@ function NovoCliente() {
                 dataPagamento,
                 simPago,
                 naoPago,
+                cancelado,
                 naoEncaminharClienteCobranca,
                 encaminharClienteCobranca,
                 equipe,
@@ -277,6 +281,7 @@ function NovoCliente() {
                 numeroContrato: '',
                 razao: '',
                 cpf: '',
+                cnpj: '',
                 fantasia: '',
                 endereco: '',
                 bairro: '',
@@ -359,6 +364,7 @@ function NovoCliente() {
                 dataPagamento: '',
                 simPago: '',
                 naoPago: '',
+                cancelado: '',
                 naoEncaminharClienteCobranca: '',
                 encaminharClienteCobranca: '',
                 equipe: '',
@@ -507,9 +513,34 @@ function NovoCliente() {
     //     }
     //   };
 
+    const handleCnpj = () => {
+        setIsCnpj(prevState => !prevState);
+    };
+    const formatCNPJ = (value) => {
+        value = value.replace(/\D/g, '');
+
+        value = value.replace(/(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+
+        return value;
+    };
+
+    const formatCPF = (value) => {
+        value = value.replace(/\D/g, '');
+
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+        return value;
+    };
+
     return <div>
         <div className="background">
             <div className="element contrato container-fluid titulo-2 " id="formId">
+
                 <div>
                     <div className="logo ">
                         <img src="../../../img/tag.png" alt="" />
@@ -558,6 +589,7 @@ function NovoCliente() {
                                     <option value="base">Base</option>
                                 </select>
                             </div>
+                            <button className="btn" onClick={handleCnpj}>{!isCnpj && "CNPJ"} {isCnpj && "CPF"}</button>
                         </div>
                     </div>
                     <div className="linha3">
@@ -579,17 +611,45 @@ function NovoCliente() {
                                 />
                             </div>
 
-                            <div className="col-md-6">
-                                <label className="d-flex align-items-center justify-content-center" htmlFor="lblInfo"><b>CNPJ/CPF:</b></label>
-                                <input
-                                    type="text"
-                                    id="razaoSocial"
-                                    name="razaoSocial"
-                                    onChange={(e) => setCpf(e.target.value)}
-                                    className="form-control"
-                                    placeholder="CNPJ/CPF"
-                                />
-                            </div>
+
+
+
+                            {!isCnpj ? (
+                                <div className="col-md-6">
+                                    <label className="d-flex align-items-center justify-content-center" htmlFor="cnpj"><b>CNPJ:</b></label>
+                                    <input
+                                        type="text"
+                                        id="cnpj"
+                                        name="cnpj"
+                                        value={cnpj} // Use o estado para controlar o valor do input
+                                        onChange={(e) => {
+                                            const formattedCnpj = formatCNPJ(e.target.value);
+                                            setCnpj(formattedCnpj); // Atualiza o estado com o CNPJ formatado
+                                        }}
+                                        className="form-control"
+                                        placeholder="Insira o CNPJ"
+                                        maxLength="18" // O comprimento máximo deve ser 18 para o formato completo
+                                    />
+
+                                </div>
+                            ) : (
+                                <div className="col-md-6">
+                                    <label className="d-flex align-items-center justify-content-center" htmlFor="cpf"><b>CPF:</b></label>
+                                    <input
+                                        type="text"
+                                        id="cpf"
+                                        name="cpf"
+                                        value={cpf} // Use the value from the state
+                                        onChange={(e) => {
+                                            const formattedCpf = formatCPF(e.target.value);
+                                            setCpf(formattedCpf); // Set the formatted CPF in the state
+                                        }}
+                                        className="form-control"
+                                        placeholder="Insira o CPF"
+                                        maxLength="14"
+                                    />
+                                </div>
+                            )}
 
                         </div>
 
@@ -777,7 +837,7 @@ function NovoCliente() {
                                 </div>
                             </div>
                             <div className="divAnuncio form-group temSite col-md-7.">
-                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANUNCIOS PATROCINADOS FACEBOOK/INSTAGRAM E GOOGLE ADS</b></label>
+                                <label htmlFor="temLojaFisica" className="form-check-label"><b>ANÚNCIO PATROCINADO GOOGLE ADS</b></label>
                                 <div className="form-check">
                                     <input
                                         type="checkbox"
@@ -793,7 +853,7 @@ function NovoCliente() {
                         <br />
                         <div className="row">
                             <div className="col-md-12">
-                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE PARA INSERÇÃO DO SITE:</b></label>
+                                <label className="d-flex align-items-center justify-content-center" htmlFor="razaoSocial"><b>LINK DA PÁGINA GOOGLE:</b></label>
                                 <input
                                     type="text"
                                     id="razaoSocial"
@@ -966,7 +1026,7 @@ function NovoCliente() {
                                 <u className="u-direito1">
                                     como acordado segue o plano no valor de
                                     <input className="txtAcordo" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />
-                                    a ser pago em  
+                                    a ser pago em
                                     <select className="txtAcordo select_acordo form-select-sm" onChange={(e) => setParcelas(e.target.value)} id="estado" required>
                                         <option value="">{parcelas}</option>
                                         <option value="1">1</option>

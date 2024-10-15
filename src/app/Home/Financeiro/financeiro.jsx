@@ -50,6 +50,7 @@ function Pagos() {
           encaminharClienteFinanceiro: doc.data().encaminharClienteFinanceiro,
           simPago: doc.data().simPago,
           dataPagamento: doc.data().dataPagamento,
+          cnpj: doc.data().cnpj
         }));
         const clientesPagos = listaCli.filter(cliente => cliente.pago);
         const info = {};
@@ -167,7 +168,8 @@ function Pagos() {
                 simPago: doc.data().simPago,
                 dataPagamento: doc.data().dataPagamento,
                 operador: doc.data().operador,
-                simPago: doc.data().simPago
+                simPago: doc.data().simPago,
+                cnpj: doc.data().cnpj
               });
             }
           }});

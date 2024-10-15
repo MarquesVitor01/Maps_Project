@@ -64,3 +64,8 @@
   color: #ffff;
   font-size: large;
 }
+
+.download-btn-container button{
+  margin-top: 65px;
+  margin-left: 50px;
+}
