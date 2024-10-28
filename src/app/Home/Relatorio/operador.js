@@ -29,6 +29,9 @@ const operadores = {
   matheus: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
   Matheus: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
   MATHEUS: "https://grupomapscartaodigital.com.br/operadores/matheus.jpg",
+  cassiane: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
+  CASSIANE: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
+  Cassiane: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
 };
 
 export default operadores;

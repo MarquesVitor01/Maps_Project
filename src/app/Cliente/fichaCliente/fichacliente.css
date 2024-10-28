@@ -60,11 +60,11 @@ display: flex;
 .logo{
     justify-content: center;
     display: flex;
-    padding: 20px;
+    padding: 5px;
 }
 .logo img{
     width: 900px!important;
-    height: 120px!important;
+    height: 110px!important;
 }
 
 .cima,
@@ -83,6 +83,7 @@ display: flex;
 }
 .form-control{
     text-align: center;
+    height: calc(2.25rem);
 }
 
 .th {
@@ -279,7 +280,7 @@ label[htmlFor="lblInfo"]{
 }
 
 .flecha-amarela i{
-    font-size: 90px;
+    font-size: 80px;
 }
 
 .linha-verde a {
@@ -296,7 +297,7 @@ label[htmlFor="lblInfo"]{
     color: rgb(196, 20, 93);
 }
 .cond {
-    margin-top: 30px!important;
+    margin-top: 10px!important;
     padding: 5px;
     text-align: justify;
     font-size: small;
@@ -310,7 +311,7 @@ label[htmlFor="lblInfo"]{
 }
 
 .acessoriaNew {
-    padding: 8px;
+    margin-top: 2px;
     justify-content: center;
     
 }
@@ -401,4 +402,16 @@ font-size: small;
     border-right: none; /* Remove qualquer borda na parte direita */
     text-align: center;
     margin-top: -7px;
+}
+
+
+.pg-contrato-1,
+.pg-contrato-2{
+    position: absolute;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.pg-contrato-2{
+    margin-top: -40px;
 }

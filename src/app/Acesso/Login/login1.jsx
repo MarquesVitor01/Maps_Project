@@ -24,6 +24,8 @@ function Login() {
           email === "karoline.alves@grupomapscartaodigital.com.br" ||
           email === "daiany.v@grupomapscartaodigital.com.br" ||
           email === "gabriel.pinheiro@grupomapscartaodigital.com.br" ||
+          email === "reshard@grupomapscartaodigital.com.br" ||
+          email === "kauany@grupomapscartaodigital.com.br" ||
           email === "andressa.anastacia@grupomapscartaodigital.com.br"
         ) {
           redirectPath = "/app/marketingmapsempresas";

@@ -423,6 +423,7 @@ function FichaClienteSite(props) {
                                     value={cidade}
                                 />
                             </div>
+                            
                         </div>
                         <div className="contact">
                             <h2 className="d-flex align-items-center justify-content-center">
@@ -697,7 +698,7 @@ function FichaClienteSite(props) {
                         <div className="text-multi">
                             <h2>
                                 <u className="font-weight-bold ">FICA ACORDADO ENTRE AS PARTES O VALOR DE: </u>
-                                (1) Uma, parcela de 249,90 (Duzentos e Quarenta e nove reais e noventa centavos) para criação e desenvolvimento do Web Site.
+                                R$ {valor} para criação e desenvolvimento do Web Site, parcelado em 2x, com o primeiro pagamento no ato da contratação e o segundo no ato da entrega do Web Site.
                             </h2>
                         </div>
                         <br />

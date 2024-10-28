@@ -24,7 +24,7 @@ function EditarCliente(props) {
     const [cpf, setCpf] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [isCnpj, setIsCnpj] = useState(true);
-
+    const [cancelado, setCancelado] = useState('');
     const [nome, setNome] = useState('');
     const [renovSim, setRenovSim] = useState('');
     const [renovNao, setRenovNao] = useState('');
@@ -105,6 +105,7 @@ function EditarCliente(props) {
                     setEmail2(dados.email2);
                     setModelo(dados.modelo);
                     setFormaPagamento(dados.formaPagamento);
+                    setCancelado(dados.cancelado);
                 } else {
                     setMensagem('Cliente não encontrado');
                 }
@@ -148,6 +149,7 @@ function EditarCliente(props) {
                     renovNao: renovNao,
                     renovSim: renovSim,
                     validade: validade,
+                    cancelado: cancelado,
                     data: data,
                     venc2: venc2,
                     representante: representante,
@@ -160,6 +162,7 @@ function EditarCliente(props) {
                     equipe: equipe,
                     declaro: declaro,
                     email2: email2,
+                    modelo: modelo,
                     modelo: modelo,
                     formaPagamento: formaPagamento,
                     qrCode: formState.qrCode, 
@@ -258,17 +261,26 @@ function EditarCliente(props) {
                     </table>
                     <div className="acessoriaNew ">
                         <div className="input-group row">
-                            <h2 className="font-weight-bold frase col-sm-6">
-                                <u>VALIDO POR:</u>
+                            <h2 className="font-weight-bold frase">
+                            <u>VALIDO POR 1 ANO, PLANO:</u>
                             </h2>
                             <div className="col-sm-4 select-validade">
                                 <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setValidade(e.target.value)} id="estado" required>
                                     <option value="">{validade}</option>
-                                    <option value="Cancelamento">Cancelamento</option>
-                                    <option value="1 mês">1 mês</option>
-                                    <option value="3 meses">3 meses</option>
-                                    <option value="6 meses">6 meses</option>
-                                    <option value="1 ano">1 ano</option>
+                                    <option value="mensal">Mensal</option>
+                                    <option value="trimestral">Trimestral</option>
+                                    <option value="semestral">Semestral</option>
+                                    <option value="anual">Anual</option>
+                                </select>
+                            </div>
+                            <h2 className="font-weight-bold frase">
+                                <u>CANCELAMENTO:</u>
+                            </h2>
+                            <div className="col-sm-2 select-validade">
+                                <select className="custom-select d-block escolha-select form-select form-select-sm" onChange={(e) => setCancelado(e.target.value)} id="estado" >
+                                    <option value="">{cancelado}</option>
+                                    <option value="sim">SIM</option>
+                                    <option value="nao">NÃO</option>
                                 </select>
                             </div>
                             <div className="col-sm-4">
@@ -612,12 +624,12 @@ function EditarCliente(props) {
                         </h5>
                         <img src="../../../img/assinatura-maps.jpg" alt="" />
                     </div>
-                    <div className="logo ">
+                    {/* <div className="logo ">
                         <img src="../../../img/tag.png" alt="" />
-                    </div>
+                    </div> */}
                     <div className="cond ">
-                        <p className=" font-weight-bold "><u className="text-primary">CONDIÇÕES</u>; 1º- ESTOU CIENTE QUE PARA CRIAÇÃO OU ATUALIZAÇÃO DA MINHA PAGÍNA DEVO ENCAMINHAR PARA A EMPRESA CONTRATADA QUANDO SOLICITADO POR PARTE DA EQUIPE DE SUPORTE TODAS AS INFORMAÇÕES NECESSARIAS. 2º- ASSUMO TAMBÉM A TOTAL RESPONSABILIDADE E AUTORIZO QUE A EMPRESA CONTRATADA DIVULGUE OS MEUS DADOS COMERCIAIS NO SITE DE BUSCA. 3º- SOBRE AS CONDIÇÕES ASSUMO AS OBRIGAÇÕES COM ESTA PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL REALIZADA PELA EMPRESA G MAPS CONTACT CENTER LTDA CNPJ; 40.407.753/0001-30 TENDO CIÊNCIA DO VALOR DE R$
-                            <input className="txtAcordo txtCond" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" />. 4º SABENDO QUE O NÃO PAGAMENTO PODE GERAR A NEGATIVAÇÃO DO CPF/CNPJ JUNTO AOS ORGÃOS COMPETENTES (SERASA/CARTÓRIO) E QUE <u>O ACEITE DOS SERVIÇOS FOI REALIZADA DE FORMA VERBAL CONFORME O ARTIGO 107 DO CODIGO CIVIL LEI 10406 DE 10 DE JANEIRO DE 2002 E QUE A CÓPIA DESTE CONTRATO FOI ENCAMINHADA PARA O E-MAIL PRINCIPAL INFORMADO ACIMA.</u> 5º-TODAS AS SOLICITAÇÕES DEVERÃO SER ENCAMINHADAS PARA O DEPARTAMENTO DE MARKETING ATRAVÉS DO E-MAIL OU WHATSAPP AQUI DISPONIBILIZADOS. 6º- A CONTRATADA ASSUME AS OBRIGAÇÕES JUNTO A CONTRATANTE DE CONCLUIR E ENTREGAR OS SERVIÇOS PRESTADOS DENTRO DO PERIODO DE ATÉ 72HORAS UTEIS.
+                    <u className="font-weight-bold">CONDIÇÕES</u><p className=" font-weight-bold "> 1º- ESTOU CIENTE QUE PARA CRIAÇÃO OU ATUALIZAÇÃO DA MINHA PAGÍNA DEVO ENCAMINHAR PARA A EMPRESA CONTRATADA QUANDO SOLICITADO POR PARTE DA EQUIPE DE SUPORTE TODAS AS INFORMAÇÕES NECESSARIAS. <br /> 2º- ASSUMO TAMBÉM A TOTAL RESPONSABILIDADE E AUTORIZO QUE A EMPRESA CONTRATADA DIVULGUE OS MEUS DADOS COMERCIAIS NO SITE DE BUSCA. <br /> 3º- SOBRE AS CONDIÇÕES ASSUMO AS OBRIGAÇÕES COM ESTA PRESTAÇÃO DE SERVIÇOS DE MARKETING DIGITAL REALIZADA PELA EMPRESA G MAPS CONTACT CENTER LTDA CNPJ; 40.407.753/0001-30 TENDO CIÊNCIA DO VALOR DE R$
+                            <input className="txtAcordo txtCond" onChange={(e) => setValor(e.target.value)} value={valor} type="text" placeholder="" /> NO PLANO  {validade.toUpperCase()} .  <br /> 4º SABENDO QUE O NÃO PAGAMENTO PODE GERAR A NEGATIVAÇÃO DO CPF/CNPJ JUNTO AOS ORGÃOS COMPETENTES (SERASA/CARTÓRIO) E QUE <u>O ACEITE DOS SERVIÇOS FOI REALIZADA DE FORMA VERBAL CONFORME O ARTIGO 107 DO CODIGO CIVIL LEI 10406 DE 10 DE JANEIRO DE 2002 E QUE A CÓPIA DESTE CONTRATO FOI ENCAMINHADA PARA O E-MAIL PRINCIPAL INFORMADO ACIMA.</u> <br /> 5º-TODAS AS SOLICITAÇÕES DEVERÃO SER ENCAMINHADAS PARA O DEPARTAMENTO DE MARKETING ATRAVÉS DO E-MAIL OU WHATSAPP AQUI DISPONIBILIZADOS. <br /> 6º- A CONTRATADA ASSUME AS OBRIGAÇÕES JUNTO A CONTRATANTE DE CONCLUIR E ENTREGAR OS SERVIÇOS PRESTADOS DENTRO DO PERIODO DE ATÉ 72HORAS UTEIS.
                         </p>
                         <div className="row faixa-arrow">
                             <div className="flecha-amarela">

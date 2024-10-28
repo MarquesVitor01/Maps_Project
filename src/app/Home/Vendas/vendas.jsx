@@ -167,6 +167,7 @@ function Vendas() {
                             const lowercaseOperador = (data.operador || '').toLowerCase();
                             const lowercaseEmail = (data.email || '').toLowerCase();
                             const lowercaseCPF = (data.cpf || '').toLowerCase();
+                            const lowercaseCNPJ = (data.cnpj || '').toLowerCase();
                             const lowercaseRazao = (data.razao || '').toLowerCase();
 
                             if (
@@ -174,6 +175,7 @@ function Vendas() {
                                 lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
                                 lowercaseCPF.indexOf(lowercaseBusca) >= 0 ||
                                 lowercaseRazao.indexOf(lowercaseBusca) >= 0 || 
+                                lowercaseCNPJ.indexOf(lowercaseBusca) >= 0 || 
                                 lowercaseOperador.indexOf(lowercaseBusca) >= 0
                             ) {
                                 listaCli.push({
@@ -369,7 +371,7 @@ function Vendas() {
 
             <div className="container-fluid titulo">
                 <div className="row lista-vendas">
-                    <h1><b>LISTA DE VENDAS</b> <img src="https://grupomapscartaodigital.com.br/img/baixados.png" width={'70px'} alt="" /></h1>
+                    <h1><b>LISTA DE VENDAS</b> <img src="/img/baixados.png" width={'92px'} alt="" /></h1>
                     <div className="col-5 pesquisa">
                         <div className="input-group mb-3">
                             <input

@@ -710,6 +710,21 @@ function FichaMonitoria() {
                             </div>
                             <input onChange={(e) => setObsMonitoria(e.target.value)} value={obsMonitoria} id="date" type="text" placeholder="Insira OK para tudo certo ou insira sua observação de melhoria." className="form-control" />
                         </div>
+                        <div className="d-flex justify-content-center align-items-center flex-column my-3">
+                            <label htmlFor="monitor" className="me-2">Selecione o monitor:</label>
+                            <select
+                                id="monitor"
+                                value={nomeMonitor}
+                                onChange={(e) => setNomeMonitor(e.target.value)}
+                                className="escolhaMonitor"
+                            >
+                                <option value="">Selecione...</option>
+                                <option value="Gabriela">Gabriela</option>
+                                <option value="Andrew">Andrew</option>
+                            </select>
+                        </div>
+
+
                         <div>
                             <p className="red"> - Use a calculadora para verificar a nota do usuario.</p>
                         </div>

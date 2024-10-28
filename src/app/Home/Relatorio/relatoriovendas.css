@@ -179,6 +179,7 @@
   text-align: center;
   font-weight: 600;
   font-size: 30px;
+  text-transform: lowercase!important;
 }
 
 .tabela-ranking li .vendas-operador {

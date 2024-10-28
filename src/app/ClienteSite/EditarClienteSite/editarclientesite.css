@@ -61,7 +61,7 @@ display: flex;
 .logo{
   justify-content: center;
   display: flex;
-  padding: 20px;
+  padding: 5px;
 }
 .logo img{
   width: 600px;
@@ -274,7 +274,8 @@ label[htmlFor="lblInfo"]{
 }
 
 .linha-verde img {
-  height: 60px;
+  height: 40px;
+  width: 500px;
 }
 
 .faixa-arrow{   
@@ -282,7 +283,7 @@ label[htmlFor="lblInfo"]{
 }
 
 .flecha-amarela i{
-  font-size: 90px;
+  font-size: 60px;
   margin-top: -15px ;
 }
 
@@ -314,7 +315,6 @@ label[htmlFor="lblInfo"]{
 }
 
 .acessoriaNew {
-  padding: 8px;
   justify-content: center;
   
 }
@@ -373,7 +373,7 @@ font-size: small;
 
 .contact h2{
   font-size: small;
-  padding: 10px 0 0 0;
+  padding: 5px 0 0 0;
 }
 
 .qr-code {

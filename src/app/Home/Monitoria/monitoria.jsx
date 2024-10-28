@@ -37,16 +37,19 @@ function Monitoria() {
           const lowercaseNome = doc.data().nome.toLowerCase();
           const lowercaseEmail = doc.data().email.toLowerCase();
           const lowercaseCpf = doc.data().cpf.toLowerCase();
+          const lowercaseCnpj = doc.data().cpf.toLowerCase();
           
           // Verificar se a busca está presente em qualquer parte do nome, email ou CPF
           if (
             lowercaseNome.includes(lowercaseSearch) ||
             lowercaseEmail.includes(lowercaseSearch) ||
+            lowercaseCnpj.includes(lowercaseSearch) ||
             lowercaseCpf.includes(lowercaseSearch)
           ) {
             listaCli.push({
               id: doc.id,
               cpf: doc.data().cpf,
+              cnpj: doc.data().cnpj,
               nome: doc.data().nome,
               email: doc.data().email,
               uf: doc.data().uf,

@@ -37,6 +37,7 @@ function Pagos() {
         const listaCli = snapshot.docs.map(doc => ({
           id: doc.id,
           cpf: doc.data().cpf,
+          cnpj: doc.data().cnpj,
           nome: doc.data().nome,
           email: doc.data().email,
           uf: doc.data().uf,
@@ -145,17 +146,20 @@ function Pagos() {
               const lowercaseNome = (data.nome || '').toLowerCase(); // Verifique e converta para minúsculas
               const lowercaseEmail = (data.email || '').toLowerCase();
               const lowercaseCPF = (data.cpf || '').toLowerCase();
+              const lowercaseCNPJ = (data.cnpj || '').toLowerCase();
               const lowercaseRazao = (data.razao || '').toLowerCase();
             if (
               lowercaseNome.indexOf(lowercaseBusca) >= 0 ||
               lowercaseEmail.indexOf(lowercaseBusca) >= 0 ||
               lowercaseCPF.indexOf(lowercaseBusca) >= 0 ||
+              lowercaseCNPJ.indexOf(lowercaseBusca) >= 0 ||
               lowercaseRazao.indexOf(lowercaseBusca) >= 0
             ) {
               listaCli.push({
                 id: doc.id,
                 cpf: doc.data().cpf,
-                nome: doc.data().nome,
+          cnpj: doc.data().cnpj,
+          nome: doc.data().nome,
                 email: doc.data().email,
                 uf: doc.data().uf,
                 fone: doc.data().fone,

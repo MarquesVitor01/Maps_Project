@@ -60,7 +60,7 @@ display: flex;
 .logo{
     justify-content: center;
     display: flex;
-    padding: 20px;
+    padding: 5px;
 }
 .logo img{
     width: 900px!important;
@@ -296,7 +296,7 @@ label[htmlFor="lblInfo"]{
     color: rgb(196, 20, 93);
 }
 .cond {
-    margin-top: 30px!important;
+    margin-top: 10px!important;
     padding: 5px;
     text-align: justify;
     font-size: small;
@@ -310,7 +310,6 @@ label[htmlFor="lblInfo"]{
 }
 
 .acessoriaNew {
-    padding: 8px;
     justify-content: center;
     
 }
