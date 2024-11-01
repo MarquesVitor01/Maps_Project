@@ -32,6 +32,9 @@ const operadores = {
   cassiane: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
   CASSIANE: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
   Cassiane: "https://grupomapscartaodigital.com.br/operadores/cassiane.jpg",
+  laysla: "https://grupomapscartaodigital.com.br/operadores/laysla.jpg",
+  LAYSLA: "https://grupomapscartaodigital.com.br/operadores/laysla.jpg",
+  Laysla: "https://grupomapscartaodigital.com.br/operadores/laysla.jpg",
 };
 
 export default operadores;
